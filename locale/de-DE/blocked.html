@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+<head>
+    <script type="text/javascript" src="chrome://wot/skin/include/blocked.js"></script>
+    <style type="text/css">
+        @import "chrome://wot/skin/include/blocked.css";
+    </style>
+    <title>WOT: Blockiert</title>
+</head>
+<body id="wotblocked" onload="blocked_load();">
+	<table id="wotcontainer" cellspacing="0" lang="de-DE" class="wotblocked">
+		<tr id="wotheadline">
+			<td colspan="2"></td>
+		</tr>
+		<tr id="wotcontainertop">
+			<td colspan="2"></td>
+		</tr>
+		<tr id="wotdescription" class="wotcontainermiddle">
+			<td colspan="2">
+				<div id="wotdescriptiontext" class="wotlimitwidth">Diese Seite hat einen schlechten Ruf.</div>
+			</td>
+		</tr>
+		<tr id="wottarget" class="wotcontainermiddle">
+			<td colspan="2">
+				<div id="wotwebsite" class="wotlimitwidth" title="">&nbsp;</div>
+			</td>	
+		</tr>
+		<tr id="wotinfo" class="wotcontainermiddle">
+			<td colspan="2">
+				<div id="wotinfobutton">
+					<span id="wotinfotext" onclick="blocked_info();">Bewertungsdetails und Kommentare anzeigen</span>
+				</div>
+			</td>
+		</tr>
+		<tr id="wotratingtop" class="wotcontainermiddle">
+			<td colspan="2"></td>
+		</tr>
+		<tr id="wotratingareatop" class="wotratingarea">
+			<td colspan="2"></td>
+		</tr>
+		<tr id="wotrating0" class="wotratingarea wotratingrow">
+			<td class="wotratingcol wotratingcolleft">
+				<span class="wotratingname">Vertrauenswürdigkeit</span>
+			</td>
+			<td class="wotratingcol wotratingcolright">
+				<span id="wotratingexpl0" class="wotratingexpl">&nbsp;</span>
+			</td>
+		</tr>
+		<tr id="wotrating1" class="wotratingarea wotratingrow">
+			<td class="wotratingcol wotratingcolleft">
+				<span class="wotratingname">Händlerzuverlässigkeit</span>
+			</td>
+			<td class="wotratingcol wotratingcolright">
+				<span id="wotratingexpl1" class="wotratingexpl">&nbsp;</span>
+			</td>
+		</tr>
+		<tr id="wotrating2" class="wotratingarea wotratingrow">
+			<td class="wotratingcol wotratingcolleft">
+				<span class="wotratingname">Datenschutz</span>
+			</td>
+			<td class="wotratingcol wotratingcolright">
+				<span id="wotratingexpl2" class="wotratingexpl">&nbsp;</span>
+			</td>
+		</tr>
+		<tr id="wotrating4" class="wotratingarea wotratingrow">
+			<td class="wotratingcol wotratingcolleft">
+				<span class="wotratingname">Jugendschutz</span>
+			</td>
+			<td class="wotratingcol wotratingcolright">
+				<span id="wotratingexpl4" class="wotratingexpl">&nbsp;</span>
+			</td>
+		</tr>
+		<tr id="wotratingareabottom" class="wotratingarea">
+			<td colspan="2"></td>
+		</tr>
+		<tr id="wotratingbottom" class="wotcontainermiddle">
+			<td colspan="2"></td>
+		</tr>
+		<tr id="wotbuttonstop" class="wotcontainermiddle">
+			<td colspan="2"></td>
+		</tr>
+		<tr id="wotbuttons" class="wotcontainermiddle">
+			<td id="wotbuttonrate">
+				<span id="wotratebutton" class="wotbutton">Diese Website ist sicher, und ich möchte sie bewerten</span>
+			</td>
+			<td id="wotbuttongoto">
+				<span id="wotgotobutton" class="wotbutton">Warnung ignorieren und Website aufrufen</span>
+			</td>
+		</tr>
+		<tr id="wotcontainerbottom">
+			<td colspan="2"></td>
+		</tr>
+		<tr id="wotlogo">
+			<td colspan="2"></td>
+		</tr>
+	</table>
+	<div id="wottextdescunknown" style="display: none;">Diese Website besitzt eine unbekannte Bewertung.</div>
+	<div id="wottextdescuserrat" style="display: none;">Sie haben dieser Website eine schlechte Bewertung<br/>gegeben, die eine Warnung ausgelöst hat.</div>
+	<div id="wottextreputation5" style="display: none;">Ausgezeichnet</div>
+	<div id="wottextreputation4" style="display: none;">Gut</div>
+	<div id="wottextreputation3" style="display: none;">Ungenügend</div>
+	<div id="wottextreputation2" style="display: none;">Schlecht</div>
+	<div id="wottextreputation1" style="display: none;">Sehr schlecht</div>
+</body>
+</html>

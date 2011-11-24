@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	overlay.xul
+	Copyright © 2005, 2006, 2007, 2008, 2009  WOT Services Oy <info@mywot.com>
+
+	This file is part of WOT.
+
+	WOT is free software: you can redistribute it and/or modify it
+	under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	WOT is distributed in the hope that it will be useful, but WITHOUT
+	ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+	or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
+	License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with WOT. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE window SYSTEM "chrome://wot/locale/wot.dtd">
+<?xml-stylesheet href="chrome://wot/skin/wot.css" type="text/css"?>
+
+<overlay id="wot-overlay"
+		xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<script type="application/x-javascript" src="chrome://wot/content/config.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/cache.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/commands.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/shared.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/util.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/ui.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/prefs.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/my.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/warning.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/update.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/popup.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/search.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/settings.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/cookies.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/api.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/firstrun.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/partner.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/core.js"/>
+
+	<stringbundleset id="stringbundleset">
+		<stringbundle id="wot-strings" src="chrome://wot/locale/wot.properties"/>
+	</stringbundleset>
+
+	<commandset id="mainCommandSet">
+		<command id="wot-command-enabled"
+			oncommand="wot_commands.enabled();"/>
+		<command id="wot-command-refresh"
+			oncommand="wot_commands.refresh();"/>
+		<command id="wot-command-preferences"
+			oncommand="wot_commands.preferences();"/>
+		<command id="wot-command-checkupdates"
+			oncommand="wot_commands.checkupdates();"/>
+		<command id="wot-command-testify-5"
+			oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_5);"/>
+		<command id="wot-command-testify-4"
+			oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_4);"/>
+		<command id="wot-command-testify-3"
+			oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_3);"/>
+		<command id="wot-command-testify-2"
+			oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_2);"/>
+		<command id="wot-command-testify-1"
+			oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_1);"/>
+		<command id="wot-command-my"
+			oncommand="wot_commands.my();"/>
+		<command id="wot-command-openlinkscorecard"
+			oncommand="wot_commands.openlinkscorecard();"/>
+	</commandset>
+
+	<popupset id="mainPopupSet">
+		<!-- Testimony window -->
+		<menupopup id="wot-popup" noautohide="true" position="after_start"
+			onpopupshowing="wot_core.update();"
+			onpopuphiding="wot_events.hide_popup();"
+			onmouseup="wot_events.slider_up(event, -1);">
+			<vbox id="wot-elements">
+				<!-- header -->
+				<hbox id="wot-header">
+					<box id="wot-header-logo"
+						onclick="wot_events.click_logo(event);"/>
+					<hbox id="wot-header-links">
+						<label id="wot-header-link-0" class="wot-header-link"
+							value="&wotRating.prefs;"
+							onclick="wot_events.click_prefs(event);"/>
+						<box id="wot-header-link-separator"/>
+						<label id="wot-header-link-1" class="wot-header-link"
+							value="&wotRating.guide;"
+							onclick="wot_events.click_guide(event);"/>
+					</hbox>
+					<box id="wot-header-button" onclick="wot_events.popup_hide();"/>
+				</hbox>
+				<!-- title -->
+				<vbox id="wot-title">
+					<label id="wot-title-text" crop="center" value="&wotRating.title;"
+						onclick="wot_events.click_title(event);"/>
+				</vbox>
+				<!-- rating header -->
+				<hbox id="wot-rating-header">
+					<label id="wot-rating-header-wot" crop="end" value="&wotRating.wot;"/>
+					<label id="wot-rating-header-my" crop="end" value="&wotRating.my;"/>
+				</hbox>
+				<!-- rating 0 -->
+				<box id="wot-rating-border-0" class="wot-rating-border"/>
+				<vbox id="wot-rating-0" class="wot-rating">
+					<label id="wot-rating-0-header" class="wot-rating-header" crop="end"
+						value="&wotRating.app0;"/>
+					<hbox id="wot-rating-0-data" class="wot-rating-data">
+						<box id="wot-rating-0-reputation" class="wot-rating-reputation"/>
+						<box id="wot-rating-0-confidence" class="wot-rating-confidence"/>
+						<vbox id="wot-rating-0-testimony" class="wot-rating-testimony">
+							<stack id="wot-rating-0-stack" class="wot-rating-stack"
+								onmousedown="wot_events.slider_down(event, 0);"
+								onmouseup="wot_events.slider_up(event, 0);"
+								onmousemove="wot_events.slider_move(event, 0);">
+								<box id="wot-rating-0-slider" class="wot-rating-slider"
+									onmousedown="wot_events.slider_down(event, 0);"
+    	                            onmouseup="wot_events.slider_up(event, 0);"
+	                                onmousemove="wot_events.slider_move(event, 0);"/>
+								<box id="wot-rating-0-indicator" class="wot-rating-indicator"
+									onmousedown="wot_events.slider_down(event, 0);"
+                                    onmouseup="wot_events.slider_up(event, 0);"
+                                    onmousemove="wot_events.slider_move(event, 0);"/>
+							</stack>
+							<hbox id="wot-rating-0-help" class="wot-rating-help">
+								<label id="wot-rating-0-help-text" class="wot-rating-help-text" crop="end"/>
+								<label id="wot-rating-0-help-link" class="wot-rating-help-link" crop="end"
+									onclick="wot_events.click_help(event, 0);"/>
+							</hbox>
+						</vbox>
+					</hbox>
+				</vbox>
+				<!-- rating 1 -->
+				<box id="wot-rating-border-1" class="wot-rating-border"/>
+				<vbox id="wot-rating-1" class="wot-rating">
+					<label id="wot-rating-1-header" class="wot-rating-header" crop="end"
+						value="&wotRating.app1;"/>
+					<hbox id="wot-rating-1-data" class="wot-rating-data">
+						<box id="wot-rating-1-reputation" class="wot-rating-reputation"/>
+						<box id="wot-rating-1-confidence" class="wot-rating-confidence"/>
+						<vbox id="wot-rating-1-testimony" class="wot-rating-testimony">
+							<stack id="wot-rating-1-stack" class="wot-rating-stack"
+								onmousedown="wot_events.slider_down(event, 1);"
+								onmouseup="wot_events.slider_up(event, 1);"
+								onmousemove="wot_events.slider_move(event, 1);">
+								<box id="wot-rating-1-slider" class="wot-rating-slider"
+									onmousedown="wot_events.slider_down(event, 1);"
+    	                            onmouseup="wot_events.slider_up(event, 1);"
+	                                onmousemove="wot_events.slider_move(event, 1);"/>
+								<box id="wot-rating-1-indicator" class="wot-rating-indicator"
+									onmousedown="wot_events.slider_down(event, 1);"
+                                    onmouseup="wot_events.slider_up(event, 1);"
+                                    onmousemove="wot_events.slider_move(event, 1);"/>
+							</stack>
+							<hbox id="wot-rating-1-help" class="wot-rating-help">
+								<label id="wot-rating-1-help-text" class="wot-rating-help-text" crop="end"/>
+								<label id="wot-rating-1-help-link" class="wot-rating-help-link" crop="end"
+									onclick="wot_events.click_help(event, 1);"/>
+							</hbox>
+						</vbox>
+					</hbox>
+				</vbox>
+				<!-- rating 2 -->
+				<box id="wot-rating-border-2" class="wot-rating-border"/>
+				<vbox id="wot-rating-2" class="wot-rating">
+					<label id="wot-rating-2-header" class="wot-rating-header" crop="end"
+						value="&wotRating.app2;"/>
+					<hbox id="wot-rating-2-data" class="wot-rating-data">
+						<box id="wot-rating-2-reputation" class="wot-rating-reputation"/>
+						<box id="wot-rating-2-confidence" class="wot-rating-confidence"/>
+						<vbox id="wot-rating-2-testimony" class="wot-rating-testimony">
+							<stack id="wot-rating-2-stack" class="wot-rating-stack"
+								onmousedown="wot_events.slider_down(event, 2);"
+								onmouseup="wot_events.slider_up(event, 2);"
+								onmousemove="wot_events.slider_move(event, 2);">
+								<box id="wot-rating-2-slider" class="wot-rating-slider"
+									onmousedown="wot_events.slider_down(event, 2);"
+    	                            onmouseup="wot_events.slider_up(event, 2);"
+	                                onmousemove="wot_events.slider_move(event, 2);"/>
+								<box id="wot-rating-2-indicator" class="wot-rating-indicator"
+									onmousedown="wot_events.slider_down(event, 2);"
+                                    onmouseup="wot_events.slider_up(event, 2);"
+                                    onmousemove="wot_events.slider_move(event, 2);"/>
+							</stack>
+							<hbox id="wot-rating-2-help" class="wot-rating-help">
+								<label id="wot-rating-2-help-text" class="wot-rating-help-text" crop="end"/>
+								<label id="wot-rating-2-help-link" class="wot-rating-help-link" crop="end"
+									onclick="wot_events.click_help(event, 2);"/>
+							</hbox>
+						</vbox>
+					</hbox>
+				</vbox>
+				<!-- rating 4 -->
+				<box id="wot-rating-border-4" class="wot-rating-border"/>
+				<vbox id="wot-rating-4" class="wot-rating">
+					<label id="wot-rating-4-header" class="wot-rating-header" crop="end"
+						value="&wotRating.app4;"/>
+					<hbox id="wot-rating-4-data" class="wot-rating-data">
+						<box id="wot-rating-4-reputation" class="wot-rating-reputation"/>
+						<box id="wot-rating-4-confidence" class="wot-rating-confidence"/>
+						<vbox id="wot-rating-4-testimony" class="wot-rating-testimony">
+							<stack id="wot-rating-4-stack" class="wot-rating-stack"
+								onmousedown="wot_events.slider_down(event, 4);"
+								onmouseup="wot_events.slider_up(event, 4);"
+								onmousemove="wot_events.slider_move(event, 4);">
+								<box id="wot-rating-4-slider" class="wot-rating-slider"
+									onmousedown="wot_events.slider_down(event, 4);"
+    	                            onmouseup="wot_events.slider_up(event, 4);"
+	                                onmousemove="wot_events.slider_move(event, 4);"/>
+								<box id="wot-rating-4-indicator" class="wot-rating-indicator"
+									onmousedown="wot_events.slider_down(event, 4);"
+                                    onmouseup="wot_events.slider_up(event, 4);"
+                                    onmousemove="wot_events.slider_move(event, 4);"/>
+							</stack>
+							<hbox id="wot-rating-4-help" class="wot-rating-help">
+								<label id="wot-rating-4-help-text" class="wot-rating-help-text" crop="end"/>
+								<label id="wot-rating-4-help-link" class="wot-rating-help-link" crop="end"
+									onclick="wot_events.click_help(event, 4);"/>
+							</hbox>
+						</vbox>
+					</hbox>
+				</vbox>
+				<!-- scorecard -->
+				<vbox id="wot-scorecard">
+					<vbox id="wot-scorecard-content"
+						onclick="wot_events.click_scorecard(event, false);">
+						<label id="wot-scorecard-visit" class="wot-scorecard-text" crop="end"
+							value="&wotRating.scorecard;"/>
+						<box id="wot-scorecard-comment-container">
+							<label id="wot-scorecard-comment" class="wot-scorecard-text" crop="end"
+								value="&wotRating.comment;"
+								onmouseover="document.getElementById('wot-scorecard-visit').setAttribute('inactive', true);"
+								onmouseout="document.getElementById('wot-scorecard-visit').removeAttribute('inactive');"
+								onclick="wot_events.click_scorecard(event, true);"/>
+						</box>
+					</vbox>
+				</vbox>
+				<!-- user 0 -->
+				<vbox id="wot-user-0" class="wot-user" hidden="true">
+					<hbox id="wot-user-0-content" class="wot-user-content">
+						<vbox id="wot-user-0-stack" class="wot-user-stack">
+							<label id="wot-user-0-header" class="wot-user-header" crop="end"/>
+							<hbox id="wot-user-0-bar" class="wot-user-bar">
+								<box id="wot-user-0-bar-image" class="wot-user-bar-image"/>
+								<label id="wot-user-0-bar-text" class="wot-user-bar-text" crop="end"/>
+							</hbox>
+						</vbox>
+						<box id="wot-user-0-text-container" class="wot-user-text-container">
+							<label id="wot-user-0-text" class="wot-user-text" crop="end"
+								onclick="wot_events.click_user(event, 0);"/>
+						</box>
+					</hbox>
+					<label id="wot-user-0-notice" class="wot-user-notice" crop="end"/>
+				</vbox>
+				<!-- user 1 -->
+				<vbox id="wot-user-1" class="wot-user" hidden="true">
+					<hbox id="wot-user-1-content" class="wot-user-content">
+						<vbox id="wot-user-1-stack" class="wot-user-stack">
+							<label id="wot-user-1-header" class="wot-user-header" crop="end"/>
+							<hbox id="wot-user-1-bar" class="wot-user-bar">
+								<box id="wot-user-1-bar-image" class="wot-user-bar-image"/>
+								<label id="wot-user-1-bar-text" class="wot-user-bar-text" crop="end"/>
+							</hbox>
+						</vbox>
+						<box id="wot-user-1-text-container" class="wot-user-text-container">
+							<label id="wot-user-1-text" class="wot-user-text" crop="end"
+								onclick="wot_events.click_user(event, 1);"/>
+						</box>
+					</hbox>
+					<label id="wot-user-1-notice" class="wot-user-notice" crop="end"/>
+				</vbox>
+				<!-- user 2 -->
+				<vbox id="wot-user-2" class="wot-user" hidden="true">
+					<hbox id="wot-user-2-content" class="wot-user-content">
+						<vbox id="wot-user-2-stack" class="wot-user-stack">
+							<label id="wot-user-2-header" class="wot-user-header" crop="end"/>
+							<hbox id="wot-user-2-bar" class="wot-user-bar">
+								<box id="wot-user-2-bar-image" class="wot-user-bar-image"/>
+								<label id="wot-user-2-bar-text" class="wot-user-bar-text" crop="end"/>
+							</hbox>
+						</vbox>
+						<box id="wot-user-2-text-container" class="wot-user-text-container">
+							<label id="wot-user-2-text" class="wot-user-text" crop="end"
+								onclick="wot_events.click_user(event, 2);"/>
+						</box>
+					</hbox>
+					<label id="wot-user-2-notice" class="wot-user-notice" crop="end"/>
+				</vbox>
+				<!-- message -->
+				<hbox id="wot-message" hidden="true"
+						onclick="return wot_events.click_message(event);">
+					<description id="wot-message-text" crop="end">
+					</description>
+				</hbox>
+				<!-- partner -->
+				<vbox id="wot-partner" hidden="true">
+					<label id="wot-partner-text" crop="end" value="&wotRating.partner;"/>
+				</vbox>
+			</vbox>
+		</menupopup>
+
+		<!-- Indicator tooltip -->
+		<tooltip id="wot-tooltip"
+			onpopupshowing="return wot_commands.tooltip_update(document.tooltipNode);">
+			<label id="wot-tooltip-text" value="&wotRating.title;" crop="center"/>
+		</tooltip>
+
+		<!-- Indicator menu -->
+		<!-- XXX: shouldn't need onpopupshowing, but checkmarks aren't shown otherwise -->
+		<menupopup id="wot-context-indicator"
+			onpopupshowing="wot_commands.update('indicator');">
+			<menuitem id="wot-indicator-refresh"
+				label="&wotRefresh.label;"
+				accesskey="&wotRefresh.accesskey;"
+				command="wot-command-refresh"/>
+			<menuitem label="&wotCheckUpdates.label;"
+				accesskey="&wotCheckUpdates.accesskey;"
+				command="wot-command-checkupdates"/>
+			<menuseparator/>
+			<menuitem id="wot-indicator-testify-5"
+				label="&wotTestify5.label;"
+				accesskey="&wotTestify5.accesskey;"
+				type="radio"
+				name="wot-indicator-quicktestify"
+				command="wot-command-testify-5"/>
+			<menuitem id="wot-indicator-testify-4"
+				label="&wotTestify4.label;"
+				accesskey="&wotTestify4.accesskey;"
+				type="radio"
+				name="wot-indicator-quicktestify"
+				command="wot-command-testify-4"/>
+			<menuitem id="wot-indicator-testify-3"
+				label="&wotTestify3.label;"
+				accesskey="&wotTestify3.accesskey;"
+				type="radio"
+				name="wot-indicator-quicktestify"
+				command="wot-command-testify-3"/>
+			<menuitem id="wot-indicator-testify-2"
+				label="&wotTestify2.label;"
+				accesskey="&wotTestify2.accesskey;"
+				type="radio"
+				name="wot-indicator-quicktestify"
+				command="wot-command-testify-2"/>
+			<menuitem id="wot-indicator-testify-1"
+				label="&wotTestify1.label;"
+				accesskey="&wotTestify1.accesskey;"
+				type="radio"
+				name="wot-indicator-quicktestify"
+				command="wot-command-testify-1"/>
+			<menuseparator/>
+			<menuitem label="&wotMy.label;"
+				accesskey="&wotMy.accesskey;"
+				command="wot-command-my"/>
+			<menuitem label="&wotPreferences.label;"
+				accesskey="&wotPreferences.accesskey;"
+				command="wot-command-preferences"/>
+			<menuseparator/>
+			<menuitem id="wot-indicator-enabled"
+				label="&wotEnabled.label;"
+				accesskey="&wotEnabled.accesskey;"
+				type="checkbox"
+				command="wot-command-enabled"/>
+		</menupopup>
+	</popupset>
+
+	<!-- Browser content area menu -->
+	<popup id="contentAreaContextMenu">
+		<menuitem id="wot-content-openlinkscorecard"
+			label="&wotLinkScorecard.label;"
+			accesskey="&wotLinkScorecard.accesskey;"
+			command="wot-command-openlinkscorecard"
+			insertbefore="context-bookmarkpage"/>
+	</popup>
+
+	<!-- Tools menu -->
+	<menupopup id="menu_ToolsPopup">
+		<menu id="wot-context-tools" insertbefore="devToolsSeparator"
+			label="&wotContent.label;">
+			<menupopup id="wot-tools-popup">
+				<menuitem label="&wotMy.label;"
+					accesskey="&wotMy.accesskey;"
+					command="wot-command-my"/>
+				<menuitem label="&wotPreferences.label;"
+					accesskey="&wotPreferences.accesskey;"
+					command="wot-command-preferences"/>
+				<menuseparator/>
+				<menuitem label="&wotTestify5.label;"
+					accesskey="&wotTestify5.accesskey;"
+					type="radio"
+					name="wot-tools-quicktestify"
+					command="wot-command-testify-5"/>
+				<menuitem label="&wotTestify4.label;"
+					accesskey="&wotTestify4.accesskey;"
+					type="radio"
+					name="wot-tools-quicktestify"
+					command="wot-command-testify-4"/>
+				<menuitem label="&wotTestify3.label;"
+					accesskey="&wotTestify3.accesskey;"
+					type="radio"
+					name="wot-tools-quicktestify"
+					command="wot-command-testify-3"/>
+				<menuitem label="&wotTestify2.label;"
+					accesskey="&wotTestify2.accesskey;"
+					type="radio"
+					name="wot-tools-quicktestify"
+					command="wot-command-testify-2"/>
+				<menuitem label="&wotTestify1.label;"
+					accesskey="&wotTestify1.accesskey;"
+					type="radio"
+					name="wot-tools-quicktestify"
+					command="wot-command-testify-1"/>
+				<menuseparator/>
+				<menuitem label="&wotEnabled.label;"
+					accesskey="&wotEnabled.accesskey;"
+					type="checkbox"
+					command="wot-command-enabled"/>
+			</menupopup>
+		</menu>
+	</menupopup>
+
+	<!-- Toolbar indicator -->
+	<toolbarpalette id="BrowserToolbarPalette">
+		<toolbarbutton id="wot-button"
+			class="toolbarbutton-1"
+			label="&wot.label;"
+			popup="wot-popup"
+			context="wot-context-indicator"
+			tooltip="wot-tooltip"
+			insertbefore="urlbar-container"
+			onclick="wot_events.click_button(event);"/>
+	</toolbarpalette>
+</overlay>

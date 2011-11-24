@@ -1,0 +1,41 @@
+<!ENTITY wot.label					"WOT">
+<!-- Menu items -->
+<!ENTITY wotEnabled.label			"Activé">
+<!ENTITY wotEnabled.accesskey		"A">
+<!ENTITY wotRefresh.label			"Rafraîchir">
+<!ENTITY wotRefresh.accesskey		"R">
+<!ENTITY wotContent.label			"WOT">
+<!ENTITY wotContent.accesskey		"W">
+<!ENTITY wotTestify5.label			"Excellent">
+<!ENTITY wotTestify5.accesskey		"E">
+<!ENTITY wotTestify4.label			"Bon">
+<!ENTITY wotTestify4.accesskey		"B">
+<!ENTITY wotTestify3.label			"Médiocre">
+<!ENTITY wotTestify3.accesskey		"M">
+<!ENTITY wotTestify2.label			"Mauvais">
+<!ENTITY wotTestify2.accesskey		"u">
+<!ENTITY wotTestify1.label			"Très mauvais">
+<!ENTITY wotTestify1.accesskey		"T">
+<!ENTITY wotPreferences.label		"Paramètres…">
+<!ENTITY wotPreferences.accesskey	"P">
+<!ENTITY wotMy.label				"Mon WOT…">
+<!ENTITY wotMy.accesskey			"W">
+<!ENTITY wotCheckUpdates.label		"Recherche de mises à jour…">
+<!ENTITY wotCheckUpdates.accesskey	"h">
+<!ENTITY wotLinkScorecard.label		"Consulter la carte de score WOT…">
+<!ENTITY wotLinkScorecard.accesskey	"W">
+<!-- Rating window -->
+<!ENTITY wotRating.title			"Initialisation de WOT…">
+<!ENTITY wotRating.wot				"Évaluation WOT">
+<!ENTITY wotRating.my				"Mon évaluation">
+<!ENTITY wotRating.app0				"Crédibilité :">
+<!ENTITY wotRating.app1				"Fiabilité commerciale :">
+<!ENTITY wotRating.app2				"Confidentialité :">
+<!ENTITY wotRating.app4				"Sécurité des mineurs :">
+<!ENTITY wotRating.scorecard		"Afficher le tableau de bord détaillé.">
+<!ENTITY wotRating.comment			"Ajouter votre commentaire.">
+<!ENTITY wotRating.guide			"Guide">
+<!ENTITY wotRating.prefs			"Paramètres">
+<!ENTITY wotRating.link				"www.mywot.com">
+<!ENTITY wotRating.partner			"En partenariat avec">
+<!ENTITY wotRating.update			"Nouvelle version disponible : cliquez ici pour actualiser">

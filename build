@@ -1,0 +1,246 @@
+#!/bin/bash
+
+# Based on scripts by Nickolay Ponomarev and Nathan Yergler. See also
+# http://kb.mozillazine.org/Bash_build_script
+
+# This script assumes the following directory structure:
+# ./
+#   chrome.manifest
+#   install.rdf
+#   (other files listed in $ROOT_FILES)
+#
+#   content/	|
+#   locale/	 |} these can be named arbitrary and listed in $CHROME_PROVIDERS
+#   skin/	   |
+#
+#   defaults/   |
+#   components/ |} these must be listed in $ROOT_DIRS in order to be packaged
+#   ...		 |
+
+## Variables
+
+# short-name, jar and xpi files name. Must be lowercase with no spaces
+APP_NAME=wot
+
+# which chrome providers we have (space-separated list)
+CHROME_PROVIDERS="content locale skin"
+
+# add-on files
+APP_CONFIG="content/config.js"
+APP_PARTNER="content/partner.js"
+
+# environment
+ROOT_FILES="COPYING"
+ROOT_DIR=`pwd`
+PATCH_DIR="${ROOT_DIR}/patches"
+CERT_DIR="${ROOT_DIR}/certs"
+SIGNTOOL="${CERT_DIR}/signtool"
+
+BUILD_DIR=`mktemp -q -p ${ROOT_DIR}  -d build.XXXXXX`
+FINAL_DIR=`mktemp -q -p ${BUILD_DIR} -d final.XXXXXX`
+
+## Find version
+
+VERSION=`grep WOT_VERSION ${APP_CONFIG} 2>/dev/null | cut -d \" -f 2`
+
+if [ -z "${VERSION}" ]; then
+	echo "$0: no version in ${APP_CONFIG}"
+	exit 1
+fi
+
+XPI_NAME="${APP_NAME}-${VERSION}.xpi"
+
+## Update install.rdf
+
+echo "$0: updating install.rdf"
+
+S_VERSION="s/%WOT_VERSION%/$VERSION/g"
+
+sed -r -e "$S_VERSION" install.rdf.template > install.rdf
+
+if [ $? -ne 0 ]; then
+	echo "$0: failed to update install.rdf"
+	exit 1
+fi
+
+## Copy chrome providers to the build directory
+
+for i in ${CHROME_PROVIDERS}; do
+	echo "$0: copying ${i}"
+	tar c --exclude .svn "${i}" | tar x -C "${BUILD_DIR}"
+done
+
+## Set partner information
+
+PARTNER_NAME=$1
+
+if [ -n "${PARTNER_NAME}" ]; then
+	echo "$0: building partner version for ${PARTNER_NAME}"
+
+	if [ ! -f ${APP_PARTNER} ]; then
+		echo "$0: missing file ${APP_PARTNER}!"
+		exit 1
+	fi
+
+	grep "\"${PARTNER_NAME}\"" ${APP_PARTNER} >/dev/null 2>&1
+
+	if [ $? -ne 0 ]; then
+		echo "$0: unsupported partner ${PARTNER_NAME}?"
+		exit 1
+	fi
+
+	XPI_NAME="${APP_NAME}-${PARTNER_NAME}-${VERSION}.xpi"
+
+	# custom licensing
+	ROOT_FILES="${ROOT_FILES/COPYING/}"
+
+	echo -e "$0: \tsetting partner identifier"
+
+	sed -i -e "s/partner\:\ null/partner\:\ \"${PARTNER_NAME}\"/" \
+		"${BUILD_DIR}/${APP_PARTNER}"
+
+	if [ $? -ne 0 ]; then
+		echo "$0: failed to set partner identifier"
+		exit 1
+	fi
+
+	# replace partner-specific files and apply patches
+	if [ -d "${PATCH_DIR}/${PARTNER_NAME}" ]; then
+		for i in ${CHROME_PROVIDERS}; do
+			if [ -d "${PATCH_DIR}/${PARTNER_NAME}/${i}" ]; then
+				echo -e "$0: \treplacing files in ${i}"
+				tar c --exclude .svn -C "${PATCH_DIR}/${PARTNER_NAME}" "${i}" |\
+					tar x --overwrite -C "${BUILD_DIR}"
+			fi
+		done
+
+		for i in "${PATCH_DIR}/${PARTNER_NAME}"/*.patch; do
+			if [ -f "${i}" ]; then
+				echo -e "$0: \tapplying patch `basename ${i}`"
+				patch -p0 -d "${BUILD_DIR}" < "${i}"
+
+				if [ $? -ne 0 ]; then
+					echo "$0: failed to apply patch"
+					exit 1
+				fi
+			fi
+		done
+
+		for i in "${PATCH_DIR}/${PARTNER_NAME}"/*.script; do
+			if [ -x "${i}" ]; then
+				echo -e "$0: \trunning script `basename ${i}`"
+				"${i}" "${BUILD_DIR}"
+
+				if [ $? -ne 0 ]; then
+					echo "$0: failed to run script"
+					exit 1
+				fi
+			fi
+		done
+	fi
+fi
+
+## Generate the JAR file
+
+echo "$0: generating the JAR file"
+
+cd "${BUILD_DIR}"
+mkdir -p "${FINAL_DIR}/chrome"
+
+if [ $? -ne 0 ]; then
+	echo "$0: failed to create ${FINAL_DIR}/chrome"
+	exit 1
+fi
+
+rm -f files
+
+for i in ${CHROME_PROVIDERS}; do
+	find "${i}" -type f -print | grep -v \~ >> files
+done
+
+JAR_FILE="${FINAL_DIR}/chrome/${APP_NAME}.jar"
+zip -q -0 -r ${JAR_FILE} `cat files`
+
+if [ $? -ne 0 ]; then
+	echo "$0: failed to create the JAR file"
+	exit 1
+fi
+
+## Copy other root directories
+
+for i in ${ROOT_DIRS}; do
+	echo "$0: copying directory ${i}"
+	tar c --exclude .svn -C "${ROOT_DIR}" "${i}" | tar x -C "${FINAL_DIR}"
+done
+
+## Copy root files
+
+for i in ${ROOT_FILES} install.rdf chrome.manifest; do
+	if [ ! -f "${ROOT_DIR}/${i}" ]; then
+		echo "$0: missing root file ${i}"
+		exit 1
+	fi
+
+	echo "$0: copying file ${i}"
+	cp "${ROOT_DIR}/${i}" "${FINAL_DIR}/"
+done
+
+## Update chrome.manifest
+
+echo "$0: updating chrome.manifest"
+
+cd "${FINAL_DIR}"
+
+S_CONTENT="s/^(content[[:space:]]+[^[:space:]]+[[:space:]]+)(.+)$/\\1jar:chrome\\/${APP_NAME}\.jar!\\/\\2/"
+S_LOCSKIN="s/^(skin|locale)([[:space:]]+[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]+)(.*)$/\\1\\2jar:chrome\\/${APP_NAME}\.jar!\\/\\3/"
+
+sed -i -r -e "$S_CONTENT" chrome.manifest
+sed -i -r -e "$S_LOCSKIN" chrome.manifest
+
+## Create the XPI and sign it
+
+rm -f "${ROOT_DIR}/${XPI_NAME}"
+
+if [ -x "${SIGNTOOL}" ]; then
+	echo "$0: signing files"
+
+	"${SIGNTOOL}" "${CERT_DIR}"
+
+	if [ $? -ne 0 ]; then
+		echo "$0: failed to sign files"
+		exit 1
+	fi
+
+	echo "$0: generating the XPI"
+
+	zip -q -9 "${ROOT_DIR}/${XPI_NAME}" META-INF/zigbert.rsa
+	zip -q -9 -r -D "${ROOT_DIR}/${XPI_NAME}" * -x META-INF/zigbert.rsa
+else
+	echo "$0: WARNING: signtool missing, generating an unsigned XPI"
+	zip -q -9 -r "${ROOT_DIR}/${XPI_NAME}" *
+fi
+
+## Update related files
+
+cd ${ROOT_DIR}
+
+if [ -s ../api/firefox.rdf ]; then
+	echo "$0: updating firefox.rdf"
+
+	HASH=`sha256sum ${XPI_NAME} | awk '{ print $1 }'`
+	S_HASH="s/%WOT_HASH%/sha256:${HASH}/g"
+
+	sed -r -e "$S_VERSION; $S_HASH" ../api/firefox.rdf.template > ../api/firefox.rdf
+fi
+
+## Clean up
+
+if [ -n "${PARTNER_NAME}" ]; then
+	echo "$0: saving a copy of the JAR file"
+	cp "${JAR_FILE}" "${ROOT_DIR}/${APP_NAME}-${PARTNER_NAME}-${VERSION}.jar"
+fi
+
+echo "$0: cleaning up"
+rm -rf "${BUILD_DIR}"
+
+echo "$0: done"

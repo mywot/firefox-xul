@@ -1,0 +1,118 @@
+.wot-popup-layer {
+	border: 0 ! important;
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	z-index: 2147483647;
+	width: 136px;
+}
+#wot-logo {
+	background: url("chrome://wot/skin/fusion/popup-logo.png") top left no-repeat;
+	display: block;
+	height: 21px;
+	margin: 0;
+	padding: 0;
+}
+.accessible #wot-logo {
+	background: url("chrome://wot/skin/fusion/accessible/popup-logo.png") top left no-repeat;
+}
+#wot-ratings, .wot-ratings {
+	background: url("chrome://wot/skin/fusion/popup.png") bottom left no-repeat;
+	display: block;
+	height: 214px;
+	margin: 0;
+	padding: 0;
+}
+.wot-stack {
+	display: block;
+	height: 50px;
+	width: 121px;
+	margin: 0px 0px 0px 2px;
+	padding: 2px 0px 0px 9px;
+}
+.wot-header {
+	color: #878787;
+	display: block;
+	font-size: 12px;
+	font-weight: normal;
+	line-height: 14px;
+	margin: 0;
+	overflow: hidden;
+	padding: 0;
+	text-align: left;
+	white-space: nowrap;
+	width: 109px;
+}
+.wot-rep {
+	background: url('chrome://wot/skin/fusion/28_28/no_rep_available.png') left top no-repeat;
+	display: block;
+	height: 28px;
+	width: 28px;
+	margin: 2px 0px 0px 1px;
+	padding: 0;
+	float: left;
+}
+.wot-rep[reputation="excluded"] {
+	background: url('chrome://wot/skin/fusion/28_28/excluded.png') left top no-repeat;
+}
+.wot-rep[reputation="1"] {
+	background: url('chrome://wot/skin/fusion/28_28/danger.png') left top no-repeat;
+}
+.wot-rep[reputation="2"] {
+	background: url('chrome://wot/skin/fusion/28_28/not_safe.png') left top no-repeat;
+}
+.wot-rep[reputation="3"] {
+	background: url('chrome://wot/skin/fusion/28_28/caution.png') left top no-repeat;
+}
+.wot-rep[reputation="4"] {
+	background: url('chrome://wot/skin/fusion/28_28/alright.png') left top no-repeat;
+}
+.wot-rep[reputation="5"] {
+	background: url('chrome://wot/skin/fusion/28_28/trusted.png') left top no-repeat;
+}
+.accessible .wot-rep {
+	background: url('chrome://wot/skin/fusion/accessible/28_28/no_rep_available.png') left top no-repeat;
+}
+.accessible .wot-rep[reputation="excluded"] {
+	background: url('chrome://wot/skin/fusion/28_28/excluded.png') left top no-repeat;
+}
+.accessible .wot-rep[reputation="1"] {
+	background: url('chrome://wot/skin/fusion/accessible/28_28/danger.png') left top no-repeat;
+}
+.accessible .wot-rep[reputation="2"] {
+	background: url('chrome://wot/skin/fusion/accessible/28_28/not_safe.png') left top no-repeat;
+}
+.accessible .wot-rep[reputation="3"] {
+	background: url('chrome://wot/skin/fusion/accessible/28_28/caution.png') left top no-repeat;
+}
+.accessible .wot-rep[reputation="4"] {
+	background: url('chrome://wot/skin/fusion/accessible/28_28/alright.png') left top no-repeat;
+}
+.accessible .wot-rep[reputation="5"] {
+	background: url('chrome://wot/skin/fusion/accessible/28_28/trusted.png') left top no-repeat;
+}
+.wot-cnf {
+	background: url('chrome://wot/skin/fusion/confidence-0.png') right top no-repeat;
+	display: block;
+	height: 18px;
+	width: 51px;
+	margin: 6px 32px 0px 0px;
+	padding: 0;
+	float: right;
+}
+.wot-cnf[confidence="1"] {
+	background: url('chrome://wot/skin/fusion/confidence-1.png') right top no-repeat;
+}
+.wot-cnf[confidence="2"] {
+	background: url('chrome://wot/skin/fusion/confidence-2.png') right top no-repeat;
+}
+.wot-cnf[confidence="3"] {
+	background: url('chrome://wot/skin/fusion/confidence-3.png') right top no-repeat;
+}
+.wot-cnf[confidence="4"] {
+	background: url('chrome://wot/skin/fusion/confidence-4.png') right top no-repeat;
+}
+.wot-cnf[confidence="5"] {
+	background: url('chrome://wot/skin/fusion/confidence-5.png') right top no-repeat;
+}

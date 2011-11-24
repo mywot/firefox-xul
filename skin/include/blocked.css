@@ -1,0 +1,326 @@
+/* ! important in an attempt to override conflicting styles on websites where this is included */
+#wotblocked {
+	background-color: #333333 ! important;
+}
+#wotwarning, #wotwrapper {
+	display: block;
+	height: 100% ! important;
+	left: 0 ! important;
+	margin: 0 ! important;
+	position: fixed ! important;
+	top: 0 ! important;
+	width: 100% ! important;
+}
+#wotwarning {
+	background-color: #000000 ! important;
+	opacity: 0.8 ! important;
+	z-index: 2147483645 ! important;
+}
+#wotwrapper {
+	background-color: transparent ! important;
+	opacity: 1.0 ! important;
+	z-index: 2147483646 ! important;
+}
+#wotcontainer {
+	background-color: transparent ! important;
+	border: 0 ! important;
+	border-collapse: collapse ! important;
+	border-spacing: 0 ! important;
+	cursor: default ! important;
+	font-family: "Tahoma", "Arial", sans-serif ! important;
+	font-size: 100% ! important;
+	font-weight: normal ! important;
+	letter-spacing: 0 ! important;
+	margin: 47px auto 0 ! important;
+	outline: 0 ! important;
+	padding: 0 ! important;
+	text-align: center ! important;
+	text-decoration: none ! important;
+	vertical-align: baseline ! important;
+	width: 657px ! important;
+	word-spacing: 0 ! important;
+	z-index: 2147483647 ! important;
+}
+#wotcontainer * {
+	background-color: transparent ! important;
+	border: 0 ! important;
+	cursor: default ! important;
+	font-family: "Tahoma", "Arial", sans-serif ! important;
+	font-size: 100% ! important;
+	letter-spacing: 0 ! important;
+	margin: 0 ! important;
+	opacity: 1.0 ! important;
+	outline: 0 ! important;
+	padding: 0 ! important;
+	text-decoration: none ! important;
+	vertical-align: baseline ! important;
+	word-spacing: 0 ! important;
+}
+#wotcontainer #wotheadline {
+	background: url("chrome://wot/locale/warning.png") top center no-repeat ! important;
+	height: 136px ! important;
+}
+#wotcontainer.wotblocked #wotheadline {
+	background: url("chrome://wot/locale/blocked.png") top center no-repeat ! important;
+}
+#wotcontainer.wotunknown #wotheadline {
+	background: none ! important;
+}
+#wotcontainer #wotcontainertop {
+	background: url("chrome://wot/skin/fusion/warnings/bg_warning_top.png") top center no-repeat ! important;
+	height: 11px ! important;
+}
+#wotcontainer .wotcontainermiddle {
+	background: url("chrome://wot/skin/fusion/warnings/bg_warning_tile1px_center.png") top center repeat-y ! important;
+}
+#wotcontainer #wotcontainerbottom {
+	background: url("chrome://wot/skin/fusion/warnings/bg_warning_bottom.png") top center no-repeat ! important;
+	height: 15px ! important;
+}
+#wotcontainer .wotlimitwidth {
+	display: block;
+	margin-left: 10px ! important;
+	margin-right: 10px ! important;
+	overflow: hidden ! important;
+	text-align: center ! important;
+	width: 637px ! important;
+}
+#wotcontainer #wotdescriptiontext {
+	color: #222222 ! important;
+	font-family: "Tahoma", "Arial", sans-serif ! important;
+	font-size: 25px ! important;
+	line-height: 27px ! important;
+	height: 36px ! important;
+}
+#wotcontainer #wotdescriptiontext.wotlongdescription {
+	height: 65px ! important;
+}
+#wotcontainer #wotwebsite {
+	color: #666666 ! important;
+	font-family: "Tahoma", "Arial", sans-serif ! important;
+	font-size: 14px ! important;
+	line-height: 14px ! important;
+	height: 29px ! important;
+}
+#wotcontainer #wotinfo {
+	height: 33px ! important;
+}
+#wotcontainer.wotnoratings #wotinfo {
+	height: 71px ! important;
+}
+#wotcontainer.wotnoratings.wotblocked #wotinfo {
+	height: 42px ! important;
+}
+#wotcontainer #wotinfobutton {
+	background: url("chrome://wot/skin/fusion/warnings/info_button_left.png") no-repeat left -46px ! important;
+	cursor: pointer ! important;
+	display: block;
+	height: 23px ! important;
+	margin: 0 auto ! important;
+	padding-left: 30px ! important;
+	text-align: center ! important;
+}
+#wotcontainer #wotinfotext {
+	background: url("chrome://wot/skin/fusion/warnings/info_button_right.png") no-repeat right -46px ! important;
+	color: #0355a5 ! important;
+	cursor: pointer ! important;
+	display: block;
+	float: left ! important;
+	font-family: "Tahoma", "Arial", sans-serif ! important;
+	font-size: 12px ! important;
+	height: 23px ! important;
+	line-height: 23px ! important;
+	overflow: hidden ! important;
+}
+#wotcontainer #wotinfobutton, #wotcontainer #wotinfotext {
+	width: 350px ! important;
+}
+#wotcontainer[lang="en-US"] #wotinfobutton, #wotcontainer[lang="en-US"] #wotinfotext {
+	width: 230px ! important;
+}
+#wotcontainer[lang="cs-CZ"] #wotinfobutton, #wotcontainer[lang="cs-CZ"] #wotinfotext {
+	width: 350px ! important;
+}
+#wotcontainer[lang="de-DE"] #wotinfobutton, #wotcontainer[lang="de-DE"] #wotinfotext {
+	width: 310px ! important;
+}
+#wotcontainer[lang="es-ES"] #wotinfobutton, #wotcontainer[lang="es-ES"] #wotinfotext {
+	width: 280px ! important;
+}
+#wotcontainer[lang="fi-FI"] #wotinfobutton, #wotcontainer[lang="fi-FI"] #wotinfotext {
+	width: 250px ! important;
+}
+#wotcontainer[lang="fr-FR"] #wotinfobutton, #wotcontainer[lang="fr-FR"] #wotinfotext {
+	width: 320px ! important;
+}
+#wotcontainer[lang="it-IT"] #wotinfobutton, #wotcontainer[lang="it-IT"] #wotinfotext {
+	width: 300px ! important;
+}
+#wotcontainer[lang="ja-JP"] #wotinfobutton, #wotcontainer[lang="ja-JP"] #wotinfotext {
+	width: 220px ! important;
+}
+#wotcontainer[lang="pl-PL"] #wotinfobutton, #wotcontainer[lang="pl-PL"] #wotinfotext {
+	width: 250px ! important;
+}
+#wotcontainer[lang="pt-BR"] #wotinfobutton, #wotcontainer[lang="pt-BR"] #wotinfotext {
+	width: 300px ! important;
+}
+#wotcontainer[lang="ru-RU"] #wotinfobutton, #wotcontainer[lang="ru-RU"] #wotinfotext {
+	width: 340px ! important;
+}
+#wotcontainer[lang="sv-SE"] #wotinfobutton, #wotcontainer[lang="sv-SE"] #wotinfotext {
+	width: 340px ! important;
+}
+#wotcontainer[lang="zh-CN"] #wotinfobutton, #wotcontainer[lang="zh-CN"] #wotinfotext {
+	width: 200px ! important;
+}
+#wotcontainer[lang="zh-TW"] #wotinfobutton, #wotcontainer[lang="zh-TW"] #wotinfotext {
+	width: 200px ! important;
+}
+#wotcontainer #wotinfobutton:hover {
+	background-position: left -23px ! important;
+}
+#wotcontainer #wotinfobutton:hover #wotinfotext, #wotinfotext:hover {
+	background-position: right -23px ! important;
+}
+#wotcontainer #wotinfobutton:active {
+	background-position: left 0px ! important;
+}
+#wotcontainer #wotinfobutton:active #wotinfotext, #wotcontainer #wotinfotext:active {
+	background-position: right 0px ! important;
+}
+#wotcontainer #wotratingtop {
+	background: url("chrome://wot/skin/fusion/warnings/bg_rating_top.png") top center no-repeat ! important;
+	height: 2px ! important;
+}
+#wotcontainer #wotratingareatop {
+	height: 23px ! important;
+}
+#wotcontainer #wotratingareabottom {
+	height: 12px ! important;
+}
+#wotcontainer .wotratingarea {
+	background: url("chrome://wot/skin/fusion/warnings/bg_rating_tile1px_center.png") top center repeat-y ! important;
+}
+#wotcontainer .wotratingrow {
+	height: 40px ! important;
+}
+#wotcontainer .wotratingname, #wotcontainer .wotratingexpl {
+	color: #474747 ! important;
+	display: block;
+	height: 28px ! important;
+	line-height: 28px ! important;
+	vertical-align: middle ! important;
+}
+#wotcontainer .wotratingname {
+	display: block;
+	background: url("chrome://wot/skin/fusion/28_28/no_rep_available.png") top left no-repeat ! important;
+	padding-left: 38px ! important;
+	margin-left: 37px ! important;
+}
+#wotcontainer .wotratingrow.wotreputation5 .wotratingname {
+	background-image: url("chrome://wot/skin/fusion/28_28/trusted.png") ! important;
+}
+#wotcontainer .wotratingrow.wotreputation4 .wotratingname {
+	background-image: url("chrome://wot/skin/fusion/28_28/alright.png") ! important;
+}
+#wotcontainer .wotratingrow.wotreputation3 .wotratingname {
+	background-image: url("chrome://wot/skin/fusion/28_28/caution.png") ! important;
+}
+#wotcontainer .wotratingrow.wotreputation2 .wotratingname {
+	background-image: url("chrome://wot/skin/fusion/28_28/not_safe.png") ! important;
+}
+#wotcontainer .wotratingrow.wotreputation1 .wotratingname {
+	background-image: url("chrome://wot/skin/fusion/28_28/danger.png") ! important;
+}
+#wotcontainer .wotratingrow.wotreputationx .wotratingname {
+	background-image: url("chrome://wot/skin/fusion/28_28/excluded.png") ! important;
+}
+#wotcontainer .wotratingrow.wotaccessible .wotratingname {
+	background-image: url("chrome://wot/skin/fusion/accessible/28_28/no_rep_available.png") ! important;
+}
+#wotcontainer .wotratingrow.wotreputation5.wotaccessible .wotratingname {
+	background-image: url("chrome://wot/skin/fusion/accessible/28_28/trusted.png") ! important;
+}
+#wotcontainer .wotratingrow.wotreputation4.wotaccessible .wotratingname {
+	background-image: url("chrome://wot/skin/fusion/accessible/28_28/alright.png") ! important;
+}
+#wotcontainer .wotratingrow.wotreputation3.wotaccessible .wotratingname {
+	background-image: url("chrome://wot/skin/fusion/accessible/28_28/caution.png") ! important;
+}
+#wotcontainer .wotratingrow.wotreputation2.wotaccessible .wotratingname {
+	background-image: url("chrome://wot/skin/fusion/accessible/28_28/not_safe.png") ! important;
+}
+#wotcontainer .wotratingrow.wotreputation1.wotaccessible .wotratingname {
+	background-image: url("chrome://wot/skin/fusion/accessible/28_28/danger.png") ! important;
+}
+#wotcontainer .wotratingrow.wotreputationx.wotaccessible .wotratingname {
+	background-image: url("chrome://wot/skin/fusion/28_28/excluded.png") ! important;
+}
+#wotcontainer .wotratingexpl {
+	padding-left: 10px ! important;
+}
+#wotcontainer .wotratingcol {
+	font-family: "Tahoma", "Arial", sans-serif ! important;
+	font-size: 14px ! important;
+	text-align: left ! important;
+	width: 327px ! important;
+}
+#wotcontainer .wotratingcolleft {
+	font-weight: bold ! important;
+}
+#wotcontainer.wotnoratings #wotratingtop, #wotcontainer.wotnoratings .wotratingarea {
+	display: none ! important;
+}
+#wotcontainer #wotratingbottom {
+	background: url("chrome://wot/skin/fusion/warnings/bg_rating_bottom.png") top center no-repeat ! important;
+	height: 1px ! important;
+}
+#wotcontainer.wotblocked.wotnoratings #wotratingbottom {
+	display: none ! important;
+}
+#wotcontainer #wotbuttonstop {
+	height: 11px ! important;
+}
+#wotcontainer #wotbuttons {
+	height: 40px ! important;
+}
+#wotcontainer.wotblocked #wotbuttonstop, #wotcontainer.wotblocked #wotbuttons {
+	display: none ! important;
+}
+#wotcontainer .wotbutton {
+	color: #055ab2 ! important;
+	cursor: pointer ! important;
+	display: block;
+	font-family: "Tahoma", "Arial", sans-serif ! important;
+	font-size: 11px ! important;
+	font-weight: bold ! important;
+	height: 40px ! important;
+	line-height: 40px ! important;
+	overflow: hidden ! important;
+	text-align: center ! important;
+}
+#wotcontainer #wotratebutton {
+	background: url("chrome://wot/skin/fusion/warnings/rate_button.png") no-repeat center -80px ! important;
+	float: right ! important;
+	margin-right: 4px ! important;
+	padding-left: 30px ! important;
+	width: 284px ! important;
+}
+#wotcontainer #wotgotobutton {
+	background: url("chrome://wot/skin/fusion/warnings/go_to_button.png") no-repeat center -80px ! important;
+	float: left ! important;
+	margin-left: 3px ! important;
+	padding-right: 30px ! important;
+	width: 283px ! important;
+}
+#wotcontainer #wotratebutton:hover, #wotcontainer #wotgotobutton:hover {
+	background-position: center -40px ! important;
+}
+#wotcontainer #wotratebutton:active, #wotcontainer #wotgotobutton:active {
+	background-position: center 0px ! important;
+}
+#wotcontainer #wotlogo {
+	background: url("chrome://wot/skin/fusion/warnings/wot_logo_bottom.png") bottom center no-repeat ! important;
+	height: 98px ! important;
+}
