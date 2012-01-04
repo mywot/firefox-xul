@@ -19,7 +19,7 @@
 */
 
 const WOT_PLATFORM = "firefox";
-const WOT_VERSION  = "20111107";
+const WOT_VERSION  = "20120104";
 
 /*
  * Constants
@@ -53,6 +53,10 @@ const WOT_MIN_COMMENT_DIFF = 35;
 
 /* Applications */
 const WOT_APPLICATIONS = 6;
+
+/* Search */
+const WOT_SAFESEARCH_NAME = "WOT Safe Search";
+const WOT_SAFESEARCH_URL  = "http://www.mywot.com/files/downloads/wotsafesearch.xml";
 
 /* API */
 const WOT_SERVICE_NORMAL		= "http://api.mywot.com";
@@ -205,6 +209,7 @@ const wot_prefs_bool = [
 	[ "accessible",					false ],
 	[ "create_button",				true  ],
 	[ "enabled",					true  ],
+	[ "install_search",				false ],
 	[ "my_cookies",					true  ],
 	[ "prefetch",					false ],
 	[ "private_disable",			false ],
