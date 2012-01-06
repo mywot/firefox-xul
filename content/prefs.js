@@ -254,20 +254,15 @@ var wot_prefs =
 			}
 
 			/* Do stuff */
-			if (this.install_search) {
-				var bss = Components.classes["@mozilla.org/browser/search-service;1"]
-							.getService(Components.interfaces.nsIBrowserSearchService);
-
-				if (!bss.getEngineByName(WOT_SAFESEARCH_NAME)) {
-					bss.addEngine(WOT_SAFESEARCH_URL, 1, null, false);
-				}
-			}
-
 			if (this.updateui) {
 				wot_ui.show_elements();
 
 				if (was_enabled != this.enabled) {
 					wot_core.update();
+				}
+
+				if (this.install_search) {
+					wot_browser.installsearch();
 				}
 
 				/* Always use prefetching when blocking is enabled */

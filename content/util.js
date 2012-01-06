@@ -432,6 +432,22 @@ var wot_browser =
 
 		return false;
 	},
+
+	installsearch: function()
+	{
+		try {
+			wot_prefs.setBool("install_search", false);
+
+			var bss = Components.classes["@mozilla.org/browser/search-service;1"]
+						.getService(Components.interfaces.nsIBrowserSearchService);
+
+			if (!bss.getEngineByName(WOT_SAFESEARCH_NAME)) {
+				bss.addEngine(WOT_SAFESEARCH_URL, 1, null, false);
+			}
+		} catch (e) {
+			dump("wot_browser.installsearch: failed with " + e + "\n");
+		}
+	}
 };
 
 /* Provides a simple wrapper for nsICryptoHash */

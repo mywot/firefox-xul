@@ -27,14 +27,6 @@ var wot_firstrun =
 				return true;
 			}
 
-			if (!wot_api_register.ready) {
-				window.setTimeout(function() {
-					wot_firstrun.opentab(version, url);
-				}, 500);
-
-				return false;
-			}
-
 			if (!wot_prefs.setChar("firstrun_guide", WOT_FIRSTRUN_CURRENT)) {
 				return false;
 			}
@@ -56,6 +48,14 @@ var wot_firstrun =
 
 	load_delayed: function() {
 		try {
+			if (!wot_api_register.ready) {
+				window.setTimeout(function() {
+					wot_firstrun.load_delayed();
+				}, 500);
+
+				return;
+			}
+
 			var tab = "welcome";
 			var partner = wot_partner.getpartner();
 
