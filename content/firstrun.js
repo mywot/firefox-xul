@@ -1,6 +1,6 @@
 /*
 	firstrun.js
-	Copyright © 2007-2011  WOT Services Oy <info@mywot.com>
+	Copyright © 2007-2012  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -66,6 +66,8 @@ var wot_firstrun =
 			if (this.opentab(WOT_FIRSTRUN_WELCOME, wot_url.getprefurl(tab))) {
 				this.opentab(WOT_FIRSTRUN_CURRENT,
 					wot_url.getprefurl(partner, false, WOT_UPDATE_PATH));
+			} else {
+				wot_prefs.setBool("install_search", true);
 			}
 		} catch (e) {
 			dump("wot_firstrun.load: failed with " + e + "\n");

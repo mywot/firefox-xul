@@ -1,6 +1,6 @@
 /*
 	prefs.js
-	Copyright © 2005, 2006, 2007, 2009  WOT Services Oy <info@mywot.com>
+	Copyright © 2005-2012  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 

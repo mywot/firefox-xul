@@ -1,6 +1,6 @@
 /*
 	my.js
-	Copyright © 2005, 2006, 2007, 2008, 2009  WOT Services Oy <info@mywot.com>
+	Copyright © 2005-2012  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -20,6 +20,36 @@
 
 var wot_my_session =
 {
+	domcontentloaded: function(e)
+	{
+		try {
+			var content = e.originalTarget;
+
+			if (!content || !content.location || !content.location.href) {
+				return;
+			}
+
+			var host = wot_url.gethostname(content.location.href);
+
+			if (!host || !WOT_MY_TRIGGER.test(host)) {
+				return;
+			}
+			
+			var clear = content.getElementById("wotsaverating");
+
+			if (clear) {
+				clear.addEventListener("click", function() {
+					var target = clear.getAttribute("target");
+					if (target && wot_cache.iscached(target)) {
+						wot_cache.set(target, "status", WOT_QUERY_RETRY);
+					}
+				});
+			}
+		} catch (e) {
+			dump("wot_my_session.domcontentloaded: failed with " + e + "\n");
+		}
+	},
+
 	clear: function()
 	{
 		try {
@@ -195,3 +225,5 @@ var wot_my_session =
 		}
 	}
 };
+
+wot_modules.push({ name: "wot_my_session", obj: wot_my_session });
