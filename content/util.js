@@ -441,9 +441,14 @@ var wot_browser =
 			var bss = Components.classes["@mozilla.org/browser/search-service;1"]
 						.getService(Components.interfaces.nsIBrowserSearchService);
 
-			if (!bss.getEngineByName(WOT_SAFESEARCH_NAME)) {
-				bss.addEngine(WOT_SAFESEARCH_URL, 1, null, false);
+			var url = WOT_SAFESEARCH_OSD_URL;
+			var lang = wot_util.getstring("language");
+
+			if (lang) {
+				url = url.replace("/en-US", "/" + lang);
 			}
+
+			bss.addEngine(url, 1, null, false);
 		} catch (e) {
 			dump("wot_browser.installsearch: failed with " + e + "\n");
 		}
