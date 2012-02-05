@@ -217,7 +217,7 @@ var wot_api_query =
 			/* If we don't receive data reasonably soon, retry */
 			var timeout =
 				window.setTimeout(function() {
-						wot_api_query.timetout(request, hostname, callback);
+						wot_api_query.timeout(request, hostname, callback);
 					},	WOT_TIMEOUT_QUERY);
 
 			request.onload = function(ev)
