@@ -19,7 +19,7 @@
 */
 
 const WOT_PLATFORM = "firefox";
-const WOT_VERSION  = "20120126";
+const WOT_VERSION  = "20120205";
 
 /*
  * Constants
@@ -135,18 +135,18 @@ const WOT_SCORECARD_RATE = "/rate";
 
 /* Operation intervals (in ms) */
 const WOT_DELAY_WARNING					= 1000;				/* 1 s */
-const WOT_INTERVAL_BLOCK_ERROR			= 30 * 1000;		/* 30 s */
+const WOT_INTERVAL_BLOCK_ERROR			= 15 * 1000;		/* 15 s */
 const WOT_INTERVAL_CACHE_REFRESH 	  	= 30 * 60 * 1000;	/* 30 min */
 const WOT_INTERVAL_CACHE_REFRESH_BLOCK 	= 18000 * 1000;		/* 5 h */
-const WOT_INTERVAL_CACHE_REFRESH_ERROR	= 5 * 60 * 1000;	/* 5 min */
+const WOT_INTERVAL_CACHE_REFRESH_ERROR	= 30 * 1000;		/* 30 s */
 const WOT_INTERVAL_LINK_RETRY			= 2 * 1000;			/* 2 s */
-const WOT_INTERVAL_REGISTER_ERROR 	  	= 60 * 1000;		/* 1 min */
+const WOT_INTERVAL_REGISTER_ERROR 	  	= 30 * 1000;		/* 30 s */
 const WOT_INTERVAL_REGISTER_OFFLINE	  	= 30 * 1000;		/* 30 s */
 const WOT_INTERVAL_RELOAD_ERROR 	  	= 5 * 60 * 1000;	/* 5 min */
 const WOT_INTERVAL_SUBMIT_ERROR 		= 5 * 60 * 1000;	/* 5 min */
 const WOT_INTERVAL_UPDATE_CHECK		  	= 10800 * 1000;		/* 3 h */
 const WOT_MIN_INTERVAL_UPDATE_CHECK		= 30 * 60 * 1000;	/* 30 min */
-const WOT_MAX_INTERVAL_UPDATE_CHECK		= 3 * 86400 * 1000;	/* 3d */
+const WOT_MAX_INTERVAL_UPDATE_CHECK		= 3 * 86400 * 1000;	/* 3 d */
 const WOT_INTERVAL_UPDATE_ERROR		  	= 15 * 60 * 1000;	/* 15 min */
 const WOT_INTERVAL_UPDATE_OFFLINE 	  	= 30 * 1000;		/* 30 s */
 const WOT_TIMEOUT_QUERY 				= 15 * 1000;		/* 15 s */

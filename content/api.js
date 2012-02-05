@@ -1,6 +1,6 @@
 /*
 	api.js
-	Copyright © 2005-2011  WOT Services Oy <info@mywot.com>
+	Copyright © 2005-2012  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -213,14 +213,18 @@ var wot_api_query =
 				wot_crypto.authenticate_query(qs));
 
 			new wot_cookie_remover(request);
-			request.timeout = null;
 
-			request.onload = function(event)
+			/* If we don't receive data reasonably soon, retry */
+			var timeout =
+				window.setTimeout(function() {
+						wot_api_query.timetout(request, hostname, callback);
+					},	WOT_TIMEOUT_QUERY);
+
+			request.onload = function(ev)
 			{
 				try {
-					if (request.timeout) {
-						window.clearTimeout(request.timeout);
-						request.timeout = null;
+					if (timeout) {
+						window.clearTimeout(timeout);
 					}
 
 					wot_cache.set(hostname, "time", Date.now());
@@ -258,12 +262,7 @@ var wot_api_query =
 				}
 			};
 
-			request.send(null);
-
-			/* If we don't receive data reasonably soon, retry */
-			request.timeout = window.setTimeout(this.timeout,
-				WOT_TIMEOUT_QUERY, request, hostname, callback);
-
+			request.send();
 			return true;
 		} catch (e) {
 			dump("wot_api_query.send: failed with " + e + "\n");
@@ -274,11 +273,6 @@ var wot_api_query =
 	timeout: function(request, hostname, callback) /* XMLHttpRequest */
 	{
 		try {
-			if (request.timeout) {
-				window.clearTimeout(request.timeout);
-				request.timeout = null;
-			}
-
 			if (!wot_cache.get(hostname, "inprogress")) {
 				return;
 			}
@@ -465,7 +459,6 @@ const WOT_REGISTER_RUNNING = "wot_register_running";
 var wot_api_register =
 {
 	ready: false,
-	timeout: null,
 	tries: 0,
 
 	geteid: function()
