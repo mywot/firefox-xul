@@ -1,6 +1,6 @@
 /*
 	popup.js
-	Copyright © 2006, 2007, 2009  WOT Services Oy <info@mywot.com>
+	Copyright © 2006 - 2012  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -155,42 +155,6 @@ var wot_popup =
 			dump("wot_popup.addpopup: failed with " + e + "\n");
 		}
 		return false;
-	},
-
-	elem_pos_x: function(elem)
-	{
-	    var curtop = 0;
-		try {
-		    if (elem.offsetParent) {
-		        while (elem.offsetParent) {
-		            curtop += elem.offsetLeft;
-		            elem = elem.offsetParent;
-		        }
-		    } else if (elem.x) {
-		        curtop += elem.x;
-		    }
-		} catch (e) {
-			dump("wot_popup.elem_pos_x: failed with " + e + "\n");
-		}
-	    return curtop;
-	},
-
-	elem_pos_y: function(elem)
-	{
-	    var curtop = 0;
-		try {
-		    if (elem.offsetParent) {
-		        while (elem.offsetParent) {
-		            curtop += elem.offsetTop;
-		            elem = elem.offsetParent;
-		        }
-		    } else if (elem.y) {
-		        curtop += elem.y;
-		    }
-		} catch (e) {
-			dump("wot_popup.elem_pos_x: failed with " + e + "\n");
-		}
-	    return curtop;
 	},
 
 	loadlayer: function(content, layer, target)
@@ -420,8 +384,19 @@ var wot_popup =
 			var vscroll = event.view.pageYOffset;
 			var hscroll = event.view.pageXOffset;
 
-			var y = wot_popup.elem_pos_y(wot_popup.target);
-			var x = wot_popup.elem_pos_x(wot_popup.target);
+			// more accurate way to calc position
+			// got from http://javascript.ru/ui/offset
+			var elem = wot_popup.target;
+			var box = elem.getBoundingClientRect();
+
+			var docElem = content.documentElement;
+			var body = content.body;
+			var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+			var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+			var clientTop = docElem.clientTop || body.clientTop || 0;
+			var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+			var y  = box.top +  scrollTop - clientTop;
+			var x = box.left + scrollLeft - clientLeft;
 
 			var posy = wot_popup.offsety + y + wot_popup.target.offsetHeight;
 			var posx = wot_popup.offsetx + x + wot_popup.target.offsetWidth;
