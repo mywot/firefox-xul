@@ -50,25 +50,6 @@ var wot_util =
 		}
 
 		return null;
-	},
-
-	dump: function(obj, level)
-	{
-		var i, tabs = "";
-		level = level || 0;
-
-		for (i = 0; i < level; i++) {
-			tabs += "\t";
-		}
-
-		for (i in obj) {
-			if (typeof(obj[i]) != "object") {
-				dump(tabs + i + ": " + obj[i] + "\n");
-			} else {
-				dump(tabs + i + ": (object):\n");
-				this.dump(obj[i], level + 1);
-			}
-		}
 	}
 };
 
