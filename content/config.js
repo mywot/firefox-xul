@@ -206,6 +206,7 @@ const WOT_UPDATE_PATH = "update/";
 /* Preferences and defaults */
 const wot_prefs_bool = [
 	[ "accessible",					false ],
+	[ "button_created",				false ],
 	[ "create_button",				false ],
 	[ "enabled",					true  ],
 	[ "install_search",				false ],

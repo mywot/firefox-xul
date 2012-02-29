@@ -209,7 +209,8 @@ var wot_ui =
 	{
 		try {
 			/* Toolbar */
-			if (wot_prefs.create_button) {
+			if (!wot_prefs.button_created || wot_prefs.create_button) {
+				wot_prefs.setBool("button_created", true);
 				this.show_toolbar_button("wot-button", "urlbar-container");
 			}
 
