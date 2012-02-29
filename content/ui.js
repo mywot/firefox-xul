@@ -197,7 +197,8 @@ var wot_ui =
 				elem = elem.nextSibling;
 			}
 
-			nbr.insertItem(id, elem, null, false);
+			nbr.insertItem(id, elem);
+			nbr.setAttribute("currentset", nbr.currentSet);
 			document.persist("nav-bar", "currentset");
 		} catch (e) {
 			dump("wot_ui.show_toolbar_button: failed with " + e + "\n");
