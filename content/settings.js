@@ -244,7 +244,6 @@ var wot_settings =
 				}
 
 				if (value == null) {
-					dump("wot_settings.loadinputs: invalid pref " + id + "\n");
 					continue;
 				}
 

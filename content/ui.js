@@ -237,6 +237,7 @@ var wot_ui =
 	{
 		try {
 			wot_commands.update();
+			this.show_elements();
 			this.update_title(description);
 			this.update_rating();
 			this.update_testimonies();

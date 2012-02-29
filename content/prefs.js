@@ -255,7 +255,7 @@ var wot_prefs =
 
 			/* Do stuff */
 			if (this.updateui) {
-				wot_ui.show_elements();
+				wot_ui.update();
 
 				if (was_enabled != this.enabled) {
 					wot_core.update();

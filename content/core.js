@@ -157,8 +157,6 @@ var wot_core =
 				browser.tabContainer.addEventListener("TabSelect",
 					wot_core.tabselect, false);
 			}
-
-			wot_ui.show_toolbar_button();
 		} catch (e) {
 			dump("wot_core.load: failed with " + e + "\n");
 		}
@@ -513,6 +511,8 @@ var wot_core =
 			wot_core.hostname = null;
 
 			if (!wot_api_register.ready || !wot_core.loaded) {
+				wot_status.set("notready",
+					wot_util.getstring("description_notready"));
 				return;
 			}
 

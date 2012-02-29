@@ -144,7 +144,7 @@
 	list-style-image: url("chrome://wot/skin/fusion/accessible/16_16/trusted.png");
 }
 #main-window[wot-mode="accessible"][wot-status="5-testimony-update"] toolbar[iconsize="small"] #wot-button,
-#main-window[wot-status="5-update"] toolbar[iconsize="small"] #wot-button {
+#main-window[wot-mode="accessible"][wot-status="5-update"] toolbar[iconsize="small"] #wot-button {
 	list-style-image: url("chrome://wot/skin/fusion/accessible/16_16/message_trusted.png");
 }
 #main-window[wot-mode="accessible"][wot-status="inprogress"] toolbar[iconsize="small"] #wot-button,
