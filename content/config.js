@@ -19,7 +19,7 @@
 */
 
 const WOT_PLATFORM = "firefox";
-const WOT_VERSION  = "20120227";
+const WOT_VERSION  = "20120229";
 
 /*
  * Constants
@@ -206,7 +206,7 @@ const WOT_UPDATE_PATH = "update/";
 /* Preferences and defaults */
 const wot_prefs_bool = [
 	[ "accessible",					false ],
-	[ "create_button",				true  ],
+	[ "create_button",				false ],
 	[ "enabled",					true  ],
 	[ "install_search",				false ],
 	[ "my_cookies",					true  ],

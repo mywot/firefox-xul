@@ -269,8 +269,6 @@ var wot_core =
 										Components.interfaces.nsIUploadChannel);
 
 						if (upload) {
-							dump("wot_core.showloading: blocking post to " +
-								hostname + "\n");
 							stream = upload.uploadStream;
 						}
 					}
@@ -428,8 +426,6 @@ var wot_core =
 				var postdata = null;
 
 				if (this.blockedstreams[url]) {
-					dump("wot_core.updateloading: reposting to " + hostname +
-						"\n");
 					postdata = this.blockedstreams[url];
 					delete this.blockedstreams[url];
 				}

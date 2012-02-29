@@ -936,7 +936,6 @@ var wot_pending =
 			var pref = Date.now();
 
 			if (wot_prefs.setChar("pending." + pref, data)) {
-				dump("wot_pending.store: " + pref + ": " + data + "\n");
 				return true;
 			}
 
@@ -961,7 +960,6 @@ var wot_pending =
 				return;
 			}
 
-			dump("wot_pending.clear: " + pref + "\n");
 			wot_prefs.clear(base);
 			wot_prefs.clear(base + ".submit");
 			wot_prefs.clear(base + ".tries");

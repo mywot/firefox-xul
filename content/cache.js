@@ -323,8 +323,6 @@ var wot_cache =
 			var child = target.firstChild;
 			var a, r, c, t, i, l, x;
 
-			dump("wot_cache.add_target: caching " + name + "\n");
-
 			if (islink) {
 				if (this.get(name, "status") == WOT_QUERY_OK) {
 					dump("wot_cache.add_target: not overwriting on link for " +
@@ -355,34 +353,24 @@ var wot_cache =
 
 					if (a && a.nodeValue) {
 						if (r && r.nodeValue && c && c.nodeValue) {
-							dump(name + ": " + a.nodeValue + ": (r, c) = (" +
-								r.nodeValue + ", " + c.nodeValue + ")\n");
 							this.set(name, "reputation_" + a.nodeValue,
 								Number(r.nodeValue));
 							this.set(name, "confidence_" + a.nodeValue,
 								Number(c.nodeValue));
 						}
 						if (i && i.nodeValue) {
-							dump(name + ": " + a.nodeValue + ": (i) = (" +
-								i.nodeValue + ")\n");
 							this.set(name, "inherited_" + a.nodeValue,
 								Number(i.nodeValue));
 						}
 						if (l && l.nodeValue) {
-							dump(name + ": " + a.nodeValue + ": (l) = (" +
-								l.nodeValue + ")\n");
 							this.set(name, "lowered_" + a.nodeValue,
 								Number(l.nodeValue));
 						}
 						if (x && x.nodeValue) {
-							dump(name + ": " + a.nodeValue + ": (e) = (" +
-								x.nodeValue + ")\n");
 							this.set(name, "excluded_" + a.nodeValue,
 								Number(x.nodeValue));
 						}
 						if (t && t.nodeValue) {
-							dump(name + ": " + a.nodeValue + ": (t) = (" +
-								t.nodeValue + ")\n");
 							this.set(name, "testimony_" + a.nodeValue,
 								Number(t.nodeValue));
 						}
