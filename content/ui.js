@@ -42,7 +42,9 @@ var wot_status =
 			}
 
 			/* Update display */
-			wot_ui.update(description);
+			if (wot_prefs.updateui) {
+				wot_ui.update(description);
+			}
 		} catch (e) {
 			dump("wot_status.set: failed with " + e + "\n");
 		}
