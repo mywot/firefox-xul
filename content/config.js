@@ -19,7 +19,7 @@
 */
 
 const WOT_PLATFORM = "firefox";
-const WOT_VERSION  = "20120304";
+const WOT_VERSION  = "20120409";
 
 /*
  * Constants
@@ -279,6 +279,7 @@ const WOT_SEARCH_PRE_RE			= "re";
 const WOT_SEARCH_PRESTYLE		= "prestyle";
 const WOT_SEARCH_REMOVE			= "remove";
 const WOT_SEARCH_SCRIPT			= "script";
+const WOT_SEARCH_SEARCHLEVEL	= "searchlevel";
 const WOT_SEARCH_STYLE			= "style";
 const WOT_SEARCH_URLIGN			= "urlign";
 const WOT_SEARCH_URL			= "url";

@@ -1,6 +1,6 @@
 /*
 	search.js
-	Copyright © 2006, 2007, 2008, 2009  WOT Services Oy <info@mywot.com>
+	Copyright © 2006-2012  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -27,11 +27,12 @@ var wot_search =
 			WOT_SEARCH_URLIGN,
 			WOT_SEARCH_PRESTYLE,
 			WOT_SEARCH_SCRIPT,
-			WOT_SEARCH_STYLE,
+			WOT_SEARCH_STYLE
 		],
 
 	attrint: [
 			WOT_SEARCH_DYNAMIC,
+			WOT_SEARCH_SEARCHLEVEL
 		],
 
 	load_delayed: function()
@@ -1173,7 +1174,8 @@ var wot_search =
 
 			var r = this.getreputation(name);
 
-			if (wot_prefs.use_search_level && r >= wot_prefs.search_level) {
+			if ((wot_prefs.use_search_level && r >= wot_prefs.search_level) ||
+					(rule.searchlevel != null && r >= rule.searchlevel)) {
 				return "";
 			}
 
