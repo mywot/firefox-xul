@@ -19,7 +19,7 @@
 */
 
 const WOT_PLATFORM = "firefox";
-const WOT_VERSION  = "20120409";
+const WOT_VERSION  = "20120515";
 
 /*
  * Constants
@@ -199,7 +199,7 @@ const WOT_SEARCH_TYPE_APP0		= 2;
 
 /* First run */
 const WOT_FIRSTRUN_WELCOME = 1;
-const WOT_FIRSTRUN_CURRENT = 3;
+const WOT_FIRSTRUN_CURRENT = 2;
 const WOT_UPDATE_PATH = "update/";
 
 
