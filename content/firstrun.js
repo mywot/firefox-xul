@@ -66,8 +66,6 @@ var wot_firstrun =
 			if (this.opentab(WOT_FIRSTRUN_WELCOME, wot_url.getprefurl(tab))) {
 				this.opentab(WOT_FIRSTRUN_CURRENT,
 					wot_url.getprefurl(partner, false, WOT_UPDATE_PATH));
-			} else {
-				//wot_prefs.setBool("install_search", true);
 			}
 		} catch (e) {
 			dump("wot_firstrun.load: failed with " + e + "\n");
