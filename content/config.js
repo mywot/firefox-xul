@@ -223,6 +223,7 @@ const wot_prefs_bool = [
 	[ "show_application_5",			false ],
 	[ "show_search_popup",			true  ],
 	[ "use_search_level",			false ],
+	[ "ninja_donuts",   			true ],
 	[ "warning_unknown_0",			false ],
 	[ "warning_unknown_1",			false ],
 	[ "warning_unknown_2",			false ],
@@ -294,5 +295,6 @@ const WOT_SEARCH_CONTENT_RE		= "re";
 const WOT_SEARCH_CONTENT_FLAGS	= "flags";
 const WOT_SEARCH_TARGET			= "target";
 const WOT_SEARCH_POPUP			= "popup";
+const WOT_SEARCH_NINJA			= "ninja";
 
 var wot_modules = [];

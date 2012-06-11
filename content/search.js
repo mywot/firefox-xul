@@ -27,7 +27,8 @@ var wot_search =
 			WOT_SEARCH_URLIGN,
 			WOT_SEARCH_PRESTYLE,
 			WOT_SEARCH_SCRIPT,
-			WOT_SEARCH_STYLE
+			WOT_SEARCH_STYLE,
+			WOT_SEARCH_NINJA
 		],
 
 	attrint: [
@@ -529,8 +530,14 @@ var wot_search =
 		return null;
 	},
 
-	addrating: function(target, content, link)
+	addrating: function(target, content, link, rule)
 	{
+		var is_ninja = rule.ninja && wot_prefs.ninja_donuts;
+
+		dump("ninja_donuts: " + wot_prefs.ninja_donuts + "\n");
+		dump("is ninja: " + is_ninja + "\n");
+		dump("rule" + JSON.stringify(rule) + "\n");
+
 		try {
 			var elem = content.createElement("div");
 
@@ -819,7 +826,7 @@ var wot_search =
 				}
 
 				if (showrating) {
-					this.addrating(target, content, content.links[i]);
+					this.addrating(target, content, content.links[i], rule);
 				}
 
 				content.links[i].setAttribute(this.processed, true);
