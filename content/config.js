@@ -223,7 +223,7 @@ const wot_prefs_bool = [
 	[ "show_application_5",			false ],
 	[ "show_search_popup",			true  ],
 	[ "use_search_level",			false ],
-	[ "ninja_donuts",   			true ],
+	[ "ninja_donuts",   			false ],
 	[ "warning_unknown_0",			false ],
 	[ "warning_unknown_1",			false ],
 	[ "warning_unknown_2",			false ],
