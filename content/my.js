@@ -75,7 +75,8 @@ var wot_my_session =
 			var ios = Components.classes["@mozilla.org/network/io-service;1"].
 						getService(Components.interfaces.nsIIOService);
 
-			var uri = ios.newURI("http://" + WOT_MY_COOKIE_DOMAIN + "/", "",
+			var scheme = wot_core.force_https ? "https://" : "http://";
+			var uri = ios.newURI(scheme + WOT_MY_COOKIE_DOMAIN + "/", "",
 						null);
 
 			var cs = Components.classes["@mozilla.org/cookieService;1"].

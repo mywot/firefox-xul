@@ -209,7 +209,7 @@ var wot_url =
 					url += "/" + tab;
 				}
 
-				if (secure) {
+				if (secure || wot_core.force_https) {
 					url = url.replace(/^http\:/, "https:");
 				}
 

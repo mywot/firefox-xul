@@ -66,7 +66,7 @@ var wot_api_link =
 
 			var request = new XMLHttpRequest();
 
-			request.open("GET", WOT_SERVICE_NORMAL +
+			request.open("GET", wot_core.wot_service_url() +
 					wot_crypto.authenticate_query(qs));
 
 			new wot_cookie_remover(request);
@@ -209,7 +209,7 @@ var wot_api_query =
 
 			wot_cache.add_nonce(nonce, hostname);
 
-			request.open("GET", WOT_SERVICE_NORMAL +
+			request.open("GET", wot_core.wot_service_url() +
 				wot_crypto.authenticate_query(qs));
 
 			new wot_cookie_remover(request);
@@ -772,7 +772,7 @@ var wot_api_submit =
 				return;
 			}
 
-			request.open("GET", WOT_SERVICE_NORMAL +
+			request.open("GET", wot_core.wot_service_url() +
 					wot_crypto.authenticate_query(qs));
 
 			new wot_cookie_remover(request);
@@ -833,7 +833,7 @@ var wot_api_update =
 			/* Build a request */
 			var request = new XMLHttpRequest();
 
-			request.open("GET", WOT_SERVICE_NORMAL +
+			request.open("GET", wot_core.wot_service_url() +
 				WOT_SERVICE_API_UPDATE +
 				"?id="		+ wot_prefs.witness_id +
 				"&nonce="	+ wot_crypto.nonce() +

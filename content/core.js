@@ -97,10 +97,29 @@ var wot_core =
 	pending: {},
 	purged: Date.now(),
 	loaded: false,
-	
+	force_https: false,
+
+	detect_environment: function()
+	{
+		// check if there is HTTPSEveryWhere addon also installed
+		var is_https_everywhere = false;
+		try {
+			var https_everywhere =
+				Components.classes["@eff.org/https-everywhere;1"]
+					.getService(Components.interfaces.nsISupports).wrappedJSObject;
+			is_https_everywhere = true;
+		} catch (e) {
+			is_https_everywhere = false; // there is no HTTPS EveryWhere
+		}
+
+		this.force_https = this.force_https || is_https_everywhere; // forced to use https if "HTTPS EveryWhere" addon is also installed
+	},
+
 	init: function()
 	{
 		try {
+
+			this.detect_environment();
 			window.addEventListener("load", function(e) {
 					window.removeEventListener("load", arguments.callee, true);
 					wot_core.load();
@@ -654,6 +673,10 @@ var wot_core =
 		} catch (e) {
 			dump("wot_core.update: failed with " + e + "\n");
 		}
+	},
+
+	wot_service_url: function() {
+		return this.force_https ? WOT_SERVICE_SECURE : WOT_SERVICE_NORMAL;
 	}
 };
 
