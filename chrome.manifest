@@ -17,5 +17,6 @@ locale	wot	ru-RU	locale/ru-RU/
 locale	wot	ja-JP	locale/ja-JP/
 locale	wot	zh-CN	locale/zh-CN/
 locale	wot	zh-TW	locale/zh-TW/
+locale	wot	uk-UA	locale/uk-UA/
 skin	wot	classic/1.0	skin/
 style	chrome://global/content/customizeToolbar.xul	chrome://wot/skin/toolbar.css

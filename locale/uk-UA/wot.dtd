@@ -1,0 +1,41 @@
+<!ENTITY wot.label					"WOT">
+<!-- Menu items -->
+<!ENTITY wotEnabled.label			"Включена">
+<!ENTITY wotEnabled.accesskey		"В">
+<!ENTITY wotRefresh.label			"Відновити">
+<!ENTITY wotRefresh.accesskey		"О">
+<!ENTITY wotContent.label			"WOT">
+<!ENTITY wotContent.accesskey		"W">
+<!ENTITY wotTestify5.label			"Відмінно">
+<!ENTITY wotTestify5.accesskey		"П">
+<!ENTITY wotTestify4.label			"Добре">
+<!ENTITY wotTestify4.accesskey		"Х">
+<!ENTITY wotTestify3.label			"Незадовільно">
+<!ENTITY wotTestify3.accesskey		"Н">
+<!ENTITY wotTestify2.label			"Погано">
+<!ENTITY wotTestify2.accesskey		"л">
+<!ENTITY wotTestify1.label			"Дуже погано">
+<!ENTITY wotTestify1.accesskey		"О">
+<!ENTITY wotPreferences.label		"Налаштування…">
+<!ENTITY wotPreferences.accesskey	"Н">
+<!ENTITY wotMy.label				"MyWOT…">
+<!ENTITY wotMy.accesskey			"W">
+<!ENTITY wotCheckUpdates.label		"Перевірка оновлень…">
+<!ENTITY wotCheckUpdates.accesskey	"p">
+<!ENTITY wotLinkScorecard.label		"Переглянути детальніше про рейтинг">
+<!ENTITY wotLinkScorecard.accesskey	"W">
+<!-- Rating window -->
+<!ENTITY wotRating.title			"Ініціалізація WOT…">
+<!ENTITY wotRating.wot				"Рейтинг WOT">
+<!ENTITY wotRating.my				"Мій рейтинг">
+<!ENTITY wotRating.app0				"Заслуговує довіри:">
+<!ENTITY wotRating.app1				"Надійність продавця:">
+<!ENTITY wotRating.app2				"Конфіденційність:">
+<!ENTITY wotRating.app4				"Безпека для дітей:">
+<!ENTITY wotRating.scorecard		"Переглянути детальніше про рейтинг">
+<!ENTITY wotRating.comment			"Додайте свій коментар">
+<!ENTITY wotRating.guide			"Керівництво">
+<!ENTITY wotRating.prefs			"Налаштування">
+<!ENTITY wotRating.link				"www.mywot.com">
+<!ENTITY wotRating.partner			"У партнерстві з">
+<!ENTITY wotRating.update			"Доступна нова версія - натисніть для оновлення">
