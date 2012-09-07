@@ -144,7 +144,7 @@ var wot_popup =
 
 			layer.addEventListener("click", function() {
 					wot_browser.openscorecard(layer.getAttribute("target"),
-						null, "popup");
+						null, WOT_URL_POPUPVIEWSC);
 				}, false);
 
 			elem.appendChild(layer);

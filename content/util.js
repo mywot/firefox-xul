@@ -185,8 +185,10 @@ var wot_url =
 	getwoturl: function(path, context)
 	{
 		try {
-			/* We'll ignore context for now */
-			return WOT_MY_URL + path;
+			var new_path = path;
+			new_path += ( (path.indexOf("?") > 0) ? "&" : "?" );
+			new_path += "utm_source=addon" + (context ? "&utm_content=" + context : "");
+			return WOT_MY_URL + new_path;
 		} catch (e) {
 			dump("wot_url.getwoturl: failed with " + e + "\n");
 		}
@@ -194,7 +196,7 @@ var wot_url =
 		return null;
 	},
 
-	getprefurl: function(tab, secure, base)
+	getprefurl: function(tab, secure, base, context)
 	{
 		try {
 			base = base || WOT_PREF_PATH;
@@ -202,16 +204,19 @@ var wot_url =
 			var path = base + wot_util.getstring("language") +
 						"/" + WOT_PLATFORM + "/" + WOT_VERSION;
 
-			var url = this.getwoturl(path);
+			var url = path;
 
 			if (url) {
 				if (tab) {
 					url += "/" + tab;
 				}
 
+				url = this.getwoturl(url, context);
+
 				if (secure || wot_core.force_https) {
 					url = url.replace(/^http\:/, "https:");
 				}
+
 
 				return url;
 			}
@@ -387,7 +392,7 @@ var wot_browser =
 		}
 	},
 
-	openscorecard: function(hostname, action, content)
+	openscorecard: function(hostname, action, context)
 	{
 		try {
 			if (!hostname) {
@@ -401,7 +406,7 @@ var wot_browser =
 			}
 
 			var browser = getBrowser();
-			var url = wot_url.getwoturl(path, content);
+			var url = wot_url.getwoturl(path, context);
 
 			if (browser && url) {
 				browser.selectedTab = browser.addTab(url);

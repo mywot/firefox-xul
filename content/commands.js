@@ -196,7 +196,7 @@ var wot_commands =
 	my: function()
 	{
 		try {
-			var url = wot_url.getwoturl("", "menu");
+			var url = wot_url.getwoturl("", WOT_URL_MENUMY);
 			if (url) {
 				getBrowser().loadURI(url);
 			}
@@ -224,7 +224,7 @@ var wot_commands =
 	{
 		try {
 			wot_browser.openscorecard(wot_commands.getcontexthostname(),
-				null, "context");
+				null, WOT_URL_CTX);
 		} catch (e) {
 		}
 	}
@@ -339,7 +339,7 @@ var wot_events =
 		try {
 			/* Middle-click takes to scorecard */
 			if (event.button == 1 && wot_core.hostname) {
-				wot_browser.openscorecard(wot_core.hostname, null, "button");
+				wot_browser.openscorecard(wot_core.hostname, null, WOT_URL_BTN);
 			}
 		} catch (e) {
 			dump("wot_events.click_button: failed with " + e + "\n");
@@ -431,7 +431,7 @@ var wot_events =
 
 			if (wot_core.hostname &&
 					wot_browser.openscorecard(wot_core.hostname,
-						action, "window")) {
+						action, WOT_URL_RWVIEWSC)) {
 				this.popup_hide();
 			}
 		} catch (e) {
@@ -444,7 +444,7 @@ var wot_events =
 	{
 		try {
 			var browser = getBrowser();
-			var url = wot_url.getwoturl("", "window");
+			var url = wot_url.getwoturl("", WOT_URL_RWLOGO);
 
 			if (browser && url) {
 				browser.selectedTab = browser.addTab(url);
@@ -461,8 +461,9 @@ var wot_events =
 		try {
 			var browser = getBrowser();
 			if (browser) {
+				var url = wot_url.getprefurl("guide", false, null, WOT_URL_RWGUIDE); // getprefurl() already considers context
 				browser.selectedTab =
-					browser.addTab(wot_url.getprefurl("guide"));
+					browser.addTab(url);
 				this.popup_hide();
 			}
 		} catch (e) {
@@ -476,7 +477,7 @@ var wot_events =
 		try {
 			var browser = getBrowser();
 			if (browser) {
-				browser.selectedTab = browser.addTab(wot_url.getprefurl());
+				browser.selectedTab = browser.addTab(wot_url.getprefurl(null, null, null, WOT_URL_RWSETTINGS));
 				this.popup_hide();
 			}
 		} catch (e) {

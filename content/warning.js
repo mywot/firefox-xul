@@ -608,11 +608,11 @@ var wot_warning =
 					break;
 
 				case "wotinfobutton":
-					wot_browser.openscorecard(wot_core.hostname, null, "warning");
+					wot_browser.openscorecard(wot_core.hostname, null, WOT_URL_WARNVIEWSC);
 					break;
 
 				case "wotrate-link":
-					wot_browser.openscorecard(wot_core.hostname, WOT_SCORECARD_RATE, "warning");
+					wot_browser.openscorecard(wot_core.hostname, WOT_SCORECARD_RATE, WOT_URL_WARNRATE);
 					break;
 
 				case "wot-btn-leave":

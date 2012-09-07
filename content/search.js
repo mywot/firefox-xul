@@ -1257,7 +1257,7 @@ var wot_search =
 		try {
 			var target = event.originalTarget.getAttribute(wot_search.attribute);
 			if (target) {
-				wot_browser.openscorecard(target, null, "search");
+				wot_browser.openscorecard(target, null, WOT_URL_POPUPDONUTS);
 				event.stopPropagation();
 			}
 		} catch (e) {

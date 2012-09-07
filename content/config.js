@@ -297,4 +297,19 @@ const WOT_SEARCH_TARGET			= "target";
 const WOT_SEARCH_POPUP			= "popup";
 const WOT_SEARCH_NINJA			= "ninja";
 
+/* contexts for opening WOT links */
+const WOT_URL_RWLOGO =       "rw-logo";
+const WOT_URL_RWSETTINGS =   "rw-settings";
+const WOT_URL_RWGUIDE =      "rw-guide";
+const WOT_URL_RWVIEWSC =     "rw-viewsc";
+const WOT_URL_RWPROFILE =    "rw-profile";
+const WOT_URL_RWMSG =        "rw-msg";  // unused
+const WOT_URL_WARNVIEWSC =   "warn-viewsc";
+const WOT_URL_WARNRATE =     "warn-rate";
+const WOT_URL_POPUPVIEWSC =  "popup";
+const WOT_URL_POPUPDONUTS =  "popup-donuts";
+const WOT_URL_MENUMY =       "menu-my";
+const WOT_URL_BTN =          "button";
+const WOT_URL_CTX =          "contextmenu";
+
 var wot_modules = [];
