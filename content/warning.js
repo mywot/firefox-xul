@@ -423,7 +423,7 @@ var wot_warning =
 			/* Show the notification bar always */
 			if (reason != WOT_REASON_UNKNOWN) {
 				window.setTimeout(wot_browser.show_warning,
-					WOT_DELAY_WARNING, hostname, notification);
+					WOT_DELAY_WARNING, hostname, notification, true);
 			}
 
 			if (type != WOT_WARNING_DOM || this.warned[hostname]) {

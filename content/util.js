@@ -299,7 +299,7 @@ var wot_browser =
 		return null;
 	},
 
-	show_warning: function(hostname, message, unknown)
+	show_warning: function(hostname, message, known)
 	{
 		try {
 			var icon = "chrome://wot/skin/fusion/";
@@ -308,7 +308,7 @@ var wot_browser =
 				icon += "accessible/";
 			}
 
-			if (unknown) {
+			if (known) {
 				icon += "16_16/plain/danger.png";
 			} else {
 				icon += "16_16/plain/no_rep_available.png";
