@@ -15,6 +15,7 @@ locale	wot	pt-BR	locale/pt-BR/
 locale	wot	es-ES	locale/es-ES/
 locale	wot	ru-RU	locale/ru-RU/
 locale	wot	ja-JP	locale/ja-JP/
+locale	wot	ko-KR	locale/ko-KR/
 locale	wot	zh-CN	locale/zh-CN/
 locale	wot	zh-TW	locale/zh-TW/
 locale	wot	uk-UA	locale/uk-UA/

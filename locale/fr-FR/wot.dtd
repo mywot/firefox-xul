@@ -32,8 +32,8 @@
 <!ENTITY wotRating.app1				"Fiabilité commerciale :">
 <!ENTITY wotRating.app2				"Confidentialité :">
 <!ENTITY wotRating.app4				"Sécurité des mineurs :">
-<!ENTITY wotRating.scorecard		"Afficher le tableau de bord détaillé.">
-<!ENTITY wotRating.comment			"Ajouter votre commentaire.">
+<!ENTITY wotRating.scorecard		"Afficher le tableau de bord détaillé">
+<!ENTITY wotRating.comment			"Ajouter votre commentaire">
 <!ENTITY wotRating.guide			"Guide">
 <!ENTITY wotRating.prefs			"Paramètres">
 <!ENTITY wotRating.link				"www.mywot.com">

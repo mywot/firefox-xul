@@ -32,8 +32,8 @@
 <!ENTITY wotRating.app1				"供應者可信賴性：">
 <!ENTITY wotRating.app2				"隱私性：">
 <!ENTITY wotRating.app4				"兒童安全：">
-<!ENTITY wotRating.scorecard		"檢視評等詳細內容計分表。">
-<!ENTITY wotRating.comment			"加入您的評語。">
+<!ENTITY wotRating.scorecard		"檢視評等詳細內容計分表">
+<!ENTITY wotRating.comment			"加入您的評語">
 <!ENTITY wotRating.guide			"指南">
 <!ENTITY wotRating.prefs			"設定">
 <!ENTITY wotRating.link				"www.mywot.com">

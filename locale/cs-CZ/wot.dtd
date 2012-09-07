@@ -32,8 +32,8 @@
 <!ENTITY wotRating.app1				"Spolehlivost poskytovatele:">
 <!ENTITY wotRating.app2				"Ochrana osobních dat:">
 <!ENTITY wotRating.app4				"Bezpečnost dětí:">
-<!ENTITY wotRating.scorecard		"Zobrazit výsledky s detaily hodnocení.">
-<!ENTITY wotRating.comment			"Přidat komentář.">
+<!ENTITY wotRating.scorecard		"Zobrazit výsledky s detaily hodnocení">
+<!ENTITY wotRating.comment			"Přidat komentář">
 <!ENTITY wotRating.guide			"Příručka">
 <!ENTITY wotRating.prefs			"Nastavení">
 <!ENTITY wotRating.link				"www.mywot.com">

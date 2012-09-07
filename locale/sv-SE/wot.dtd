@@ -32,8 +32,8 @@
 <!ENTITY wotRating.app1				"Transaktionssäkerhet:">
 <!ENTITY wotRating.app2				"Sekretess:">
 <!ENTITY wotRating.app4				"Barnsäkerhet:">
-<!ENTITY wotRating.scorecard		"Visa scorekort för klassificeringsdetaljer.">
-<!ENTITY wotRating.comment			"Lägg till en kommentar.">
+<!ENTITY wotRating.scorecard		"Visa scorekort för klassificeringsdetaljer">
+<!ENTITY wotRating.comment			"Lägg till en kommentar">
 <!ENTITY wotRating.guide			"Guide">
 <!ENTITY wotRating.prefs			"Inställningar">
 <!ENTITY wotRating.link				"www.mywot.com">

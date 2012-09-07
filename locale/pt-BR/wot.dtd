@@ -32,8 +32,8 @@
 <!ENTITY wotRating.app1				"Confiabilidade do fornecedor:">
 <!ENTITY wotRating.app2				"Privacidade:">
 <!ENTITY wotRating.app4				"Segurança para crianças:">
-<!ENTITY wotRating.scorecard		"Ver indicador de detalhes de classificação.">
-<!ENTITY wotRating.comment			"Adicionar seu comentário.">
+<!ENTITY wotRating.scorecard		"Ver indicador de detalhes de classificação">
+<!ENTITY wotRating.comment			"Adicionar seu comentário">
 <!ENTITY wotRating.guide			"Guia">
 <!ENTITY wotRating.prefs			"Configurações">
 <!ENTITY wotRating.link				"www.mywot.com">

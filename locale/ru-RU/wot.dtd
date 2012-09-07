@@ -22,7 +22,7 @@
 <!ENTITY wotMy.accesskey			"W">
 <!ENTITY wotCheckUpdates.label		"Проверка обновлений…">
 <!ENTITY wotCheckUpdates.accesskey	"p">
-<!ENTITY wotLinkScorecard.label		"Просмотреть оценочную карту WOT…">
+<!ENTITY wotLinkScorecard.label		"Посмотреть оценочную карту WOT…">
 <!ENTITY wotLinkScorecard.accesskey	"W">
 <!-- Rating window -->
 <!ENTITY wotRating.title			"Инициализация WOT…">
@@ -32,8 +32,8 @@
 <!ENTITY wotRating.app1				"Надежность продавца:">
 <!ENTITY wotRating.app2				"Конфиденциальность:">
 <!ENTITY wotRating.app4				"Безопасность для детей:">
-<!ENTITY wotRating.scorecard		"Просмотр подробных данных о рейтингах.">
-<!ENTITY wotRating.comment			"Добавьте свой комментарий.">
+<!ENTITY wotRating.scorecard		"Посмотреть подробности оценок">
+<!ENTITY wotRating.comment			"Добавьте свой комментарий">
 <!ENTITY wotRating.guide			"Руководство">
 <!ENTITY wotRating.prefs			"Настройки">
 <!ENTITY wotRating.link				"www.mywot.com">

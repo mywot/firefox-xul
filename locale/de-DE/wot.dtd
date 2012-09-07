@@ -32,8 +32,8 @@
 <!ENTITY wotRating.app1				"Händlerzuverlässigkeit:">
 <!ENTITY wotRating.app2				"Datenschutz:">
 <!ENTITY wotRating.app4				"Jugendschutz:">
-<!ENTITY wotRating.scorecard		"Detailanzeige auf der Bewertungsliste.">
-<!ENTITY wotRating.comment			"Eigenen Kommentar hinzufügen.">
+<!ENTITY wotRating.scorecard		"Detailanzeige auf der Bewertungsliste">
+<!ENTITY wotRating.comment			"Eigenen Kommentar hinzufügen">
 <!ENTITY wotRating.guide			"Leitfaden">
 <!ENTITY wotRating.prefs			"Einstellungen">
 <!ENTITY wotRating.link				"www.mywot.com">

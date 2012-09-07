@@ -1,6 +1,6 @@
 /*
 	ui.js
-	Copyright © 2005-2011  WOT Services Oy <info@mywot.com>
+	Copyright © 2005 - 2012  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -18,8 +18,7 @@
 	along with WOT. If not, see <http://www.gnu.org/licenses/>.
 */
 
-var wot_status =
-{
+var wot_status = {
 	set: function(status, description)
 	{
 		try {
@@ -113,7 +112,7 @@ var wot_status =
 			if (type == WOT_WARNING_NOTIFICATION || type == WOT_WARNING_DOM) {
 				wot_warning.add(wot_core.hostname, content, type);
 			} else {
-				wot_warning.hide(content);
+				if(type != WOT_WARNING_BLOCK) wot_warning.hide(content);
 			}
 		} catch (e) {
 			dump("wot_status.update: failed with " + e + "\n");
@@ -121,8 +120,7 @@ var wot_status =
 	}
 };
 
-var wot_ui =
-{
+var wot_ui = {
 	show_accessible: function()
 	{
 		try {

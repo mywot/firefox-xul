@@ -32,8 +32,8 @@
 <!ENTITY wotRating.app1				"業者の信頼度：">
 <!ENTITY wotRating.app2				"プライバシー：">
 <!ENTITY wotRating.app4				"子供の安全：">
-<!ENTITY wotRating.scorecard		"スコアカードで格付けの詳細を見る。">
-<!ENTITY wotRating.comment			"コメントを追加してください。">
+<!ENTITY wotRating.scorecard		"スコアカードで格付けの詳細を見る">
+<!ENTITY wotRating.comment			"コメントを追加してください">
 <!ENTITY wotRating.guide			"ガイド">
 <!ENTITY wotRating.prefs			"設定">
 <!ENTITY wotRating.link				"www.mywot.com">

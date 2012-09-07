@@ -1,107 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-TW" lang="zh-TW">
-<head>
-    <script type="text/javascript" src="chrome://wot/skin/include/blocked.js"></script>
-    <style type="text/css">
-        @import "chrome://wot/skin/include/blocked.css";
-    </style>
-    <title>WOT: 已封鎖</title>
-</head>
-<body id="wotblocked" onload="blocked_load();">
-	<table id="wotcontainer" cellspacing="0" lang="zh-TW" class="wotblocked">
-		<tr id="wotheadline">
-			<td colspan="2"></td>
-		</tr>
-		<tr id="wotcontainertop">
-			<td colspan="2"></td>
-		</tr>
-		<tr id="wotdescription" class="wotcontainermiddle">
-			<td colspan="2">
-				<div id="wotdescriptiontext" class="wotlimitwidth">這個網站聲譽不佳。</div>
-			</td>
-		</tr>
-		<tr id="wottarget" class="wotcontainermiddle">
-			<td colspan="2">
-				<div id="wotwebsite" class="wotlimitwidth" title="">&nbsp;</div>
-			</td>	
-		</tr>
-		<tr id="wotinfo" class="wotcontainermiddle">
-			<td colspan="2">
-				<div id="wotinfobutton">
-					<span id="wotinfotext" onclick="blocked_info();">檢視評等詳細內容與評語</span>
-				</div>
-			</td>
-		</tr>
-		<tr id="wotratingtop" class="wotcontainermiddle">
-			<td colspan="2"></td>
-		</tr>
-		<tr id="wotratingareatop" class="wotratingarea">
-			<td colspan="2"></td>
-		</tr>
-		<tr id="wotrating0" class="wotratingarea wotratingrow">
-			<td class="wotratingcol wotratingcolleft">
-				<span class="wotratingname">可靠性</span>
-			</td>
-			<td class="wotratingcol wotratingcolright">
-				<span id="wotratingexpl0" class="wotratingexpl">&nbsp;</span>
-			</td>
-		</tr>
-		<tr id="wotrating1" class="wotratingarea wotratingrow">
-			<td class="wotratingcol wotratingcolleft">
-				<span class="wotratingname">供應者可信賴性</span>
-			</td>
-			<td class="wotratingcol wotratingcolright">
-				<span id="wotratingexpl1" class="wotratingexpl">&nbsp;</span>
-			</td>
-		</tr>
-		<tr id="wotrating2" class="wotratingarea wotratingrow">
-			<td class="wotratingcol wotratingcolleft">
-				<span class="wotratingname">隱私性</span>
-			</td>
-			<td class="wotratingcol wotratingcolright">
-				<span id="wotratingexpl2" class="wotratingexpl">&nbsp;</span>
-			</td>
-		</tr>
-		<tr id="wotrating4" class="wotratingarea wotratingrow">
-			<td class="wotratingcol wotratingcolleft">
-				<span class="wotratingname">兒童安全</span>
-			</td>
-			<td class="wotratingcol wotratingcolright">
-				<span id="wotratingexpl4" class="wotratingexpl">&nbsp;</span>
-			</td>
-		</tr>
-		<tr id="wotratingareabottom" class="wotratingarea">
-			<td colspan="2"></td>
-		</tr>
-		<tr id="wotratingbottom" class="wotcontainermiddle">
-			<td colspan="2"></td>
-		</tr>
-		<tr id="wotbuttonstop" class="wotcontainermiddle">
-			<td colspan="2"></td>
-		</tr>
-		<tr id="wotbuttons" class="wotcontainermiddle">
-			<td id="wotbuttonrate">
-				<span id="wotratebutton" class="wotbutton">這個網站是安全的 - 我要評等</span>
-			</td>
-			<td id="wotbuttongoto">
-				<span id="wotgotobutton" class="wotbutton">忽略警告，前往網站</span>
-			</td>
-		</tr>
-		<tr id="wotcontainerbottom">
-			<td colspan="2"></td>
-		</tr>
-		<tr id="wotlogo">
-			<td colspan="2"></td>
-		</tr>
-	</table>
-	<div id="wottextdescunknown" style="display: none;">這個網站的評等不詳。</div>
-	<div id="wottextdescuserrat" style="display: none;">您給了這個網站會觸動警告的不佳評等。</div>
-	<div id="wottextreputation5" style="display: none;">極佳</div>
-	<div id="wottextreputation4" style="display: none;">佳</div>
-	<div id="wottextreputation3" style="display: none;">不符要求</div>
-	<div id="wottextreputation2" style="display: none;">不佳</div>
-	<div id="wottextreputation1" style="display: none;">非常差</div>
-</body>
+	<head>
+		<meta charset="utf-8">
+		<script type="text/javascript" src="chrome://wot/content/config.js"></script>
+		<script type="text/javascript" src="chrome://wot/skin/include/blocked.js"></script>
+		<script type="text/javascript" src="chrome://wot/content/warning.js"></script>
+		<style type="text/css">
+			@import "chrome://wot/skin/include/blocked.css";
+		</style>
+		<title>WOT: 已封鎖</title>
+	</head>
+	<body id="wotblocked" onload="blocked_load();">
+	</body>
 </html>

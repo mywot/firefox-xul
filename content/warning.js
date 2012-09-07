@@ -1,6 +1,6 @@
 /*
 	warning.js
-	Copyright © 2006-2011  WOT Services Oy <info@mywot.com>
+	Copyright © 2006 - 2012  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -18,105 +18,66 @@
 	along with WOT. If not, see <http://www.gnu.org/licenses/>.
 */
 
-const WOT_WARNING_CSS =
-	"@import \"chrome://wot/skin/include/blocked.css\";"
-
-const WOT_WARNING_HTML =
-	"<table id=\"wotcontainer\" cellspacing=\"0\" lang=\"{LANG}\" class=\"{CLASS}\">" +
-	"<tr id=\"wotheadline\">" +
-		"<td colspan=\"2\"></td>" +
-	"</tr>" +
-	"<tr id=\"wotcontainertop\">" +
-		"<td colspan=\"2\"></td>" +
-	"</tr>" +
-	"<tr id=\"wotdescription\" class=\"wotcontainermiddle\">" +
-		"<td colspan=\"2\">" +
-			"<div id=\"wotdescriptiontext\" class=\"wotlimitwidth {DESCCLASS}\">{DESC}</div>" +
-		"</td>" +
-	"</tr>" +
-	"<tr id=\"wottarget\" class=\"wotcontainermiddle\">" +
-		"<td colspan=\"2\">" +
-			"<div id=\"wotwebsite\" class=\"wotlimitwidth\" title=\"{TITLE}\">{TITLE}</div>" +
-		"</td>	" +
-	"</tr>" +
-	"<tr id=\"wotinfo\" class=\"wotcontainermiddle\">" +
-		"<td colspan=\"2\">" +
-			"<div id=\"wotinfobutton\">" +
-				"<span id=\"wotinfotext\">{INFO}</span>" +
-			"</div>" +
-		"</td>" +
-	"</tr>" +
-	"<tr id=\"wotratingtop\" class=\"wotcontainermiddle\">" +
-		"<td colspan=\"2\"></td>" +
-	"</tr>" +
-	"<tr id=\"wotratingareatop\" class=\"wotratingarea\">" +
-		"<td colspan=\"2\"></td>" +
-	"</tr>" +
-	"<tr id=\"wotrating0\" class=\"wotratingarea wotratingrow wotreputation{RATING0}\">" +
-		"<td class=\"wotratingcol wotratingcolleft\">" +
-			"<span class=\"wotratingname\">{RATINGDESC0}</span>" +
-		"</td>" +
-		"<td class=\"wotratingcol wotratingcolright\">" +
-			"<span id=\"wotratingexpl0\" class=\"wotratingexpl\">{RATINGEXPL0}</span>" +
-		"</td>" +
-	"</tr>" +
-	"<tr id=\"wotrating1\" class=\"wotratingarea wotratingrow wotreputation{RATING1}\">" +
-		"<td class=\"wotratingcol wotratingcolleft\">" +
-			"<span class=\"wotratingname\">{RATINGDESC1}</span>" +
-		"</td>" +
-		"<td class=\"wotratingcol wotratingcolright\">" +
-			"<span id=\"wotratingexpl1\" class=\"wotratingexpl\">{RATINGEXPL1}</span>" +
-		"</td>" +
-	"</tr>" +
-	"<tr id=\"wotrating2\" class=\"wotratingarea wotratingrow wotreputation{RATING2}\">" +
-		"<td class=\"wotratingcol wotratingcolleft\">" +
-			"<span class=\"wotratingname\">{RATINGDESC2}</span>" +
-		"</td>" +
-		"<td class=\"wotratingcol wotratingcolright\">" +
-			"<span id=\"wotratingexpl2\" class=\"wotratingexpl\">{RATINGEXPL2}</span>" +
-		"</td>" +
-	"</tr>" +
-	"<tr id=\"wotrating4\" class=\"wotratingarea wotratingrow wotreputation{RATING4}\">" +
-		"<td class=\"wotratingcol wotratingcolleft\">" +
-			"<span class=\"wotratingname\">{RATINGDESC4}</span>" +
-		"</td>" +
-		"<td class=\"wotratingcol wotratingcolright\">" +
-			"<span id=\"wotratingexpl4\" class=\"wotratingexpl\">{RATINGEXPL4}</span>" +
-		"</td>" +
-	"</tr>" +
-	"<tr id=\"wotratingareabottom\" class=\"wotratingarea\">" +
-		"<td colspan=\"2\"></td>" +
-	"</tr>" +
-	"<tr id=\"wotratingbottom\" class=\"wotcontainermiddle\">" +
-		"<td colspan=\"2\"></td>" +
-	"</tr>" +
-	"<tr id=\"wotbuttonstop\" class=\"wotcontainermiddle\">" +
-		"<td colspan=\"2\"></td>" +
-	"</tr>" +
-	"<tr id=\"wotbuttons\" class=\"wotcontainermiddle\">" +
-		"<td id=\"wotbuttonrate\">" +
-			"<span id=\"wotratebutton\" class=\"wotbutton\">{RATETEXT}</span>" +
-		"</td>" +
-		"<td id=\"wotbuttongoto\">" +
-			"<span id=\"wotgotobutton\" class=\"wotbutton\">{GOTOTEXT}</span>" +
-		"</td>" +
-	"</tr>" +
-	"<tr id=\"wotcontainerbottom\">" +
-		"<td colspan=\"2\"></td>" +
-	"</tr>" +
-	"<tr id=\"wotlogo\">" +
-		"<td colspan=\"2\"></td>" +
-	"</tr>" +
-	"</table>";
-
-const WOT_WARNING_MINHEIGHT = 600;
+const WOT_WARNING_CSS = "@import \"chrome://wot/skin/include/blocked.css\";";
 
 var wot_warning =
 {
-	load_delayed: function()
+	minheight: 600,
+	exit_mode: "back",
+	is_blocked: false,
+
+	make_warning: function()
 	{
+		var wot_warning = "<div id='wotcontainer' class='wotcontainer {CLASS} {ACCESSIBLE}'>" +
+			"<div class='wot-logo'></div>" +
+			"<div class='wot-warning'>{WARNING}</div>" +
+			"<div class='wot-title'>{TITLE}</div>" +
+			"<div class='wot-desc'>{DESC}</div>" +
+			"<div class='wot-openscorecard-wrap'>" +
+			"<span id='wotinfobutton' class='wot-openscorecard wot-link'>{INFO}</span>" +
+			"</div>" +
+			"<div id='wot-ratings'>";
+
+		for(var c=0; c < WOT_APPLICATIONS; c++) {
+
+			if(!wot_prefs["show_application_" + c]) continue;
+
+			var S_COMPNAME = "RATINGDESC" + c,
+				S_RATING = "RATING" + c,
+				S_RATING_EXPL = "RATINGEXPL" + c;
+
+			wot_warning += "" +
+				"<div class='wot-component'>" +
+				"<div class='wot-comp-name'>{" + S_COMPNAME + "}</div>" +
+				"<div class='wot-comp-level' r='{" + S_RATING + "}'>{" + S_RATING_EXPL + "}</div>" +
+				"<div class='wot-comp-icon' r='{" + S_RATING + "}'></div>" +
+				"</div>";
+		}
+
+		wot_warning +=
+			"</div>" +
+				"<div class='wot-rateit-wrap'>" +
+				"<span>{RATETEXT}</span>" +
+				"</div>" +
+				"<div class='wot-buttons'>";
+
+		if(!this.is_blocked) {
+			// don't show "Goto the site" button in "Blocked" mode
+			wot_warning += "<div id='wot-btn-hide' class='wot-button'>{GOTOSITE}</div>";
+		}
+
+		wot_warning += "<div id='wot-btn-leave' class='wot-button'>{LEAVESITE}</div>" +
+			"</div>" +
+			"</div>";
+
+		return wot_warning;
+	},
+
+	load_delayed: function(blocked)
+	{
+		this.is_blocked = !!blocked || false;
 		try {
-			if (this.warned) {
+			if (this.warned && !this.is_blocked) {
 				return;
 			}
 
@@ -141,15 +102,16 @@ var wot_warning =
 					"RATINGDESC4",
 					wot_util.getstring("rating_4")
 				], [
-					"RATETEXT",
-					wot_util.getstring("warning_rate")
-				], [
-					"GOTOTEXT",
+					"GOTOSITE",
 					wot_util.getstring("warning_goto")
+				], [
+					"WARNING",
+					this.is_blocked ? wot_util.getstring("warning_blocked") : wot_util.getstring("warning_warning")
+
 				]
 			];
 			
-			this.container = this.processhtml(WOT_WARNING_HTML, replaces);
+			this.container = this.processhtml(this.make_warning(), replaces);
 			this.warned = {};
 		} catch (e) {
 			dump("wot_warning.load: failed with " + e + "\n");
@@ -175,6 +137,7 @@ var wot_warning =
 
 	isblocking: function()
 	{
+		// decides whether we must block page or just warn
 		var blocking = false;
 		try {
 			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
@@ -189,36 +152,36 @@ var wot_warning =
 		return blocking;
 	},
 
-	getwarningtype: function(hostname, i, reason)
+	getwarningtype: function(hostname, app, reason)
 	{
 		try {
-			if (!wot_prefs["show_application_" + i]) {
+			if (!wot_prefs["show_application_" + app]) {
 				return WOT_WARNING_NONE;
 			}
 
-			var type = wot_prefs["warning_type_" + i];
+			var type = wot_prefs["warning_type_" + app];
 
 			if (type == WOT_WARNING_NONE) {
 				return WOT_WARNING_NONE;
 			}
 
-			var confidence = wot_prefs.min_confidence_level;
-			var level = wot_prefs["warning_level_" + i];
-			var r = wot_cache.get(hostname, "reputation_" + i);
-			var c = wot_cache.get(hostname, "confidence_" + i);
-			var x = wot_cache.get(hostname, "excluded_" + i);
+			var min_confidence = wot_prefs.min_confidence_level;
+			var level = wot_prefs["warning_level_" + app];
+			var r = wot_cache.get(hostname, "reputation_" + app);
+			var c = wot_cache.get(hostname, "confidence_" + app);
+			var x = wot_cache.get(hostname, "excluded_" + app);
 			var t = -1;
 
 			if (wot_cache.get(hostname, "status") == WOT_QUERY_OK) {
-				t = wot_cache.get(hostname, "testimony_" + i);
+				t = wot_cache.get(hostname, "testimony_" + app);
 			}
 
-			var unknown = wot_prefs["warning_unknown_" + i];
+			var unknown = wot_prefs["warning_unknown_" + app];
 
 			var rr = x ? 0 : r;
 			var cc = x ? level : c;
 
-			if (((rr >= 0 && r <= level && (cc >= confidence || unknown)) ||
+			if (((rr >= 0 && r <= level && (cc >= min_confidence || unknown)) ||
 					(rr < 0 && unknown)) &&
 				  (t < 0 || t <= level)) {
 				if (r < 0) {
@@ -347,7 +310,19 @@ var wot_warning =
 		return -1;
 	},
 
-	add: function(hostname, content, type)
+	set_exitmode: function(content)
+	{
+		var window = content.defaultView;
+		var steps_back = this.is_blocked ? 2 : 1; // when mode is Blocking, there are at least 2 steps in history
+		if(window.history.length > steps_back) {
+			wot_warning.exit_mode = "back"; // note: don't change this string, there are code dependent on it
+		} else {
+			wot_warning.exit_mode = "leave";
+		}
+		return wot_warning.exit_mode;
+	},
+
+	add: function(hostname, content, type, forced_reason)
 	{
 		/* Obviously, this isn't exactly foolproof. A site might have
 			elements with a higher z-index, or it might try to remove
@@ -363,51 +338,53 @@ var wot_warning =
 				return false;
 			}
 
+			// If is set, no need to decide what kind of warning to show.
+			forced_reason = forced_reason || false;   // used when func is called from blocked.js.
+
+			if(!forced_reason) wot_warning.set_exitmode(content); // call it only in usual mode
+
+			var rate_site = wot_util.getstring("warning_rate").replace("<a>", "<a id='wotrate-link' class='wot-link'>");
 			var replaces = [
 				[
 					"TITLE",
 					(wot_shared.decodehostname(hostname) || "")
 						.replace(/[<>&="']/g, "")
+				],
+				[
+					"LEAVESITE",
+					wot_util.getstring("warning_" + wot_warning.exit_mode)
+				],
+				[
+					"RATETEXT", rate_site
 				]
 			];
 
 			var reason = WOT_WARNING_NONE;
-			var accessible = wot_prefs.accessible ? " wotaccessible" : "";
+			var accessible = wot_prefs.accessible ? " accessible" : "";
+
+			replaces.push([ "ACCESSIBLE", accessible ]);
 
 			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-				var t = this.getwarningtype(hostname, i, true);
+				// don't call getwarningtype() if forced_reason is provided
+				var t = forced_reason ? WOT_WARNING_NONE : this.getwarningtype(hostname, i, true);
+
 				var r = wot_cache.get(hostname, "reputation_" + i);
 				var x = wot_cache.get(hostname, "excluded_" + i);
 
-				if (reason < t) {
-					reason = t;
+				if (forced_reason) {
+					reason = forced_reason;
+				} else {
+					reason = (reason < t) ? t : reason;
 				}
 
-				if (r >= WOT_MIN_REPUTATION_5) {
-					replaces.push([ "RATING" + i, 5 + accessible ]);
-					replaces.push([ "RATINGEXPL" + i,
-									wot_util.getstring("help_5") ]);
-				} else if (r >= WOT_MIN_REPUTATION_4) {
-					replaces.push([ "RATING" + i, 4 + accessible ]);
-					replaces.push([ "RATINGEXPL" + i,
-									wot_util.getstring("help_4")]);
-				} else if (r >= WOT_MIN_REPUTATION_3) {
-					replaces.push([ "RATING" + i, 3 + accessible ]);
-					replaces.push([ "RATINGEXPL" + i,
-									wot_util.getstring("help_3") ]);
-				} else if (r >= WOT_MIN_REPUTATION_2) {
-					replaces.push([ "RATING" + i, 2 + accessible ]);
-					replaces.push([ "RATINGEXPL" + i,
-									wot_util.getstring("help_2") ]);
-				} else if (r >= 0) {
-					replaces.push([ "RATING" + i, 1 + accessible ]);
-					replaces.push([ "RATINGEXPL" + i,
-									wot_util.getstring("help_1") ]);
+
+				var r_level = wot_core.get_level(r);
+
+				if (r_level >= 0) {
+					replaces.push([ "RATING" + i, "r" + r_level ]);
+					replaces.push([ "RATINGEXPL" + i, wot_util.getstring("help_" + r_level) ]);
 				} else if (x) {
-					replaces.push([ "RATING" + i, "x" + accessible ]);
-					replaces.push([ "RATINGEXPL" + i, "&nbsp;" ]);
-				} else {
-					replaces.push([ "RATING" + i, 0 + accessible ]);
+					replaces.push([ "RATING" + i, "rx" ]);
 					replaces.push([ "RATINGEXPL" + i, "&nbsp;" ]);
 				}
 			}
@@ -415,7 +392,7 @@ var wot_warning =
 			var notification;
 			var warnclass = "";
 
-			if (this.getheight(content) < WOT_WARNING_MINHEIGHT) {
+			if (this.getheight(content) < this.minheight) {
 				warnclass = "wotnoratings";
 			}
 
@@ -501,8 +478,8 @@ var wot_warning =
 			body[0].appendChild(wrapper);
 
 			/* Flash has authority issues with z-index, so try to hide it
-				while warning is being shown. */
-			this.hideobjects(content, true);
+				while warning is being shown (skip on "blocked!" page) */
+			if (forced_reason === false) this.hideobjects(content, true);
 			return true;
 		} catch (e) {
 			dump("wot_warning.add: failed with " + e + "\n");
@@ -534,9 +511,12 @@ var wot_warning =
 	hideobjects: function(content, hide)
 	{
 		try {
-			if (content.defaultView && content.defaultView.frames) {
-				var frames = content.defaultView.frames;
-				for (var j = 0; j < frames.length; ++j) {
+			var i,j;
+			var win = content.defaultView;
+
+			if (win && win.frames) {
+				var frames = win.frames;
+				for (j = 0; j < frames.length; ++j) {
 					if (frames[j].document) {
 						this.hideobjects(frames[j].document, hide);
 					}
@@ -545,10 +525,10 @@ var wot_warning =
 
 			var elems = [ "embed", "object", "iframe", "applet" ];
 
-			for (var i = 0; i < elems.length; ++i) {
+			for (i = 0; i < elems.length; ++i) {
 				var objs = content.getElementsByTagName(elems[i]);
 
-				for (var j = 0; objs && j < objs.length; ++j) {
+				for (j = 0; objs && j < objs.length; ++j) {
 					if (hide) {
 						objs[j].setAttribute("wothidden",
 							objs[j].style.display || "block");
@@ -569,6 +549,7 @@ var wot_warning =
 
 	click: function(event)
 	{
+
 		try {
 			if (!event || !event.view) {
 				return;
@@ -592,33 +573,78 @@ var wot_warning =
 				return;
 			}
 
+			var wot_blocked = content.getElementById("wotblocked"); // Important to have element with this ID
+			var is_blocked = !!wot_blocked;
+			if(is_blocked) {
+				this.exit_mode = wot_blocked.getAttribute("exit_mode"); // take exit_mode from DOM, since this is module
+			}
+
 			var node = event.originalTarget;
+			var handle_ids = {
+				"wotrate-link":  true,
+				"wot-btn-hide":  true,
+				"wot-btn-leave": true,
+				"wotinfobutton": true
+			};
+
+			var node_id = null;
 
 			while (node) {
-				if (node.id &&
-						(node.id == "wotratebutton" ||
-						 node.id == "wotgotobutton" ||
-						 node.id == "wotinfobutton")) {
-					break;
-				}
+				node_id = node.id;
+				if (node_id && handle_ids[node_id]) break;
 				node = node.parentNode;
 			}
 
-			if (!node || !node.id) {
+			if (!node || !node_id) {
 				return;
 			}
 
-			if (node.id == "wotgotobutton") {
-				wot_warning.warned[wot_core.hostname] = true;
-				warning.style.display = "none";
-				wrapper.style.display = "none";
-				wot_warning.hideobjects(content, false);
-			} else if (node.id == "wotinfobutton") {
-				wot_browser.openscorecard(wot_core.hostname, null, "warning");
-			} else if (node.id == "wotratebutton") {
-				wot_browser.openscorecard(wot_core.hostname, WOT_SCORECARD_RATE,
-					"warning");
+			switch (node_id) {
+				case "wot-btn-hide":
+					wot_warning.warned[wot_core.hostname] = true;
+					warning.style.display = "none";
+					wrapper.style.display = "none";
+					wot_warning.hideobjects(content, false);
+					break;
+
+				case "wotinfobutton":
+					wot_browser.openscorecard(wot_core.hostname, null, "warning");
+					break;
+
+				case "wotrate-link":
+					wot_browser.openscorecard(wot_core.hostname, WOT_SCORECARD_RATE, "warning");
+					break;
+
+				case "wot-btn-leave":
+					var window = content.defaultView;
+					if(wot_warning.exit_mode == "leave") {
+						// close tab
+						window.close();
+					} else {
+						var e_beforeunload = window.onbeforeunload;
+						var back_timer = null;
+						window.onbeforeunload = function() {
+							if(back_timer) {
+								window.clearTimeout(back_timer);
+							}
+							if(e_beforeunload) e_beforeunload(window);
+						};
+
+						var steps_back = is_blocked ? -2 : -1;
+						var prev_location = window.location.href;
+						window.history.go(steps_back);
+
+						back_timer = window.setTimeout(function() {
+							// this is a trick: we don't know if there is a back-step possible if history.length>1,
+							// so we simply wait for a short time, and if we are still on a page, then "back" is impossible and
+							// we should go to blank page
+							if(window.location.href == prev_location) window.close();
+						}, 500);
+					}
+
+					break;
 			}
+
 		} catch (e) {
 			dump("wot_warning.click: failed with " + e + "\n");
 		}

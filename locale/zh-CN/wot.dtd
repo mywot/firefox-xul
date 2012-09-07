@@ -32,8 +32,8 @@
 <!ENTITY wotRating.app1				"供应商可靠性:">
 <!ENTITY wotRating.app2				"隐私:">
 <!ENTITY wotRating.app4				"儿童安全性:">
-<!ENTITY wotRating.scorecard		"查看登记卡上的评级详情。">
-<!ENTITY wotRating.comment			"添加评论。">
+<!ENTITY wotRating.scorecard		"查看登记卡上的评级详情">
+<!ENTITY wotRating.comment			"添加评论">
 <!ENTITY wotRating.guide			"指南">
 <!ENTITY wotRating.prefs			"设置">
 <!ENTITY wotRating.link				"www.mywot.com">

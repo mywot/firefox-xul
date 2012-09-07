@@ -32,8 +32,8 @@
 <!ENTITY wotRating.app1				"Wiarygodność operatora:">
 <!ENTITY wotRating.app2				"Prywatność:">
 <!ENTITY wotRating.app4				"Bezpieczeństwo dzieci:">
-<!ENTITY wotRating.scorecard		"Szczegółowe oceny są na karcie wyników.">
-<!ENTITY wotRating.comment			"Dodaj komentarz.">
+<!ENTITY wotRating.scorecard		"Szczegółowe oceny są na karcie wyników">
+<!ENTITY wotRating.comment			"Dodaj komentarz">
 <!ENTITY wotRating.guide			"Przewodnik">
 <!ENTITY wotRating.prefs			"Ustawienia">
 <!ENTITY wotRating.link				"www.mywot.com">

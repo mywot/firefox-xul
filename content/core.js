@@ -1,6 +1,6 @@
 /*
 	core.js
-	Copyright © 2005-2011  WOT Services Oy <info@mywot.com>
+	Copyright © 2005 - 2012  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -457,17 +457,18 @@ var wot_core =
 		}
 	},
 
+	is_internal: function(url)
+	{
+		return (url.indexOf(WOT_BLOCK_LOADING) >= 0 || url.indexOf(WOT_BLOCK_BLOCKED) >= 0);
+	},
+
 	isredirect: function(url)
 	{
+		// on the Blocked page we extract encoded hostname from parameter, and use it as a target
 		try {
-			if (!url) {
-				return null;
-			}
+			if (!url) return null;
 
-			if (url.indexOf(WOT_BLOCK_LOADING) != 0 &&
-				url.indexOf(WOT_BLOCK_BLOCKED) != 0) {
-				return null;
-			}
+			if(!this.is_internal(url)) return null;
 
 			var m = /#(.+)$/.exec(url);
 
@@ -677,6 +678,24 @@ var wot_core =
 
 	wot_service_url: function() {
 		return this.force_https ? WOT_SERVICE_SECURE : WOT_SERVICE_NORMAL;
+	},
+
+	get_level: function(r) {
+		if (r >= WOT_MIN_REPUTATION_5) {
+			return 5;
+		} else if (r >= WOT_MIN_REPUTATION_4) {
+			return 4;
+		} else if (r >= WOT_MIN_REPUTATION_3) {
+			return 3;
+		} else if (r >= WOT_MIN_REPUTATION_2) {
+			return 2;
+		} else if (r >= 0) {
+			return 1;
+		} else if (r == -1){
+			return 0;
+		} else {
+			return "x";
+		}
 	}
 };
 

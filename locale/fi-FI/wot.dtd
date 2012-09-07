@@ -32,8 +32,8 @@
 <!ENTITY wotRating.app1				"Asioinnin turvallisuus:">
 <!ENTITY wotRating.app2				"Tietosuoja:">
 <!ENTITY wotRating.app4				"Lapsiturvallisuus:">
-<!ENTITY wotRating.scorecard		"Näet yksityiskohtaiset tiedot tuloskortista.">
-<!ENTITY wotRating.comment			"Voit myös lisätä oman kommentin.">
+<!ENTITY wotRating.scorecard		"Näet yksityiskohtaiset tiedot tuloskortista">
+<!ENTITY wotRating.comment			"Voit myös lisätä oman kommentin">
 <!ENTITY wotRating.guide			"Opas">
 <!ENTITY wotRating.prefs			"Asetukset">
 <!ENTITY wotRating.link				"www.mywot.com">

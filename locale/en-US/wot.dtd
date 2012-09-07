@@ -32,8 +32,8 @@
 <!ENTITY wotRating.app1				"Vendor reliability:">
 <!ENTITY wotRating.app2				"Privacy:">
 <!ENTITY wotRating.app4				"Child safety:">
-<!ENTITY wotRating.scorecard		"View scorecard for rating details.">
-<!ENTITY wotRating.comment			"Add your comment.">
+<!ENTITY wotRating.scorecard		"View scorecard for rating details">
+<!ENTITY wotRating.comment			"Add your comment">
 <!ENTITY wotRating.guide			"Guide">
 <!ENTITY wotRating.prefs			"Settings">
 <!ENTITY wotRating.link				"www.mywot.com">
