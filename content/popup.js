@@ -296,7 +296,7 @@ var wot_popup =
 			while (elem) {
 				if (elem.attributes) {
 					attr = elem.attributes.getNamedItem(wot_search.attribute);
-					if (attr && attr.nodeValue) {
+					if (attr && attr.value) {
 						break;
 					}
 					attr = null;
@@ -354,7 +354,7 @@ var wot_popup =
 
 			var attr = wot_popup.target.attributes.getNamedItem(
 							wot_search.attribute);
-			var target = attr.nodeValue;
+			var target = attr.value;
 
 			if (layer.style.display == "block" &&
 					layer.getAttribute("target") == target) {

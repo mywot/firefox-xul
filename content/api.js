@@ -313,39 +313,39 @@ var wot_api_query =
 				than    = m.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_MSG_THAN);
 
 				/* Must have mandatory fields */
-				if (msgid && msgid.nodeValue && type && type.nodeValue &&
-					target && target.nodeValue &&
+				if (msgid && msgid.value && type && type.value &&
+					target && target.value &&
 					m.firstChild && m.firstChild.nodeValue &&
-						(target.nodeValue == WOT_SERVICE_XML_QUERY_MSG_TARGET_ALL ||
-							target.nodeValue == WOT_PLATFORM)) {
+						(target.value == WOT_SERVICE_XML_QUERY_MSG_TARGET_ALL ||
+							target.value == WOT_PLATFORM)) {
 					/* A message targeted to our platform */
-					if (version && version.nodeValue && than && than.nodeValue) {
+					if (version && version.value && than && than.value) {
 						/* A versioned message */
-						if ((version.nodeValue ==
+						if ((version.value ==
 									WOT_SERVICE_XML_QUERY_MSG_VERSION_EQ &&
-								Number(WOT_VERSION) == Number(than.nodeValue)) ||
-							(version.nodeValue ==
+								Number(WOT_VERSION) == Number(than.value)) ||
+							(version.value ==
 									WOT_SERVICE_XML_QUERY_MSG_VERSION_LE &&
-								Number(WOT_VERSION) <= Number(than.nodeValue)) ||
-							(version.nodeValue ==
+								Number(WOT_VERSION) <= Number(than.value)) ||
+							(version.value ==
 									WOT_SERVICE_XML_QUERY_MSG_VERSION_GE &&
-								Number(WOT_VERSION) >= Number(than.nodeValue))) {
+								Number(WOT_VERSION) >= Number(than.value))) {
 							/* Targeted to us */
-							this.message_id = msgid.nodeValue;
-							this.message_type = type.nodeValue;
+							this.message_id = msgid.value;
+							this.message_type = type.value;
 							this.message = m.firstChild.nodeValue;
-							if (url && url.nodeValue) {
-								this.message_url = url.nodeValue;
+							if (url && url.value) {
+								this.message_url = url.value;
 							}
 							break;
 						}
 					} else {
 						/* Targeted to us */
-						this.message_id = msgid.nodeValue;
-						this.message_type = type.nodeValue;
+						this.message_id = msgid.value;
+						this.message_type = type.value;
 						this.message = m.firstChild.nodeValue;
-						if (url && url.nodeValue) {
-							this.message_url = url.nodeValue;
+						if (url && url.value) {
+							this.message_url = url.value;
 						}
 						break;
 					}
@@ -375,44 +375,44 @@ var wot_api_query =
 				var item = {};
 				a = u.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_USER_ICON);
 
-				if (a && a.nodeValue) {
-					item.icon = a.nodeValue;
+				if (a && a.value) {
+					item.icon = a.value;
 				}
 
 				a = u.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_USER_BAR);
 
-				if (a && a.nodeValue) {
-					item.bar = a.nodeValue;
+				if (a && a.value) {
+					item.bar = a.value;
 				}
 
 				a = u.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_USER_LENGTH);
 
-				if (a && a.nodeValue) {
-					item.length = a.nodeValue;
+				if (a && a.value) {
+					item.length = a.value;
 				}
 
 				a = u.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_USER_LABEL);
 
-				if (a && a.nodeValue) {
-					item.label = a.nodeValue;
+				if (a && a.value) {
+					item.label = a.value;
 				}
 
 				a = u.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_USER_URL);
 
-				if (a && a.nodeValue) {
-					item.url = a.nodeValue;
+				if (a && a.value) {
+					item.url = a.value;
 				}
 
 				a = u.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_USER_TEXT);
 
-				if (a && a.nodeValue) {
-					item.text = a.nodeValue;
+				if (a && a.value) {
+					item.text = a.value;
 				}
 
 				a = u.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_USER_NOTICE);
 
-				if (a && a.nodeValue) {
-					item.notice = a.nodeValue;
+				if (a && a.value) {
+					item.notice = a.value;
 				}
 
 				if (item.text && (!item.bar ||
@@ -444,8 +444,8 @@ var wot_api_query =
 
 			var l = s.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_STATUS_LEVEL);
 
-			if (l && l.nodeValue) {
-				wot_prefs.setChar("status_level", l.nodeValue);
+			if (l && l.value) {
+				wot_prefs.setChar("status_level", l.value);
 			}
 
 		} catch (e) {
@@ -562,15 +562,15 @@ var wot_api_register =
 			var id  = reg.attributes.getNamedItem(WOT_SERVICE_XML_REGISTER_ID);
 			var key = reg.attributes.getNamedItem(WOT_SERVICE_XML_REGISTER_KEY);
 
-			if (!id || !id.nodeValue || !key || !key.nodeValue ||
-				id.nodeValue.length  != WOT_LENGTH_WITNESS_ID ||
-				key.nodeValue.length != WOT_LENGTH_WITNESS_KEY) {
+			if (!id || !id.value || !key || !key.value ||
+				id.value.length  != WOT_LENGTH_WITNESS_ID ||
+				key.value.length != WOT_LENGTH_WITNESS_KEY) {
 				wot_api_register.error();
 				return
 			}
 
-			if (!wot_prefs.setChar("witness_id", id.nodeValue) ||
-				!wot_prefs.setChar("witness_key", key.nodeValue)) {
+			if (!wot_prefs.setChar("witness_id", id.value) ||
+				!wot_prefs.setChar("witness_key", key.value)) {
 				wot_api_register.error();
 				return;
 			}
@@ -672,15 +672,15 @@ var wot_api_reload =
 			var key = reload.attributes.getNamedItem(
 							WOT_SERVICE_XML_RELOAD_KEY);
 
-			if (!id || !id.nodeValue || !key || !key.nodeValue ||
-				id.nodeValue.length  != WOT_LENGTH_WITNESS_ID ||
-				key.nodeValue.length != WOT_LENGTH_WITNESS_KEY) {
+			if (!id || !id.value || !key || !key.value ||
+				id.value.length  != WOT_LENGTH_WITNESS_ID ||
+				key.value.length != WOT_LENGTH_WITNESS_KEY) {
 				wot_api_reload.error();
 				return;
 			}
 
-			if (!wot_prefs.setChar("witness_id", id.nodeValue) ||
-				!wot_prefs.setChar("witness_key", key.nodeValue)) {
+			if (!wot_prefs.setChar("witness_id", id.value) ||
+				!wot_prefs.setChar("witness_key", key.value)) {
 				wot_api_reload.error();
 				return;
 			}

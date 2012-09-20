@@ -44,11 +44,11 @@ var wot_shared =
 				var attr = shared[i].attributes.getNamedItem(
 								WOT_SERVICE_XML_UPDATE_SHARED_LEVEL);
 
-				if (!attr || !attr.nodeValue) {
+				if (!attr || !attr.value) {
 					return;
 				}
 
-				var level = Number(attr.nodeValue);
+				var level = Number(attr.value);
 
 				if (level < 1) {
 					return;
@@ -57,7 +57,7 @@ var wot_shared =
 				var attr = shared[i].attributes.getNamedItem(
 								WOT_SERVICE_XML_UPDATE_SHARED_DOMAINS);
 
-				if (!attr || !attr.nodeValue) {
+				if (!attr || !attr.value) {
 					return;
 				}
 
@@ -65,7 +65,7 @@ var wot_shared =
 					data[level] = [];
 				}
 
-				data[level] = data[level].concat(attr.nodeValue.split(","));
+				data[level] = data[level].concat(attr.value.split(","));
 			}
 
 			for (i in data) {

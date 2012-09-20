@@ -303,8 +303,8 @@ var wot_cache =
 			var index = target.attributes.getNamedItem(
 							WOT_SERVICE_XML_QUERY_TARGET_INDEX);
 
-			if (index && index.nodeValue != null) {
-				nonce += "-" + index.nodeValue;
+			if (index && index.value != null) {
+				nonce += "-" + index.value;
 			}
 
 			var name = this.resolve_nonce(nonce);
@@ -351,28 +351,28 @@ var wot_cache =
 					t = child.attributes.getNamedItem(
 							WOT_SERVICE_XML_QUERY_APPLICATION_T);
 
-					if (a && a.nodeValue) {
-						if (r && r.nodeValue && c && c.nodeValue) {
-							this.set(name, "reputation_" + a.nodeValue,
-								Number(r.nodeValue));
-							this.set(name, "confidence_" + a.nodeValue,
-								Number(c.nodeValue));
+					if (a && a.value) {
+						if (r && r.value && c && c.value) {
+							this.set(name, "reputation_" + a.value,
+								Number(r.value));
+							this.set(name, "confidence_" + a.value,
+								Number(c.value));
 						}
-						if (i && i.nodeValue) {
-							this.set(name, "inherited_" + a.nodeValue,
-								Number(i.nodeValue));
+						if (i && i.value) {
+							this.set(name, "inherited_" + a.value,
+								Number(i.value));
 						}
-						if (l && l.nodeValue) {
-							this.set(name, "lowered_" + a.nodeValue,
-								Number(l.nodeValue));
+						if (l && l.value) {
+							this.set(name, "lowered_" + a.value,
+								Number(l.value));
 						}
-						if (x && x.nodeValue) {
-							this.set(name, "excluded_" + a.nodeValue,
-								Number(x.nodeValue));
+						if (x && x.value) {
+							this.set(name, "excluded_" + a.value,
+								Number(x.value));
 						}
-						if (t && t.nodeValue) {
-							this.set(name, "testimony_" + a.nodeValue,
-								Number(t.nodeValue));
+						if (t && t.value) {
+							this.set(name, "testimony_" + a.value,
+								Number(t.value));
 						}
 					} else {
 						dump("wot_cache.add_target: application name missing\n");
@@ -404,7 +404,7 @@ var wot_cache =
 			var nonce =
 				q.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_NONCE);
 
-			if (!nonce || !nonce.nodeValue) {
+			if (!nonce || !nonce.value) {
 				dump("wot_cache.add_query: nonce attribute missing\n");
 				return;
 			}
@@ -418,7 +418,7 @@ var wot_cache =
 			var t = targets.item(0);
 
 			while (t) {
-				this.add_target(nonce.nodeValue, t, islink);
+				this.add_target(nonce.value, t, islink);
 				t = targets.item(++i);
 			}
 		} catch (e) {
