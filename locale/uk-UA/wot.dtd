@@ -2,7 +2,7 @@
 <!-- Menu items -->
 <!ENTITY wotEnabled.label			"Включена">
 <!ENTITY wotEnabled.accesskey		"В">
-<!ENTITY wotRefresh.label			"Відновити">
+<!ENTITY wotRefresh.label			"Оновити">
 <!ENTITY wotRefresh.accesskey		"О">
 <!ENTITY wotContent.label			"WOT">
 <!ENTITY wotContent.accesskey		"W">
