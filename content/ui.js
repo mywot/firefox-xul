@@ -161,7 +161,7 @@ var wot_ui = {
 		}
 	},
 
-	show_toolbar_button: function(id, before)
+	show_toolbar_button: function(id, after)
 	{
 		try {
 			var nbr = document.getElementById("nav-bar");
@@ -185,19 +185,13 @@ var wot_ui = {
 				bar = bar.nextSibling;
 			}
 
-			var target = document.getElementById(before);
+			var target = document.getElementById(after);
 
-			/* The before element might not exist in the nav-bar */
-			var elem = nbr.firstChild;
-
-			while (elem) {
-				if (elem == target) {
-					break;
-				}
-				elem = elem.nextSibling;
+			if (target) {
+				target = target.nextSibling;
 			}
-
-			nbr.insertItem(id, elem);
+		
+			nbr.insertItem(id, target);
 			nbr.setAttribute("currentset", nbr.currentSet);
 			document.persist("nav-bar", "currentset");
 		} catch (e) {
@@ -212,7 +206,7 @@ var wot_ui = {
 			/* Toolbar */
 			if (!wot_prefs.button_created || wot_prefs.create_button) {
 				wot_prefs.setBool("button_created", true);
-				this.show_toolbar_button("wot-button", "urlbar-container");
+				this.show_toolbar_button("wot-button", "stop-button");
 			}
 
 			/* Accessibility */
