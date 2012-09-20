@@ -443,26 +443,6 @@ var wot_search =
 		}
 	},
 
-	onchange: function(event)
-	{
-		try {
-			var content = event.currentTarget;
-
-			if (!content) {
-				return;
-			}
-
-			content.removeEventListener("DOMNodeInserted", wot_search.onchange,
-				false);
-
-			window.setTimeout(function() {
-					wot_search.watch(content);
-				}, 1000);
-		} catch (e) {
-			dump("wot_search.onchange: failed with " + e + "\n");
-		}
-	},
-
 	watch: function(content)
 	{
 		try {
@@ -476,8 +456,20 @@ var wot_search =
 				return;
 			}
 
-			content.addEventListener("DOMNodeInserted", wot_search.onchange,
-				false);
+			wot_search.observer = new MutationObserver(function(mutation) {
+					if (wot_search.observer) {
+						wot_search.observer.disconnect();
+						wot_search.observer = null;
+					}
+
+					window.setTimeout(function() {
+							wot_search.watch(content);
+						}, 500);
+				});
+
+			wot_search.observer.observe(content, {
+				attributes: true, childList: true, subtree: true
+			});
 		} catch (e) {
 			dump("wot_search.watch: failed with " + e + "\n");
 		}
