@@ -274,6 +274,9 @@ var wot_popup =
 	hidelayer: function(content, appearance)
 	{
 		try {
+			if (!content) {
+				return;
+			}
 			var layer = content.getElementById(this.id);
 
 			if (layer && layer.style.display != "none" &&
