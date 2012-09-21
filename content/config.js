@@ -235,7 +235,7 @@ const wot_prefs_bool = [
 const wot_prefs_char = [
 	[ "cookie_updated",				"0"	],
 	[ "extension_id",				""	],
-	[ "firstrun_guide",				"0"	],
+	[ "firstrun_guide",				WOT_FIRSTRUN_CURRENT ],
 	[ "last_message",				""	],
 	[ "last_version",				""	],
 	[ "norepsfor",					""	],
