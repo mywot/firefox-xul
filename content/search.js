@@ -456,18 +456,16 @@ var wot_search =
 				return;
 			}
 
-			wot_search.observer = new MutationObserver(function(mutation) {
-					if (wot_search.observer) {
-						wot_search.observer.disconnect();
-						wot_search.observer = null;
-					}
+			var mo = new MutationObserver(function(mutations, observer) {
+					observer.disconnect();
+					delete(observer);
 
 					window.setTimeout(function() {
 							wot_search.watch(content);
 						}, 500);
 				});
 
-			wot_search.observer.observe(content, {
+			mo.observe(content, {
 				attributes: true, childList: true, subtree: true
 			});
 		} catch (e) {
