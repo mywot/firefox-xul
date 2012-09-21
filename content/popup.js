@@ -274,9 +274,6 @@ var wot_popup =
 	hidelayer: function(content, appearance)
 	{
 		try {
-			if (!content) {
-				return;
-			}
 			var layer = content.getElementById(this.id);
 
 			if (layer && layer.style.display != "none" &&
@@ -285,7 +282,7 @@ var wot_popup =
 				layer.style.display = "none";
 			}
 		} catch (e) {
-			dump("wot_popup.hidelayer: failed with " + e + "\n");
+			/* dump("wot_popup.hidelayer: failed with " + e + "\n"); */
 		}
 	},
 
