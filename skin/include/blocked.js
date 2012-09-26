@@ -33,11 +33,18 @@ function load_l10n() {
 		xhr.send();
 		var text = xhr.responseText;
 
-		var lines = text.split("\r\n");
+		// detect separator
+		var sep = "\r\n";
+		if (text.indexOf(sep) < 1) {
+			sep = "\n";
+		}
+
+		var lines = text.split(sep);
 		for(var i=0; i < lines.length; i++) {
 			var pair = lines[i].split(" = ", 2);
 			l10n[pair[0]] = pair[1];
 		}
+
 	} catch (e) {
 		console.log("Exception in blocked.js / load_l10n()");
 	}
