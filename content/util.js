@@ -20,6 +20,12 @@
 
 var wot_util =
 {
+	reportError: function(params)
+	{
+		Components.utils.reportError(JSON.stringify(arguments));
+
+	},
+
 	isenabled: function()
 	{
 		try {
@@ -50,6 +56,40 @@ var wot_util =
 		}
 
 		return null;
+	},
+
+	time_sincefirstrun: function()
+	{
+		try {
+			// gives time (in seconds) spent from very first run of the addon.
+			var starttime_str = wot_prefs.getChar("firstrun_time");
+			if (starttime_str) {
+				var starttime = new Date(starttime_str);
+				return (new Date() - starttime) / 1000;    // in seconds;
+			} else {
+				return undefined;
+			}
+		} catch (e) {
+			return undefined;
+		}
+	},
+
+	time_since: function(a, b) {
+		try {
+			if (typeof a === "string") {
+				a = new Date(a);
+			}
+
+			b = b || new Date();
+
+			if (typeof b === "string") {
+				b = new Date(b);
+			}
+
+			return (b - a) / 1000;  // in seconds
+		} catch (e) {
+			return null;
+		}
 	}
 };
 
@@ -437,6 +477,62 @@ var wot_browser =
 			bss.addEngine(url, 1, null, false);
 		} catch (e) {
 			dump("wot_browser.installsearch: failed with " + e + "\n");
+		}
+	},
+
+	get_document: function (frame)
+	{
+		try {
+			frame = frame || getBrowser();
+			var framed_document = frame.document || frame.contentDocument;
+			return framed_document;
+		} catch (e) {
+			dump("wot_browser.get_document failed with " + e + "\n");
+			return null;
+		}
+	},
+
+	get_or_create_element: function (id, tag, frame)
+	{
+		try {
+			tag = tag || "div";
+			var framed_document = this.get_document(frame);
+
+			var elem = framed_document.getElementById(id);
+
+			if(!elem) {
+				elem = framed_document.createElement(tag);
+				elem.setAttribute("id", id);
+			}
+
+			return elem;
+		} catch (e) {
+			dump("wot_browser.get_or_create_element failed with " + e + "\n");
+			return null;
+		}
+	},
+
+	attach_element: function (element, frame)
+	{
+		try {
+			var framed_document = this.get_document(frame);
+
+			if(framed_document) {
+				var body = framed_document.getElementsByTagName("body");
+
+				if (!element || !body || !body.length) {
+					return false;
+				}
+
+				return body[0].appendChild(element);
+			} else {
+				dump("Can't get document of frame");
+				return false;
+			}
+
+		} catch (e) {
+			dump("wot_browser.attach_element failed with " + e + "\n");
+			return null;
 		}
 	}
 };
@@ -929,4 +1025,101 @@ var wot_css =
 			dump("wot_css.setstyle_rect: failed with " + e + "\n");
 		}
 	}
+};
+
+wot_file = {
+
+	wot_dir: "WOT",
+
+	import_libs: function()
+	{
+		Components.utils.import("resource://gre/modules/NetUtil.jsm");
+		Components.utils.import("resource://gre/modules/FileUtils.jsm");
+	},
+
+	read_json: function (filename, callback) {
+
+		try {
+
+			wot_file.import_libs();
+
+			var dir = FileUtils.getDir("ProfD", [wot_file.wot_dir], true); // to make sure the Dir exists
+			var file = FileUtils.getFile("ProfD", [wot_file.wot_dir, filename]);
+
+			NetUtil.asyncFetch(file, function(inputStream, status) {
+
+				if (!Components.isSuccessCode(status)) {
+					// Handle error!
+					callback({});
+					return;
+				}
+
+				try {
+					var data = NetUtil.readInputStreamToString(inputStream, inputStream.available());
+
+					if (data) {
+						var res = JSON.parse(data);
+						if (res instanceof Object) {
+							callback(res);
+						}
+					}
+
+				} catch (e) {
+					dump("utils.wot_file.read_json() is failed with " + e + "\n");
+					callback({});   // anyway, provide empty object
+					return;
+				}
+
+			});
+
+		} catch (e) {
+			dump("wot_file.read_json() failed with " + e + "\n");
+			callback({});   // anyway, provide empty object
+		}
+
+	},
+
+	save_json: function (filename, obj, callback) {
+
+		callback = callback || function(status){};
+
+		try {
+			wot_file.import_libs();
+
+			var dir = FileUtils.getDir("ProfD", [wot_file.wot_dir], true); // to make sure the Dir exists
+			var file = FileUtils.getFile("ProfD", [wot_file.wot_dir, filename]);
+
+			// You can also optionally pass a flags parameter here. It defaults to
+			// FileUtils.MODE_WRONLY | FileUtils.MODE_CREATE | FileUtils.MODE_TRUNCATE;
+			var ostream = FileUtils.openSafeFileOutputStream(file);
+
+			var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"].
+				createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+			converter.charset = "UTF-8";
+
+			var data = JSON.stringify(obj);
+			var istream = converter.convertToInputStream(data);
+
+			NetUtil.asyncCopy(istream, ostream, function(status) {
+				if (!Components.isSuccessCode(status)) {
+					// Handle error!
+					callback(false);
+					return;
+				}
+
+				// Data has been written to the file.
+				callback(true);
+			});
+
+		} catch (e) {
+			dump("wot_file.save_json() failed with " + e + "\n");
+			callback(false);   // report about failed attempt to save
+		}
+	},
+
+	remove: function (filename, callback)
+	{
+		// TODO: implement a function which will delete the file (for the case of uninstalling the addon)
+	}
+
 };

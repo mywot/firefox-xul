@@ -230,6 +230,8 @@ var wot_api_query =
 					wot_cache.set(hostname, "time", Date.now());
 
 					if (request.status == 200) {
+
+						// here is the point to process /query response and extract a FBL question
 						wot_cache.add_query(
 							request.responseXML.getElementsByTagName(
 								WOT_SERVICE_XML_QUERY),
@@ -796,6 +798,74 @@ var wot_api_submit =
 			request.send(null);
 		} catch (e) {
 			dump("wot_api_submit.send: failed with " + e + "\n");
+		}
+	}
+};
+
+var wot_api_feedback =
+{
+	send: function(url, question, choice)
+	{
+		try {
+			if (!wot_util.isenabled() || !url || !choice || !question) {
+				dump("wot_api_feedback.send() - invalid params were given\n");
+				return;
+			}
+
+			var nonce = wot_crypto.nonce();
+
+			var context = wot_arc4.create(wot_hash.hmac_sha1hex(
+				wot_prefs.witness_key, nonce));
+
+			if (!context) {
+				dump("wot_api_feedback.send() - no context was given\n");
+				return;
+			}
+
+			var crypted = wot_arc4.crypt(context,
+				wot_hash.strtobin(url));
+
+			if (!crypted) {
+				dump("wot_api_feedback.send() - url encryption failed\n");
+				return;
+			}
+
+			var qs = WOT_SERVICE_API_FEEDBACK +
+				"?question=" + String(question) +
+				"&choice=" + String(choice) +
+				"&url=" + encodeURIComponent(btoa(wot_hash.bintostr(crypted))) +
+				"&id="		+ wot_prefs.witness_id +
+				"&nonce="	+ nonce;
+
+			qs += wot_url.getapiparams();
+
+			var request = new XMLHttpRequest();
+
+			if (!request) {
+				dump("wot_api_feedback.send() - failed to create Request object\n");
+				return;
+			}
+
+			request.open("GET", wot_core.wot_service_url() + wot_crypto.authenticate_query(qs));
+
+			new wot_cookie_remover(request);
+
+			request.onload = function(event)
+			{
+				try {
+					if (request.status == 200) {
+						dump("wot_api_feedback.onload: answer submitted successfully\n");
+					}
+				} catch (e) {
+					dump("wot_api_feedback.onload: failed with " + e + "\n");
+				}
+			};
+
+			request.send(null);
+			dump("wot_api_feedback.send() feedback was sent\n");
+
+		} catch (e) {
+			dump("wot_api_feedback.send: failed with " + e + "\n");
 		}
 	}
 };

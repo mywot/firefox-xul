@@ -1077,9 +1077,9 @@ var wot_search =
 		}
 	},
 
-	getsandboxfunc: function(sandbox, name)
+	getsandboxfunc: function(sandbox, name, obj)
 	{
-		var obj = this.sandboxapi;
+		obj = obj || wot_search.sandboxapi;
 
 		return function() {
 			var args = [ sandbox ];
@@ -1253,7 +1253,7 @@ var wot_search =
 		} catch (e) {
 			dump("wot_search.onclick: failed with " + e + "\n");
 		}
-	},
+	}
 };
 
 wot_modules.push({ name: "wot_search", obj: wot_search });

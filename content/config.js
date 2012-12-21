@@ -70,6 +70,7 @@ const WOT_SERVICE_API_REGISTER	= WOT_SERVICE_API_VERSION + "register";
 const WOT_SERVICE_API_RELOAD	= WOT_SERVICE_API_VERSION + "reload";
 const WOT_SERVICE_API_SUBMIT	= WOT_SERVICE_API_VERSION + "submit";
 const WOT_SERVICE_API_UPDATE    = WOT_SERVICE_API_VERSION + "update";
+const WOT_SERVICE_API_FEEDBACK    = WOT_SERVICE_API_VERSION + "feedback";
 
 /* API XML tags and attributes */
 const WOT_SERVICE_XML_LINK						= "link";
@@ -85,6 +86,10 @@ const WOT_SERVICE_XML_QUERY_APPLICATION_I		= "inherited";
 const WOT_SERVICE_XML_QUERY_APPLICATION_L		= "lowered";
 const WOT_SERVICE_XML_QUERY_APPLICATION_E		= "excluded";
 const WOT_SERVICE_XML_QUERY_APPLICATION_T		= "t";
+const WOT_SERVICE_XML_QUERY_QUESTION			= "question";
+const WOT_SERVICE_XML_QUERY_QUESTION_ID			= "questionId";
+const WOT_SERVICE_XML_QUERY_QUESTION_TEXT		= "questionText";
+const WOT_SERVICE_XML_QUERY_CHOICE_TEXT 		= "choiceText";
 const WOT_SERVICE_XML_QUERY_MSG					= "message";
 const WOT_SERVICE_XML_QUERY_MSG_ID				= "id";
 const WOT_SERVICE_XML_QUERY_MSG_ID_MAINT		= "downtime";
@@ -229,7 +234,9 @@ const wot_prefs_bool = [
 	[ "warning_unknown_2",			false ],
 	[ "warning_unknown_3",			false ],
 	[ "warning_unknown_4",			false ],
-	[ "warning_unknown_5",			false ]
+	[ "warning_unknown_5",			false ],
+	[ "feedback_enabled",			true  ],
+	[ "feedback_optedout",			false ]
 ];
 
 const wot_prefs_char = [
@@ -244,7 +251,8 @@ const wot_prefs_char = [
 	[ "update_checked",				"0"	],
 	[ "warning_opacity",			""	],
 	[ "witness_id",					""	],
-	[ "witness_key",				""	]
+	[ "witness_key",				""	],
+	[ "feedback_lasttimeasked",  	""	]
 ];
 
 const wot_prefs_int = [

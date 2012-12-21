@@ -34,6 +34,7 @@
 	<script type="application/x-javascript" src="chrome://wot/content/prefs.js"/>
 	<script type="application/x-javascript" src="chrome://wot/content/my.js"/>
 	<script type="application/x-javascript" src="chrome://wot/content/warning.js"/>
+    <script type="application/x-javascript" src="chrome://wot/content/surveys.js"/>
 	<script type="application/x-javascript" src="chrome://wot/content/update.js"/>
 	<script type="application/x-javascript" src="chrome://wot/content/popup.js"/>
 	<script type="application/x-javascript" src="chrome://wot/content/search.js"/>

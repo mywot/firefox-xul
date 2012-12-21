@@ -379,10 +379,62 @@ var wot_cache =
 					}
 				}
 
+				// process Feedback Question
+				this.add_question(name, child);
+
 				child = child.nextSibling;
 			}
 		} catch (e) {
 			dump("wot_cache.add_target: failed with " + e + "\n");
+		}
+	},
+
+	add_question: function (hostname, target_node)
+	{
+		if (target_node.localName == WOT_SERVICE_XML_QUERY_QUESTION) {
+
+			try {
+				var doc = target_node.ownerDocument;
+				var id_node = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_QUESTION_ID).item(0),
+					text_node = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_QUESTION_TEXT).item(0),
+					choices_nodes = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_CHOICE_TEXT);
+
+				if (id_node && id_node.firstChild && text_node && text_node.firstChild) {
+					var id = String(id_node.firstChild.nodeValue),
+						text = String(text_node.firstChild.nodeValue);
+
+					if (id && text) {
+
+						var choice = choices_nodes.item(0),
+							choices = [];
+
+						while(choice) {
+
+							var choice_text = choice.firstChild.nodeValue;
+							var choice_value = choice.attributes.getNamedItem("value").value;
+
+							if (choice_text && choice_value) {
+								choices.push({ value: choice_value, text: choice_text });
+							}
+
+							choice = choice.nextSibling;
+						}
+
+						// now store question data to global WOT cache (if there are any choices)
+						if (choices.length) {
+							this.set(hostname, "question_id", id);
+							this.set(hostname, "question_text", text);
+							this.set(hostname, "choices_number", Number(choices.length));
+							for(var j=0; j < choices.length; j++) {
+								this.set(hostname, "choice_value_" + String(j), choices[j]['value']);
+								this.set(hostname, "choice_text_" + String(j), choices[j]['text']);
+							}
+						}
+					}
+				}
+			} catch(e) {
+				dump("Failed to extract Question data from XML\n");
+			}
 		}
 	},
 
