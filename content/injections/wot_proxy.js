@@ -1,5 +1,5 @@
 /*
-	wot.js
+	wot_proxy.js
 	Copyright © 2012 -   WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
@@ -24,7 +24,7 @@
 * */
 
 var wot = {
-	version: "20121116",
+	version: "20121116",    // TODO: init this value from the add-on core code
 	platform: "firefox",
 	debug: false,           // when changing this, don't forget to switch ga_id value also!
 	default_component: 0,

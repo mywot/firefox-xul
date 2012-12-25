@@ -1,5 +1,5 @@
 /*
- warning.js
+ surveys.js
  Copyright © 2012 -   WOT Services Oy <info@mywot.com>
 
  This file is part of WOT.
@@ -22,7 +22,7 @@ var wot_surveys = {
 
 	fbl_form_schema:    "//",
 	storage_file:       "storage.json",
-	fbl_form_uri:       "fbl.local/feedback/surveys.html",
+	fbl_form_uri:       "fbl.local/feedback/1/surveys.html",
 	re_fbl_uri:         null,
 	wrapper_id:         "wot_surveys_wrapper",
 	is_shown:           false,
@@ -59,7 +59,6 @@ var wot_surveys = {
 
 	load_delayed: function ()
 	{
-		dump("WOT feedback Loop is being initialized\n");
 		this.re_fbl_uri = new RegExp("^" + wot_surveys.fbl_form_uri, "i");  // prepare RegExp once to use often
 
 		try {
@@ -72,11 +71,8 @@ var wot_surveys = {
 			dump("wot_surveys.load_delayed raised the exeption:" + e + "\n");
 		}
 
-		dump("WOT FBL: last_time_asked = " + this.last_time_asked + "\n");
-
 		// Load the JSON stored data about asked websites
 		wot_file.read_json(wot_surveys.storage_file, function (data, status) {
-			dump("File is loaded? " + JSON.stringify(data) + "\n");
 
 			if (data && data.asked) {
 				wot_surveys.asked = data.asked;
