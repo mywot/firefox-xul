@@ -18,11 +18,15 @@
  along with WOT. If not, see <http://www.gnu.org/licenses/>.
  */
 
+const WOT_PREFIX_ASKED = "wot_asked";
+const WOT_FBL_ASKED_RE = new RegExp(WOT_PREFIX_ASKED + "\:(.+)\:(.+)\:status");
+const WOT_FBL_ASKED_LOADED = "wot_asked_loaded";
+
 var wot_surveys = {
 
 	fbl_form_schema:    "//",
 	storage_file:       "storage.json",
-	fbl_form_uri:       "fbl.local/feedback/1/surveys.html",
+	fbl_form_uri:       "fbl.local/feedback/1/surveys.html",    // don't forget to change version!
 	re_fbl_uri:         null,
 	wrapper_id:         "wot_surveys_wrapper",
 	is_shown:           false,
@@ -36,11 +40,11 @@ var wot_surveys = {
 						  "wot_proxy.js", "ga_configure.js",
 						 "surveys.widgets.js", "ga_init.js"],
 
-	asked: {},
-	asked_loaded: false,
-	last_time_asked: null,
+	_asked: {},
 
-	calm_period:        1 * 24 * 3600, // Time in seconds after asking a question before we can ask next question
+	global_calm_period: 1 * 24 * 3600, // Time in seconds after asking a question before we can ask next question
+	site_calm_period:   10 * 24 * 3600, // delay between asking for the particular website if user hasn't given the feedback yet
+	site_max_reask_tries: 3,    // How many times we can ask a user for the feedback about the website
 	always_ask:         ['api.mywot.com', 'fb.mywot.com'],
 	always_ask_passwd:  "#surveymewot", // this string must be present to show survey by force
 	reset_passwd:       "#wotresetsurveysettings", // this string must be present to reset timers and optout
@@ -61,25 +65,8 @@ var wot_surveys = {
 	{
 		this.re_fbl_uri = new RegExp("^" + wot_surveys.fbl_form_uri, "i");  // prepare RegExp once to use often
 
-		try {
-			var lasttime = wot_prefs.getChar("feedback_lasttimeasked", null);
-			if(lasttime) {
-				this.last_time_asked = new Date(lasttime);
-			}
-		} catch (e) {
-			this.last_time_asked = null;
-			dump("wot_surveys.load_delayed raised the exeption:" + e + "\n");
-		}
-
 		// Load the JSON stored data about asked websites
-		wot_file.read_json(wot_surveys.storage_file, function (data, status) {
-
-			if (data && data.asked) {
-				wot_surveys.asked = data.asked;
-			}
-
-			wot_surveys.asked_loaded = true;    // set this flag anyway to indicate that loading finished
-		});
+		wot_surveys.asked.load_from_file();
 	},
 
 	domcontentloaded: function(event)
@@ -131,7 +118,7 @@ var wot_surveys = {
 
 	unload: function (event)
 	{
-		// TODO: Implement some cleaning here?
+		wot_surveys.asked.dump_to_file();   // save state to the file
 	},
 
 	get_or_create_sandbox: function(content)
@@ -271,12 +258,18 @@ var wot_surveys = {
 	reset_settings: function (hostname)
 	{
 		var ws = wot_surveys;
-		ws.asked_loaded = true;
-		ws.last_time_asked =null;
-		ws.asked = {};      // reset the list of websites asked about
+		ws.asked.set_loaded();
 		ws.opt_out(false);  // reset opt-out
-		wot_prefs.setChar("feedback_lasttimeasked", ""); // reset time
-		ws.remember_asked(hostname, 0, ws.FLAGS.none);
+
+		// reset the list of websites asked about
+		ws.asked.enumerate(function(hostname, question_id) {
+			ws.asked.remove(hostname, question_id, "time");
+			ws.asked.remove(hostname, question_id, "count");
+			ws.asked.remove(hostname, question_id, "status");
+		});
+		ws.asked.dump_to_file();
+
+		ws.set_lasttime_asked(false); // reset last time to empty
 	},
 
 	remove_form: function (sandbox, timeout)
@@ -339,14 +332,13 @@ var wot_surveys = {
 	{
 		var ws = wot_surveys;
 
-		dump("IS_TTS? " + JSON.stringify(question) + "\n");
-
 		try {
-			if(!wot_surveys.asked_loaded) return false; // data isn't ready for process
-			dump("if(!wot_surveys.asked_loaded) passed.\n");
+			if(!wot_surveys.asked.is_loaded()) return false; // data isn't ready for process
+			dump("if(!wot_surveys.asked.is_loaded()) passed.\n");
 
 			if(!(question && question.id !== undefined && question.text && question.choices)) {
 				// no question was given for the current website - do nothing
+				dump("is_tts: empty or no question test NOT PASSED\n");
 				return false;
 			}
 			dump("is_tts: question test passed.\n");
@@ -354,29 +346,45 @@ var wot_surveys = {
 			// on special domains we should always show the survey if there is a special password given (for testing purposes)
 			// e.g. try this url http://api.mywot.com/test.html#surveymewot
 			if (ws.always_ask.indexOf(hostname) >= 0 && url && url.indexOf(ws.always_ask_passwd) >= 0) {
+				dump("is_tts: Magic 'always show' test PASSED\n");
 				return true;
 			}
-			dump("is_tts: always ask test not passed.\n");
 
 			if (ws.is_optedout() || !wot_prefs.getBool("feedback_enabled", true)) {
+				dump("is_tts: Opted-out test NOT PASSED\n");
 				return false;
 			}
-			dump("is_tts: opt-out and feedback_enabled test passed.\n");
 
 			// check if have asked the user more than X days ago or never before
-			if (ws.last_time_asked && wot_util.time_since(ws.last_time_asked) < ws.calm_period) {
+			var lasttime = ws.get_lasttime_asked();
+			if (lasttime && wot_util.time_since(lasttime) < ws.global_calm_period) {
+				dump("is_tts: Last time test NOT PASSED\n");
 				return false;
 			}
-			dump("is_tts: last-time test passed.\n");
 
 			// check whether we already have asked the user about current website
-			if (ws.asked[hostname] && ws.asked[hostname][question.id]) {
-				// here we could test also if user just closed the survey last time without providing any info
-				// (in case if we want to be more annoying)
+			var asked_status = ws.asked.get(hostname, question.id, "status");
+			var asked_time = ws.asked.get(hostname, question.id, "time");
+			var asked_count = ws.asked.get(hostname, question.id, "count");
+
+			if (asked_status === ws.FLAGS.submited) {
+				dump("is_tts: 'Already gave feedback for the website' test NOT PASSED\n");
 				return false;
 			}
-			dump("is_tts: already asked test passed -> show it!\n");
+			// all other statuses ("closed" and "none") are subject to show FBL again after delay
 
+			if (asked_count >= ws.site_max_reask_tries) {
+				dump("is_tts: Max asked times NOT PASSED\n");
+				return false;
+			}
+
+			// If we have never showed the FBL for this site before, or more than "delay"
+			if (!(asked_time === null || wot_util.time_since(asked_time) >= ws.site_calm_period)) {
+				dump("is_tts: 'Calm delay for the website' test NOT PASSED\n");
+				return false;
+			}
+
+			dump("is_tts: already asked test passed -> show it!\n");
 			return true;
 		} catch (e) {
 			dump("wot_surveys.is_tts() failed with " + e + "\n");
@@ -403,30 +411,13 @@ var wot_surveys = {
 
 			status = status === undefined ? ws.FLAGS.none : status;
 
-			var asked_data = {
-				time: new Date(),   // time of first show the survey
-				status: status
-			};
+			var count = ws.asked.get(target, question_id, "count") || 0;
 
-			if (ws.asked[target]) {
-				if (ws.asked[target][question_id]) {
-					asked_data = ws.asked[target][question_id];
-					asked_data.status = status;    // just update the status
-				} else {
-					ws.asked[target][question_id] = {};
-				}
+			ws.asked.set(target, question_id, "status", status);
+			ws.asked.set(target, question_id, "time", new Date());
+			ws.asked.set(target, question_id, "count", count + 1);  // increase counter of times FBL has been shown
 
-			} else {
-				ws.asked[target] = {};
-				ws.asked[target][question_id] = {};
-			}
-
-			ws.asked[target][question_id] = asked_data;    // keep in runtime variable
-
-			var storage = {
-				asked: wot_surveys.asked
-			};
-			wot_file.save_json(wot_surveys.storage_file, storage); // and dump to file
+			ws.asked.dump_to_file();
 
 		} catch (e) {
 			console.error("remember_asked() failed with", e);
@@ -440,12 +431,34 @@ var wot_surveys = {
 				ws.remember_asked(data.target, data.question_id, status);
 
 				// we remember the last time of user's interaction with FBL
-				ws.last_time_asked = new Date();
-				wot_prefs.setChar("feedback_lasttimeasked", ws.last_time_asked);
+				ws.set_lasttime_asked();
 			}
 		} catch (e) {
-			console.error(e);
+			dump("wot_surveys.save_asked_status() failed with " + e + "\n");
 		}
+	},
+
+	get_lasttime_asked: function () {
+		try {
+			var lasttime = wot_prefs.getChar("feedback_lasttimeasked", null);
+			if(lasttime) {
+				return new Date(lasttime);
+			}
+		} catch (e) {
+			dump("wot_surveys.get_lasttime_asked() failed with " + e + "\n");
+		}
+		return null;
+	},
+
+	set_lasttime_asked: function (time) {
+		if (time === undefined) {
+			time = new Date();
+		}
+		if (time === false) {
+			time = "";
+		}
+		dump("wot_survey.set_lasttime_asked(" + time + ") is invoked\n");
+		wot_prefs.setChar("feedback_lasttimeasked", String(time));
 	},
 
 	get_top_content: function (sandbox)
@@ -492,7 +505,7 @@ var wot_surveys = {
 	dispatch: function (message, data, sandbox)
 	{
 		switch(message) {
-			case "shown": // FBL was shown
+			case "shown": // FBL form was shown
 				wot_surveys.reveal_form(sandbox);   // make iframe visible
 				wot_surveys.save_asked_status(data, wot_surveys.FLAGS.none);
 				break;
@@ -533,6 +546,176 @@ var wot_surveys = {
 				}
 			} catch (e) {
 				dump("wot_surveys.sandboxapi.wot_post(): failed with " + e + "\n");
+			}
+
+		}
+
+	},
+
+	asked: {
+
+		is_loaded: function () {
+			var res = wot_hashtable.get(WOT_FBL_ASKED_LOADED);
+			return !!res;
+		},
+
+		set_loaded: function () {
+			wot_hashtable.set(WOT_FBL_ASKED_LOADED, true);
+		},
+
+		get: function (hostname, question_id, prop) {
+			var name = wot_surveys.asked._get_name(hostname, question_id, prop),
+				res = null;
+			if (name) {
+				res = wot_hashtable.get(name);
+			} else {
+				dump("wot_survey.asked._get_name() returned NULL\n");
+			}
+			return res;
+		},
+
+		set: function (hostname, question_id, prop, value) {
+			var name = wot_surveys.asked._get_name(hostname, question_id, prop);
+			if (name) {
+				wot_hashtable.set(name, value);
+				dump("HashT_set: " + name + " == " + value + "\n");
+			} else {
+				dump("wot_survey.asked._get_name() returned NULL\n");
+			}
+		},
+
+		remove: function (hostname, question_id, prop) {
+			var name = wot_surveys.asked._get_name(hostname, question_id, prop);
+			wot_hashtable.remove(name);
+		},
+
+		_get_name: function (hostname, question_id, prop) {
+			// makes a string indentifier like "mywot.com:12345:status"
+			var cn = wot_idn.utftoidn(hostname);
+
+			if (!cn) {
+				return null;
+			}
+
+			return WOT_PREFIX_ASKED + ":" + cn + ":" + String(question_id) + ":" + prop;
+
+		},
+
+		_extract_name: function (element) {
+			try {
+				if (!element || !element.QueryInterface) {
+					return null;
+				}
+
+				var property =
+					element.QueryInterface(Components.interfaces.nsIProperty);
+
+				if (!property) {
+					return null;
+				}
+
+				// enumerate only records with property 'status'
+				if (property.name.lastIndexOf(":status") < 0) {
+					return null;
+				}
+
+				var match = property.name.match(WOT_FBL_ASKED_RE);
+
+				if (!match || !match[1] || !match[2]) {
+					return null;
+				}
+
+				return {
+					name: match[1],
+					question_id: match[2]
+				};
+
+			} catch (e) {
+				dump("wot_cache.get_name_from_element: failed with " + e + "\n");
+			}
+			return null;
+		},
+
+		enumerate: function (func) {
+			var ws = wot_surveys,
+				hash = wot_hashtable.get_enumerator();
+
+			while (hash.hasMoreElements()) {
+				var name_question = ws.asked._extract_name(hash.getNext());
+				if (name_question) {
+					var name = name_question.name,
+						question_id = name_question.question_id;
+					if (name) {
+						func(name, question_id);
+					}
+				}
+			}
+		},
+
+		load_from_file: function () {
+			wot_file.read_json(wot_surveys.storage_file, function (data, status) {
+
+				try {
+					if (data && data.asked) {
+						wot_surveys._asked = data.asked;
+
+						for (var hostname in data.asked) {
+							var questions = data.asked[hostname];
+							for (var question_id in questions) {
+								var qd = questions[question_id];
+								if (qd) {
+									var time =  qd['time'];
+									var status = qd['status'];
+									var count = qd['count'] || 0;
+
+									if (time && status !== null) {
+										dump("Reading 'asked' file: " + hostname + "/ " + question_id + "\n");
+										wot_surveys.asked.set(hostname, question_id, "status", status);
+										wot_surveys.asked.set(hostname, question_id, "time", time);
+										wot_surveys.asked.set(hostname, question_id, "count", count);
+									}
+								}
+							}
+						}
+
+					} else {
+						dump("FBL: no data in file storage found\n");
+					}
+
+				} catch (e) {
+					dump("wot_surveys.load_from_file() failed with " + e + "\n");
+				}
+
+				wot_surveys.asked.set_loaded();    // set this flag anyway to indicate that loading finished
+			});
+
+		},
+
+		dump_to_file: function () {
+			var ws = wot_surveys, _asked = {};
+
+			try {
+
+				ws.asked.enumerate(function (name, question_id) {
+					if (!_asked[name]) {
+						_asked[name] = {};
+					}
+
+					_asked[name][question_id] = {
+						status: ws.asked.get(name, question_id, "status"),
+						time:   ws.asked.get(name, question_id, "time"),
+						count:  (ws.asked.get(name, question_id, "count") || 0)
+					};
+
+				});
+
+				var storage = {
+					asked: _asked
+				};
+				wot_file.save_json(wot_surveys.storage_file, storage); // and dump to file
+
+			} catch (e) {
+				dump("wot_surveys.asked.dump_to_file() failed with " + e + "\n");
 			}
 
 		}
