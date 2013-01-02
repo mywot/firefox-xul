@@ -1027,7 +1027,7 @@ var wot_css =
 	}
 };
 
-wot_file = {
+var wot_file = {
 
 	wot_dir: "WOT",
 
@@ -1063,6 +1063,7 @@ wot_file = {
 							callback(res);
 						}
 					}
+					callback({});   // whether no data is loaded call it anyway to finish the load process
 
 				} catch (e) {
 					dump("utils.wot_file.read_json() is failed with " + e + "\n");

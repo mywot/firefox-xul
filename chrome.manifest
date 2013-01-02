@@ -1,6 +1,6 @@
-content	    wot    content/
+content     wot    content/
 content     wot    content/ contentaccessible=yes
-resource	wot-base-dir content/
+resource    wot-base-dir content/
 overlay	chrome://browser/content/browser.xul	chrome://wot/content/overlay.xul
 overlay	chrome://navigator/content/navigatorOverlay.xul	chrome://wot/content/overlay.xul
 locale	wot	en-US	locale/en-US/

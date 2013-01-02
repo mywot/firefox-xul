@@ -30,8 +30,6 @@ var wot_surveys = {
 	fbl_form_uri:       "api.mywot.com/feedback/1/surveys.html",    // don't forget to change version!
 	re_fbl_uri:         null,
 	wrapper_id:         "wot_surveys_wrapper",
-	is_shown:           false,
-	wrapper:            null,
 	pheight:            350,
 	pwidth:             392,
 	px:                 10,
@@ -67,7 +65,9 @@ var wot_surveys = {
 		this.re_fbl_uri = new RegExp("^" + wot_surveys.fbl_form_uri, "i");  // prepare RegExp once to use often
 
 		// Load the JSON stored data about asked websites
-		wot_surveys.asked.load_from_file();
+		if (!wot_surveys.asked.is_loaded()) {
+			wot_surveys.asked.load_from_file();
+		}
 	},
 
 	domcontentloaded: function(event)
@@ -119,7 +119,8 @@ var wot_surveys = {
 
 	unload: function (event)
 	{
-		wot_surveys.asked.dump_to_file();   // save state to the file
+		// dumping global hash table on unloading doesn't work here since wot_hashtable is already unloaded
+//		wot_surveys.asked.dump_to_file();   // save state to the file
 	},
 
 	get_or_create_sandbox: function(content)
@@ -209,8 +210,6 @@ var wot_surveys = {
 			dump("can't add element to DOM / wot.surveys.inject_placeholder()");
 			return;
 		}
-
-		ws.wrapper = wrapper;  // keep the link to the element to destroy it
 
 		wrapper.setAttribute("scrolling", "no");
 
