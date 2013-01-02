@@ -1,6 +1,6 @@
 /*
  surveys.js
- Copyright © 2012 -   WOT Services Oy <info@mywot.com>
+ Copyright © 2012 - 2013  WOT Services Oy <info@mywot.com>
 
  This file is part of WOT.
 
@@ -26,7 +26,8 @@ var wot_surveys = {
 
 	fbl_form_schema:    "//",
 	storage_file:       "storage.json",
-	fbl_form_uri:       "fbl.local/feedback/1/surveys.html",    // don't forget to change version!
+//	fbl_form_uri:       "fbl.local/feedback/1/surveys.html",    // for dev only. don't forget to change version!
+	fbl_form_uri:       "api.mywot.com/feedback/1/surveys.html",    // don't forget to change version!
 	re_fbl_uri:         null,
 	wrapper_id:         "wot_surveys_wrapper",
 	is_shown:           false,
