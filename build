@@ -192,7 +192,7 @@ echo "$0: updating chrome.manifest"
 cd "${FINAL_DIR}"
 
 S_CONTENT="s/^(content[[:space:]]+[^[:space:]]+[[:space:]]+)(.+)$/\\1jar:chrome\\/${APP_NAME}\.jar!\\/\\2/"
-S_RESOURCE="s/^(resource[[:space:]]+[^[:space:]]+[[:space:]]+)(.+)$/\\1jar:resource\\/${APP_NAME}\.jar!\\/\\2/"
+S_RESOURCE="s/^(resource[[:space:]]+[^[:space:]]+[[:space:]]+)(.+)$/\\1jar:chrome\\/${APP_NAME}\.jar!\\/\\2/"
 S_LOCSKIN="s/^(skin|locale)([[:space:]]+[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]+)(.*)$/\\1\\2jar:chrome\\/${APP_NAME}\.jar!\\/\\3/"
 
 sed -i -r -e "$S_CONTENT" chrome.manifest
