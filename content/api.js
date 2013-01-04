@@ -1,6 +1,6 @@
 /*
 	api.js
-	Copyright © 2005-2012  WOT Services Oy <info@mywot.com>
+	Copyright © 2005 - 2013  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -230,8 +230,6 @@ var wot_api_query =
 					wot_cache.set(hostname, "time", Date.now());
 
 					if (request.status == 200) {
-
-						// here is the point to process /query response and extract a FBL question
 						wot_cache.add_query(
 							request.responseXML.getElementsByTagName(
 								WOT_SERVICE_XML_QUERY),
@@ -808,7 +806,7 @@ var wot_api_feedback =
 	{
 		try {
 			if (!wot_util.isenabled() || !url || !choice || !question) {
-				dump("wot_api_feedback.send() - invalid params were given\n");
+//				dump("wot_api_feedback.send() - invalid params were given\n");
 				return;
 			}
 
@@ -818,7 +816,7 @@ var wot_api_feedback =
 				wot_prefs.witness_key, nonce));
 
 			if (!context) {
-				dump("wot_api_feedback.send() - no context was given\n");
+//				dump("wot_api_feedback.send() - no context was given\n");
 				return;
 			}
 
@@ -826,7 +824,7 @@ var wot_api_feedback =
 				wot_hash.strtobin(url));
 
 			if (!crypted) {
-				dump("wot_api_feedback.send() - url encryption failed\n");
+//				dump("wot_api_feedback.send() - url encryption failed\n");
 				return;
 			}
 
@@ -842,7 +840,7 @@ var wot_api_feedback =
 			var request = new XMLHttpRequest();
 
 			if (!request) {
-				dump("wot_api_feedback.send() - failed to create Request object\n");
+//				dump("wot_api_feedback.send() - failed to create Request object\n");
 				return;
 			}
 
@@ -854,7 +852,7 @@ var wot_api_feedback =
 			{
 				try {
 					if (request.status == 200) {
-						dump("wot_api_feedback.onload: answer submitted successfully\n");
+//						dump("wot_api_feedback.onload: answer submitted successfully\n");
 					}
 				} catch (e) {
 					dump("wot_api_feedback.onload: failed with " + e + "\n");
@@ -862,7 +860,7 @@ var wot_api_feedback =
 			};
 
 			request.send(null);
-			dump("wot_api_feedback.send() feedback was sent\n");
+//			dump("wot_api_feedback.send() feedback was sent\n");
 
 		} catch (e) {
 			dump("wot_api_feedback.send: failed with " + e + "\n");

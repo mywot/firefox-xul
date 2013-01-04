@@ -41,7 +41,7 @@ var wot_surveys = {
 
 	_asked: {},
 
-	global_calm_period: 1 * 24 * 3600, // Time in seconds after asking a question before we can ask next question
+	global_calm_period: 3 * 24 * 3600, // Time in seconds after asking a question before we can ask next question
 	site_calm_period:   10 * 24 * 3600, // delay between asking for the particular website if user hasn't given the feedback yet
 	site_max_reask_tries: 3,    // How many times we can ask a user for the feedback about the website
 	always_ask:         ['api.mywot.com', 'fb.mywot.com'],
@@ -169,7 +169,6 @@ var wot_surveys = {
 
 	inject_javascript: function (content)
 	{
-		dump("Going to inject JS into FBL form\n");
 		var sandbox = wot_surveys.get_or_create_sandbox(content);
 
 		var contents = "",
@@ -297,8 +296,6 @@ var wot_surveys = {
 			var question_text = wot_cache.get(hostname, "question_text");
 			var choices_number = wot_cache.get(hostname, "choices_number");
 
-			dump("SHOW: id, text : " + String(question_id) + " , " + String(question_text) + "\n");
-
 			if (choices_number > 0) {
 				var question = {
 					target: hostname,
@@ -334,31 +331,31 @@ var wot_surveys = {
 
 		try {
 			if(!wot_surveys.asked.is_loaded()) return false; // data isn't ready for process
-			dump("if(!wot_surveys.asked.is_loaded()) passed.\n");
+//			dump("if(!wot_surveys.asked.is_loaded()) passed.\n");
 
 			if(!(question && question.id !== undefined && question.text && question.choices)) {
 				// no question was given for the current website - do nothing
-				dump("is_tts: empty or no question test NOT PASSED\n");
+//				dump("is_tts: empty or no question test NOT PASSED\n");
 				return false;
 			}
-			dump("is_tts: question test passed.\n");
+//			dump("is_tts: question test passed.\n");
 
 			// on special domains we should always show the survey if there is a special password given (for testing purposes)
 			// e.g. try this url http://api.mywot.com/test.html#surveymewot
 			if (ws.always_ask.indexOf(hostname) >= 0 && url && url.indexOf(ws.always_ask_passwd) >= 0) {
-				dump("is_tts: Magic 'always show' test PASSED\n");
+//				dump("is_tts: Magic 'always show' test PASSED\n");
 				return true;
 			}
 
 			if (ws.is_optedout() || !wot_prefs.getBool("feedback_enabled", true)) {
-				dump("is_tts: Opted-out test NOT PASSED\n");
+//				dump("is_tts: Opted-out test NOT PASSED\n");
 				return false;
 			}
 
 			// check if have asked the user more than X days ago or never before
 			var lasttime = ws.get_lasttime_asked();
 			if (lasttime && wot_util.time_since(lasttime) < ws.global_calm_period) {
-				dump("is_tts: Last time test NOT PASSED\n");
+//				dump("is_tts: Last time test NOT PASSED\n");
 				return false;
 			}
 
@@ -368,23 +365,23 @@ var wot_surveys = {
 			var asked_count = ws.asked.get(hostname, question.id, "count");
 
 			if (asked_status === ws.FLAGS.submited) {
-				dump("is_tts: 'Already gave feedback for the website' test NOT PASSED\n");
+//				dump("is_tts: 'Already gave feedback for the website' test NOT PASSED\n");
 				return false;
 			}
 			// all other statuses ("closed" and "none") are subject to show FBL again after delay
 
 			if (asked_count >= ws.site_max_reask_tries) {
-				dump("is_tts: Max asked times NOT PASSED\n");
+//				dump("is_tts: Max asked times NOT PASSED\n");
 				return false;
 			}
 
 			// If we have never showed the FBL for this site before, or more than "delay"
 			if (!(asked_time === null || wot_util.time_since(asked_time) >= ws.site_calm_period)) {
-				dump("is_tts: 'Calm delay for the website' test NOT PASSED\n");
+//				dump("is_tts: 'Calm delay for the website' test NOT PASSED\n");
 				return false;
 			}
 
-			dump("is_tts: already asked test passed -> show it!\n");
+//			dump("is_tts: already asked test passed -> show it!\n");
 			return true;
 		} catch (e) {
 			dump("wot_surveys.is_tts() failed with " + e + "\n");
@@ -457,7 +454,6 @@ var wot_surveys = {
 		if (time === false) {
 			time = "";
 		}
-		dump("wot_survey.set_lasttime_asked(" + time + ") is invoked\n");
 		wot_prefs.setChar("feedback_lasttimeasked", String(time));
 	},
 
@@ -539,7 +535,7 @@ var wot_surveys = {
 				// try un-json data (DON'T call any methods of data_json since it is unsafe!)
 				var data = JSON.parse(data_json);
 
-				dump("wot_surveys.sandpoxapi.wot_post(): " + JSON.stringify(data) + "\n");
+//				dump("wot_surveys.sandpoxapi.wot_post(): " + JSON.stringify(data) + "\n");
 
 				if (data && data.message && data.data) {
 					wot_surveys.dispatch(data.message, data.data, sandbox);
@@ -569,7 +565,7 @@ var wot_surveys = {
 			if (name) {
 				res = wot_hashtable.get(name);
 			} else {
-				dump("wot_survey.asked._get_name() returned NULL\n");
+//				dump("wot_survey.asked._get_name() returned NULL\n");
 			}
 			return res;
 		},
@@ -578,9 +574,9 @@ var wot_surveys = {
 			var name = wot_surveys.asked._get_name(hostname, question_id, prop);
 			if (name) {
 				wot_hashtable.set(name, value);
-				dump("HashT_set: " + name + " == " + value + "\n");
+//				dump("HashT_set: " + name + " == " + value + "\n");
 			} else {
-				dump("wot_survey.asked._get_name() returned NULL\n");
+//				dump("wot_survey.asked._get_name() returned NULL\n");
 			}
 		},
 
@@ -669,7 +665,7 @@ var wot_surveys = {
 									var count = qd['count'] || 0;
 
 									if (time && status !== null) {
-										dump("Reading 'asked' file: " + hostname + "/ " + question_id + "\n");
+//										dump("Reading 'asked' file: " + hostname + "/ " + question_id + "\n");
 										wot_surveys.asked.set(hostname, question_id, "status", status);
 										wot_surveys.asked.set(hostname, question_id, "time", time);
 										wot_surveys.asked.set(hostname, question_id, "count", count);
@@ -679,7 +675,7 @@ var wot_surveys = {
 						}
 
 					} else {
-						dump("FBL: no data in file storage found\n");
+//						dump("FBL: no data in file storage found\n");
 					}
 
 				} catch (e) {
@@ -717,9 +713,7 @@ var wot_surveys = {
 			} catch (e) {
 				dump("wot_surveys.asked.dump_to_file() failed with " + e + "\n");
 			}
-
 		}
-
 	}
 
 };

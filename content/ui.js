@@ -112,11 +112,7 @@ var wot_status = {
 			if (type == WOT_WARNING_NOTIFICATION || type == WOT_WARNING_DOM) {
 				wot_warning.add(wot_core.hostname, content, type);
 			} else {
-				if(type != WOT_WARNING_BLOCK) {
-					wot_warning.hide(content);
-					// TODO: here we should put a call for FBL showing
-//					wot_surveys.inject();
-				}
+				if(type != WOT_WARNING_BLOCK) wot_warning.hide(content);
 			}
 		} catch (e) {
 			dump("wot_status.update: failed with " + e + "\n");

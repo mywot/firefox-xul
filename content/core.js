@@ -1,6 +1,6 @@
 /*
 	core.js
-	Copyright © 2005 - 2012  WOT Services Oy <info@mywot.com>
+	Copyright © 2005 - 2013  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -98,6 +98,7 @@ var wot_core =
 	purged: Date.now(),
 	loaded: false,
 	force_https: false,
+	is_beingUninstalled: false,
 
 	detect_environment: function()
 	{
@@ -166,6 +167,13 @@ var wot_core =
 				wot_core.update();
 			}, 250);
 
+			try {
+				Components.utils.import("resource://gre/modules/AddonManager.jsm");
+				AddonManager.addAddonListener(wot_core.install_listener);
+			} catch (e) {
+				dump("wot_core.load() setting up uninstall listener failed with " + e + "\n");
+			}
+
 			var browser = getBrowser();
 			this.listener = new wot_listener(browser);
 			browser.addProgressListener(this.listener);
@@ -178,6 +186,19 @@ var wot_core =
 			}
 		} catch (e) {
 			dump("wot_core.load: failed with " + e + "\n");
+		}
+	},
+
+	install_listener: {
+		onUninstalling: function(addon) {
+			if (addon.id == WOT_GUID) {
+				wot_core.is_beingUninstalled = true;
+			}
+		},
+		onOperationCancelled: function(addon) {
+			if (addon.id == WOT_GUID) {
+				wot_core.is_beingUninstalled = (addon.pendingOperations & AddonManager.PENDING_UNINSTALL) != 0;
+			}
 		}
 	},
 
@@ -206,11 +227,22 @@ var wot_core =
 				this.browser = null;
 			}
 
+			// do pre-cleaning on uninstall (before modules are unloaded)
+			if (wot_core.is_beingUninstalled) {
+				wot_core.clean_search_rules();
+			}
+
 			for (var i in wot_modules) {
 				if (typeof(wot_modules[i].obj.unload) == "function") {
 					wot_modules[i].obj.unload();
 				}
 			}
+
+			// do past-cleaning on uninstall
+			if (wot_core.is_beingUninstalled) {
+				wot_core.clean_profile_dir();
+			}
+
 		} catch (e) {
 			dump("wot_core.unload: failed with " + e + "\n");
 		}
@@ -695,6 +727,23 @@ var wot_core =
 			return 0;
 		} else {
 			return "x";
+		}
+	},
+
+	clean_search_rules: function () {
+		// removes search rules from preferences
+		wot_prefs.deleteBranch(WOT_SEARCH);
+	},
+
+	clean_profile_dir: function () {
+		// removes only WOT dir in the profile folder
+		try {
+			var nsiDir = FileUtils.getDir("ProfD", [wot_file.wot_dir], false);
+			if (nsiDir && nsiDir.exists()) {
+				nsiDir.remove(true);    // 'true' for recursive removal
+			}
+		} catch (e) {
+			dump("wot_core.clean_profile_dir() failed with " + e + "\n");
 		}
 	}
 };

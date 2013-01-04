@@ -1,6 +1,6 @@
 /*
 	util.js
-	Copyright © 2005-2012  WOT Services Oy <info@mywot.com>
+	Copyright © 2005 - 2013  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -23,7 +23,6 @@ var wot_util =
 	reportError: function(params)
 	{
 		Components.utils.reportError(JSON.stringify(arguments));
-
 	},
 
 	isenabled: function()
@@ -1116,11 +1115,5 @@ var wot_file = {
 			dump("wot_file.save_json() failed with " + e + "\n");
 			callback(false);   // report about failed attempt to save
 		}
-	},
-
-	remove: function (filename, callback)
-	{
-		// TODO: implement a function which will delete the file (for the case of uninstalling the addon)
 	}
-
 };
