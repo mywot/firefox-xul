@@ -39,11 +39,11 @@ var wot_surveys = {
 						  "wot_proxy.js", "ga_configure.js",
 						 "surveys.widgets.js", "ga_init.js"],
 
-	_asked: {},
-
-	global_calm_period: 3 * 24 * 3600, // Time in seconds after asking a question before we can ask next question
-	site_calm_period:   10 * 24 * 3600, // delay between asking for the particular website if user hasn't given the feedback yet
+	global_calm_period:   3 * 24 * 3600, // Time in seconds after asking a question before we can ask next question
+	site_calm_period:     10 * 24 * 3600, // delay between asking for the particular website if user hasn't given the feedback yet
 	site_max_reask_tries: 3,    // How many times we can ask a user for the feedback about the website
+	newuser_period:       14 * 24 * 3600, // Don't ask new users (<14 days)
+
 	always_ask:         ['api.mywot.com', 'fb.mywot.com'],
 	always_ask_passwd:  "#surveymewot", // this string must be present to show survey by force
 	reset_passwd:       "#wotresetsurveysettings", // this string must be present to reset timers and optout
@@ -359,6 +359,12 @@ var wot_surveys = {
 				return false;
 			}
 
+			var firstrun_time = wot_util.time_sincefirstrun();
+			if (firstrun_time && firstrun_time < ws.newuser_period) {
+//				dump("is_tts: old user test NOT PASSED\n");
+				return false;
+			}
+
 			// check whether we already have asked the user about current website
 			var asked_status = ws.asked.get(hostname, question.id, "status");
 			var asked_time = ws.asked.get(hostname, question.id, "time");
@@ -653,8 +659,6 @@ var wot_surveys = {
 
 				try {
 					if (data && data.asked) {
-						wot_surveys._asked = data.asked;
-
 						for (var hostname in data.asked) {
 							var questions = data.asked[hostname];
 							for (var question_id in questions) {
@@ -665,7 +669,6 @@ var wot_surveys = {
 									var count = qd['count'] || 0;
 
 									if (time && status !== null) {
-//										dump("Reading 'asked' file: " + hostname + "/ " + question_id + "\n");
 										wot_surveys.asked.set(hostname, question_id, "status", status);
 										wot_surveys.asked.set(hostname, question_id, "time", time);
 										wot_surveys.asked.set(hostname, question_id, "count", count);
