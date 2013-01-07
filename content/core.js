@@ -733,6 +733,7 @@ var wot_core =
 	clean_search_rules: function () {
 		// removes search rules from preferences
 		wot_prefs.deleteBranch(WOT_SEARCH);
+		wot_prefs.clear("update_checked");
 	},
 
 	clean_profile_dir: function () {
