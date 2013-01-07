@@ -243,6 +243,7 @@ const wot_prefs_char = [
 	[ "cookie_updated",				"0"	],
 	[ "extension_id",				""	],
 	[ "firstrun_guide",				"0"	],
+	[ "firstrun_time",				""	],
 	[ "last_message",				""	],
 	[ "last_version",				""	],
 	[ "norepsfor",					""	],

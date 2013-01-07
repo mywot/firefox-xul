@@ -64,8 +64,21 @@ var wot_firstrun =
 			}
 
 			if (this.opentab(WOT_FIRSTRUN_WELCOME, wot_url.getprefurl(tab))) {
+
+				// not a first time launch, but...
+				// check it the date of first time is set, otherwise set it to 2 weeks ago date
+				if (!wot_prefs.getChar("firstrun_time", "")) {
+					var d = new Date();
+					var past_date = new Date(d.getFullYear(), d.getMonth(), d.getDay() - 14);
+					wot_prefs.setChar("firstrun_time", past_date);
+				}
+
 				this.opentab(WOT_FIRSTRUN_CURRENT,
 					wot_url.getprefurl(partner, false, WOT_UPDATE_PATH));
+			} else {
+				// the add-on is launched first time
+				// remember the date/time of the first launch
+				wot_prefs.setChar("firstrun_time", new Date());
 			}
 		} catch (e) {
 			dump("wot_firstrun.load: failed with " + e + "\n");
