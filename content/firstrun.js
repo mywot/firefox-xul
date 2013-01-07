@@ -66,7 +66,7 @@ var wot_firstrun =
 			if (this.opentab(WOT_FIRSTRUN_WELCOME, wot_url.getprefurl(tab))) {
 
 				// not a first time launch, but...
-				// check it the date of first time is set, otherwise set it to 2 weeks ago date
+				// check whether the date of first time is set, otherwise set it to 2 weeks ago date
 				if (!wot_prefs.getChar("firstrun_time", "")) {
 					var d = new Date();
 					var past_date = new Date(d.getFullYear(), d.getMonth(), d.getDay() - 14);
