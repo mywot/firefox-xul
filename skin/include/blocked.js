@@ -1,6 +1,6 @@
 /*
  warning.js
- Copyright © 2012 -   WOT Services Oy <info@mywot.com>
+ Copyright © 2012 - 2013  WOT Services Oy <info@mywot.com>
 
  This file is part of WOT.
 
@@ -25,25 +25,31 @@ var blocked_target = null;
 var l10n = {};
 var wot_modules = [];
 
-function load_l10n() {
+function load_l10n(callback) {
 	// loads locale stings for add-on, parse them and store in l10n object
 	try {
 		xhr = new XMLHttpRequest();
-		xhr.open("GET", "chrome://wot/locale/wot.properties", false);
+		xhr.open("GET", "chrome://wot/locale/wot.properties", true);
+
+		xhr.onload = function(e) {
+			var text = xhr.responseText;
+
+			// detect separator
+			var sep = "\r\n";
+			if (text.indexOf(sep) < 1) {
+				sep = "\n";
+			}
+
+			var lines = text.split(sep);
+			for(var i=0; i < lines.length; i++) {
+				var pair = lines[i].split(" = ", 2);
+				l10n[pair[0]] = pair[1];
+			}
+
+			callback();
+		};
+
 		xhr.send();
-		var text = xhr.responseText;
-
-		// detect separator
-		var sep = "\r\n";
-		if (text.indexOf(sep) < 1) {
-			sep = "\n";
-		}
-
-		var lines = text.split(sep);
-		for(var i=0; i < lines.length; i++) {
-			var pair = lines[i].split(" = ", 2);
-			l10n[pair[0]] = pair[1];
-		}
 
 	} catch (e) {
 		console.log("Exception in blocked.js / load_l10n()");
@@ -112,14 +118,8 @@ function blocked_info()
 		location.href = "http://www.mywot.com/scorecard/" + blocked_target;
 	}
 }
-function blocked_load()
-{
-	if (!window.location.search) {
-		return;
-	}
 
-	load_l10n();
-
+function blocked_action() {
 	var query = atob(decodeURIComponent(window.location.search.substr(1)));
 	var m = /target=([^&]*)/.exec(query);
 
@@ -187,4 +187,13 @@ function blocked_load()
 		wot_warning.load_delayed(true); // init warning with blocked=true flag to hide "Goto the site" button
 		wot_warning.add(blocked_target, document, WOT_WARNING_DOM, reasons.reason);
 	}
+}
+
+function blocked_load()
+{
+	if (!window.location.search) {
+		return;
+	}
+
+	load_l10n(blocked_action);
 }
