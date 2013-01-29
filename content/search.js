@@ -821,8 +821,9 @@ var wot_search =
 			var offline = wot_browser.isoffline();
 
 			for (var i = 0; i < content.links.length; ++i) {
-				if (content.links[i].getAttribute(this.processed) ||
-						!content.links[i].parentNode) {
+				var link = content.links[i];
+				if (link.isContentEditable || link.getAttribute(this.processed) ||
+						!link.parentNode) {
 					continue; /* Process each link only once */
 				}
 
@@ -830,7 +831,7 @@ var wot_search =
 				var showrating = false;
 
 				if (rule && contentmatch) {
-					target = this.processrule(content.links[i], rule);
+					target = this.processrule(link, rule);
 				}
 
 				if (target) {
@@ -839,7 +840,7 @@ var wot_search =
 					/* Prefetch ratings for all links, not only if ratings are
 						shown */
 					target = wot_idn.utftoidn(
-								wot_url.gethostname(content.links[i].href));
+								wot_url.gethostname(link.href));
 				}
 
 				if (!target) {
@@ -854,10 +855,10 @@ var wot_search =
 				}
 
 				if (showrating) {
-					this.addrating(target, content, content.links[i], rule);
+					this.addrating(target, content, link, rule);
 				}
 
-				content.links[i].setAttribute(this.processed, true);
+				link.setAttribute(this.processed, true);
 			}
 
 			if (rule && contentmatch) {
