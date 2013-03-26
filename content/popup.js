@@ -20,7 +20,7 @@
 
 const WOT_POPUP_LAYER =
 	"<div id=\"wot-logo\"></div>" +
-	"<div id=\"wot-ratings-ID\" class=\"wot-ratings\">" +
+	"<div id=\"wot-popup-ratings-ID\" class=\"wot-popup-ratings\">" +
 		"<div id=\"wot-r0-stack-ID\" class=\"wot-stack\">" +
 			"<div id=\"wot-r0-header-ID\" class=\"wot-header\">WOT_POPUP_TEXT_0</div>" +
 			"<div id=\"wot-r0-rep-ID\" class=\"wot-rep\"></div>" +
@@ -261,7 +261,7 @@ var wot_popup =
 				wot_popup.offsetheight -= wot_popup.ratingheight;
 			}
 			bottom.style.borderBottom = "0";
-			content.getElementById("wot-ratings" +
+			content.getElementById("wot-popup-ratings" +
 				this.postfix).style.height =
 				wot_popup.offsetheight + wot_popup.areaheight + "px";
 			return true;

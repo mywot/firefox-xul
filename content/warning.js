@@ -36,7 +36,7 @@ var wot_warning =
 			"<div class='wot-openscorecard-wrap'>" +
 			"<span id='wotinfobutton' class='wot-openscorecard wot-link'>{INFO}</span>" +
 			"</div>" +
-			"<div id='wot-ratings'>";
+			"<div id='wot-ws-ratings'>";
 
 		for(var c=0; c < WOT_APPLICATIONS; c++) {
 

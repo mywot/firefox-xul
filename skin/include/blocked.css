@@ -157,12 +157,12 @@
 }
 
 /* Section of ratings */
-#wot-ratings {
+#wot-ws-ratings {
     width: 63% !important;
     margin: 0.5em auto !important;
 }
 
-#wotcontainer.wotnoratings #wot-ratings {
+#wotcontainer.wotnoratings #wot-ws-ratings {
     display: none !important;
 }
 

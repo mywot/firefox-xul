@@ -17,7 +17,7 @@
 .accessible #wot-logo {
 	background: url("chrome://wot/skin/fusion/accessible/popup-logo.png") top left no-repeat;
 }
-#wot-ratings, .wot-ratings {
+#wot-popup-ratings, .wot-popup-ratings {
 	background: url("chrome://wot/skin/fusion/popup.png") bottom left no-repeat;
 	display: block;
 	height: 214px;
