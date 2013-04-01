@@ -397,11 +397,18 @@ var wot_cache =
 				var doc = target_node.ownerDocument;
 				var id_node = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_QUESTION_ID).item(0),
 					text_node = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_QUESTION_TEXT).item(0),
+                    dismiss_node = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_DISMISS_TEXT).item(0),
 					choices_nodes = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_CHOICE_TEXT);
 
 				if (id_node && id_node.firstChild && text_node && text_node.firstChild) {
 					var id = String(id_node.firstChild.nodeValue),
-						text = String(text_node.firstChild.nodeValue);
+						text = String(text_node.firstChild.nodeValue),
+                        dismiss_text = "";
+
+                    if (dismiss_node && dismiss_node.firstChild) {
+                        dismiss_text = String(dismiss_node.firstChild.nodeValue);
+                    }
+
 
 					if (id && text) {
 
@@ -424,6 +431,7 @@ var wot_cache =
 						if (choices.length) {
 							this.set(hostname, "question_id", id);
 							this.set(hostname, "question_text", text);
+                            this.set(hostname, "dismiss_text", dismiss_text);
 							this.set(hostname, "choices_number", Number(choices.length));
 							for(var j=0; j < choices.length; j++) {
 								this.set(hostname, "choice_value_" + String(j), choices[j]['value']);

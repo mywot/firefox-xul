@@ -30,7 +30,7 @@ var wot_surveys = {
 	fbl_form_uri:       "api.mywot.com/feedback/1/surveys.html",    // don't forget to change version!
 	re_fbl_uri:         null,
 	wrapper_id:         "wot_surveys_wrapper",
-	pheight:            350,
+	pheight:            400,
 	pwidth:             392,
 	px:                 10,
 	py:                 10,
@@ -294,6 +294,7 @@ var wot_surveys = {
 		try {
 			var question_id = wot_cache.get(hostname, "question_id");
 			var question_text = wot_cache.get(hostname, "question_text");
+            var dismiss_text = wot_cache.get(hostname, "dismiss_text");
 			var choices_number = wot_cache.get(hostname, "choices_number");
 
 			if (choices_number > 0) {
@@ -303,6 +304,7 @@ var wot_surveys = {
 					question: {
 						id: question_id,
 						text: question_text,
+                        dismiss_text: dismiss_text,
 						choices: []
 					}
 				};

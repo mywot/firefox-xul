@@ -90,6 +90,7 @@ const WOT_SERVICE_XML_QUERY_QUESTION			= "question";
 const WOT_SERVICE_XML_QUERY_QUESTION_ID			= "questionId";
 const WOT_SERVICE_XML_QUERY_QUESTION_TEXT		= "questionText";
 const WOT_SERVICE_XML_QUERY_CHOICE_TEXT 		= "choiceText";
+const WOT_SERVICE_XML_QUERY_DISMISS_TEXT 		= "dismiss";
 const WOT_SERVICE_XML_QUERY_MSG					= "message";
 const WOT_SERVICE_XML_QUERY_MSG_ID				= "id";
 const WOT_SERVICE_XML_QUERY_MSG_ID_MAINT		= "downtime";

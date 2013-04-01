@@ -1,6 +1,6 @@
 /*
  surveys.widgets.js
- Copyright © 2012 -   WOT Services Oy <info@mywot.com>
+ Copyright © 2012 - 2013  WOT Services Oy <info@mywot.com>
 
  This file is part of WOT.
 
@@ -268,13 +268,13 @@ var surveys = {
 		},
 
 		on_logo: function (e) {
-
+//			wot.ga.fire_event(wot.ga.categories.FBL, wot.ga.actions.FBL_logo);
+//			surveys.report("logo", {});
 		},
 
 		on_close: function (e) {
 			var _this = surveys;
 			wot.ga.fire_event(wot.ga.categories.FBL, wot.ga.actions.FBL_closed, _this.target);
-
 			// give small time for GA to send event
 			surveys.report("close", {});
 		},
@@ -287,7 +287,7 @@ var surveys = {
 			_this.is_whatisthis_shown = false;
 
 			if(_this.is_optout_shown) {
-				surveys.ui.hide_bottom_section();
+				_this.hide_bottom_section();
 				_this.hide_optout();
 
 			} else {
@@ -296,18 +296,18 @@ var surveys = {
 				$tab.show();
 
 				$(".button-yes", $tab).click(function () {
-					wot.ga.fire_event(wot.ga.categories.FBL, wot.ga.actions.FBL_optout_yes, _this.target);
+					wot.ga.fire_event(wot.ga.categories.FBL, wot.ga.actions.FBL_optout_yes, surveys.target);
 					surveys.report("optout", {});
 				});
 
 				$(".button-no", $tab).click(function () {
 					_this.hide_optout();
 					_this.hide_bottom_section();
-					wot.ga.fire_event(wot.ga.categories.FBL, wot.ga.actions.FBL_optout_no, _this.target);
+					wot.ga.fire_event(wot.ga.categories.FBL, wot.ga.actions.FBL_optout_no, surveys.target);
 				});
 
 				_this.is_optout_shown = true;
-				wot.ga.fire_event(wot.ga.categories.FBL, wot.ga.actions.FBL_optout_shown, _this.target);
+				wot.ga.fire_event(wot.ga.categories.FBL, wot.ga.actions.FBL_optout_shown, surveys.target);
 			}
 		},
 
@@ -319,13 +319,13 @@ var surveys = {
 			_this.hide_optout();
 
 			if (_this.is_whatisthis_shown) {
-				surveys.ui.hide_bottom_section();
+				_this.hide_bottom_section();
 				$btab.hide();
 			} else {
-				surveys.ui.show_bottom_section();
+				_this.show_bottom_section();
 				$btab.show();
 				_this.is_whatisthis_shown = true;
-				wot.ga.fire_event(wot.ga.categories.FBL, wot.ga.actions.FBL_whatisthis, _this.target);
+				wot.ga.fire_event(wot.ga.categories.FBL, wot.ga.actions.FBL_whatisthis, surveys.target);
 			}
 		},
 
@@ -342,14 +342,33 @@ var surveys = {
 			}
 		},
 
+        on_dismiss: function (e) {
+            var _this = surveys;
+            wot.ga.fire_event(wot.ga.categories.FBL, wot.ga.actions.FBL_dismiss, _this.stats.get_impressions());
+            surveys.report("close", {});
+        },
+
 		update_texts: function () {
 			var _this = surveys;
 
+            var $question = $(".surveys-question");
+
+            var visible_host = _this.decodedtarget.length < 35 ? _this.decodedtarget : (wot.i18n("fbl", "this_website") || "this website");
+
 			// sanitize the questions (to avoid XSS with addon) and replace placeholder %site% with target name
 			var text = wot.utils.htmlescape(_this.question.text).replace(/%site%/,
-				"<span class='domainname'>" + _this.decodedtarget + "</span>");
+				"<span class='domainname'>" + visible_host + "</span>");
 
-			$(".surveys-question").html(text);  // should be safe since we sanitized the question
+            if (text.length > 100) {
+                $question.addClass("long");
+            }
+
+            $question.html(text);  // should be safe since we sanitized the question
+
+            if (_this.question.dismiss_text) {
+                $(".action-dismiss").text(_this.question.dismiss_text);
+            }
+            $(".surveys-action").toggleClass("hidden", !_this.question.dismiss_text);
 		},
 
 		update_submit_status: function () {
@@ -389,13 +408,13 @@ var surveys = {
 		$(".surveys-optout").click(_this.ui.on_optout);
 		$(".close-button").click(_this.ui.on_close);
 		$(".surveys-whatsthis").click(_this.ui.on_whatisthis);
+        $(".action-dismiss").click(_this.ui.on_dismiss);
 		$(".wot-logo").click(_this.ui.on_logo);
 
 		$(".close-button-secondary").click(function (event) {
 			_this.ui.hide_bottom_section();
 			wot.ga.fire_event(wot.ga.categories.FBL, wot.ga.actions.FBL_bottom_close);
 		});
-
 	}
 };
 
