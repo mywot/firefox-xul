@@ -1,6 +1,6 @@
 /*
 	warning.css
-	Copyright © 2009 - 2012  WOT Services Oy <info@mywot.com>
+	Copyright © 2009 - 2013  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -36,6 +36,8 @@
     margin: 0 ! important;
     display: block;
     cursor: default;
+    -moz-user-select: none;
+    user-select: none;
 }
 
 #wotwarning {
@@ -51,6 +53,7 @@
 }
 
 #wotcontainer {
+    position: static !important;
     width: 420px ! important; /* fixed width */
     margin: 0 auto 0 !important;
     outline: 0 !important;
@@ -63,12 +66,15 @@
     border: #babbbb solid 1px;
     box-shadow: 5px 5px 20px #111;
     background-color: #e9e9e9 !important;
-    background: -moz-linear-gradient(left, #bdbdbd 0%, #e0e0e0 15%, #f1f1f1 50%, #e0e0e0 85%, #bdbdbd 100%);
+    background: -moz-linear-gradient(left, #DBDADA 0%, #F0F0F0 15%, #F4F4F4 50%, #F0F0F0 85%, #DBDADA 100%);
     cursor: default !important;
     color: #504f4f !important;
+    direction: ltr; /* fixes chrome issue #64 */
+    float: none; /* fixes chrome #90 */
 }
 
 .wotcontainer * {
+    position: static !important;
     line-height: normal !important;
     font-family: "Verdana", sans-serif !important;
     font-weight: normal !important;
@@ -88,6 +94,11 @@
     color: #504f4f !important;
     -moz-user-select: none;
     user-select: none;
+    width: auto; /* fixes issue #64 */
+    float: none; /* fixes issue #64 */
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
 }
 
 .wot-logo {
@@ -329,23 +340,21 @@
     background-image: -moz-linear-gradient(top, #f9f9f9 60%, #d5d5d5) !important;
     font-size: 10pt !important;
     font-weight: bold !important;
-
     -moz-transition: box-shadow 0.1s !important;
 }
 
 .wot-button:hover {
-    box-shadow: 0px 0px 20px rgba(121, 180, 42, 0.8) !important;
+    box-shadow: 0 0 20px rgba(121, 180, 42, 0.8) !important;
     border-color: #80ba33 !important;
 }
 
 .accessible .wot-button:hover {
-    box-shadow: 0px 0px 20px rgba(145, 145, 145, 0.8) !important;
+    box-shadow: 0 0 20px rgba(145, 145, 145, 0.8) !important;
     border-color: #8c8d8c !important;
 }
 
 .wot-button:active {
     border-color: #babbbb !important;
-    /*box-shadow: 0px 0px 20px rgba(#88, #89, #89, 0.8);*/
     box-shadow: none !important;
     top: 1px !important;
     background-image: -moz-linear-gradient(top, #e2e1e1 71%, #b0afaf) !important;
