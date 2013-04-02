@@ -42,7 +42,7 @@ var surveys = {
 		var res = null;
 		try {
 			if(!encoded) return null;
-			var decoded = atob(encoded);
+			var decoded = window.atob(encoded);
 			if(!decoded) return null;
 
 			res = JSON.parse(decoded);
@@ -382,7 +382,7 @@ var surveys = {
 	init: function () {
 		var _this = surveys;
 		var data = _this.extract_data(window.name); // we use name property to transfer data from addon's background
-		if (data) {
+        if (data) {
 			_this.decodedtarget = data.decodedtarget || "";
 			_this.target = data.target || "";
 			_this.question = data.question ? data.question : {};
