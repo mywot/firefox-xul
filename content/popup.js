@@ -323,12 +323,14 @@ var wot_popup =
 	onmouseover: function(event)
 	{
 		try {
-			if (!wot_util.isenabled() || !wot_prefs.show_search_popup ||
-					!event || !event.view) {
+
+            var event_view = event.view; // workaround for FF Nightly 22.0a1 (when this object is accessed second time, it is null)
+
+			if (!wot_util.isenabled() || !wot_prefs.show_search_popup || !event_view) {
 				return;
 			}
 
-			var content = event.view.document;
+			var content = event_view.document;
 
 			if (!content) {
 				return;
@@ -373,16 +375,16 @@ var wot_popup =
 			layer.style.height = popupheight + "px";
 			layer.style.width  = wot_popup.width  + "px";
 
-			var height = event.view.innerHeight - wot_popup.barsize;
-			var width  = event.view.innerWidth  - wot_popup.barsize;
+			var height = event_view.innerHeight - wot_popup.barsize;
+			var width  = event_view.innerWidth  - wot_popup.barsize;
 
 			if (height < popupheight ||	width < wot_popup.width) {
 				wot_popup.hidelayer(content);
 				return
 			}
 
-			var vscroll = event.view.pageYOffset;
-			var hscroll = event.view.pageXOffset;
+			var vscroll = event_view.pageYOffset;
+			var hscroll = event_view.pageXOffset;
 
 			// more accurate way to calc position
 			// got from http://javascript.ru/ui/offset

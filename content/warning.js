@@ -551,11 +551,14 @@ var wot_warning =
 	{
 
 		try {
-			if (!event || !event.view) {
+
+            var event_view = event.view;
+
+			if (!event_view) {
 				return;
 			}
 
-			var content = event.view.document;
+			var content = event_view.document;
 
 			if (!content) {
 				return;
