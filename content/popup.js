@@ -1,6 +1,6 @@
 /*
 	popup.js
-	Copyright © 2006 - 2012  WOT Services Oy <info@mywot.com>
+	Copyright © 2006 - 2013  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -97,8 +97,8 @@ var wot_popup =
 	{
 		try {
 			if (!wot_prefs.show_search_popup) {
-				return false;
-			}
+                return false;
+            }
 
 			if (!this.layer) {
 				this.layer = WOT_POPUP_LAYER;
@@ -118,7 +118,17 @@ var wot_popup =
 				return true;
 			}
 
-			var layer = content.createElement("div");
+            if (!elem) {
+                var body = content.getElementsByTagName("body");
+
+                if (body && body.length) {
+                    elem = body[0];
+                }
+            }
+
+            if (elem.isContentEditable) return false;
+
+            var layer = content.createElement("div");
 			layer.setAttribute("id", this.id);
 			layer.setAttribute("class", "wot-popup-layer");
 			layer.setAttribute("style", "display: none; cursor: pointer;");
@@ -128,13 +138,6 @@ var wot_popup =
 			style.setAttribute("type", "text/css");
 			style.innerHTML = WOT_POPUP_STYLE;
 
-			if (!elem) {
-				var body = content.getElementsByTagName("body");
-
-				if (body && body.length) {
-					elem = body[0];
-				}
-			}
 
 			var head = content.getElementsByTagName("head");
 
