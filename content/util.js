@@ -306,13 +306,24 @@ var wot_browser =
 
 	isprivatemode: function()
 	{
-		try {
-			var pbs = Components.classes["@mozilla.org/privatebrowsing;1"]
-						.getService(Components.interfaces.nsIPrivateBrowsingService);
 
-			return pbs.privateBrowsingEnabled;
-		} catch (e) {
-		}
+        try {
+            // Firefox 20
+            var win = getBrowser().contentDocument.defaultView;
+            Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
+            return PrivateBrowsingUtils.isWindowPrivate(win);
+
+        } catch(e) {
+            // pre Firefox 20 (if you do not have access to a doc.
+            // might use doc.hasAttribute("privatebrowsingmode") then instead)
+            try {
+                var pbs = Cc["@mozilla.org/privatebrowsing;1"].
+                    getService(Ci.nsIPrivateBrowsingService);
+                return pbs.privateBrowsingEnabled;
+            } catch(e) {
+                Cu.reportError(e); return;
+            }
+        }
 
 		return false;
 	},
