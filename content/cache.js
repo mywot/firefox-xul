@@ -1,6 +1,6 @@
 /*
 	cache.js
-	Copyright © 2005-2011  WOT Services Oy <info@mywot.com>
+	Copyright © 2005 - 2013  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -29,7 +29,7 @@ var wot_hashtable =
 			this.bag = Components.classes["@mozilla.org/hash-property-bag;1"].
 						getService(Components.interfaces.nsIWritablePropertyBag);
 		} catch (e) {
-			dump("wot_hashtable.init: failed with: " + e + "\n");
+			wdump("wot_hashtable.init: failed with: " + e);
 		}
 	},
 
@@ -169,7 +169,8 @@ var wot_cache =
 			return;
 		}
 
-		wot_hashtable.set(pn, value);
+//		wdump(name + ", " + property + ", " + value);
+        wot_hashtable.set(pn, value);
 	},
 
 	remove: function(name, property)
@@ -254,8 +255,12 @@ var wot_cache =
 			this.set(name, "inprogress", false);
 			this.set(name, "status", WOT_QUERY_RETRY);
 			this.set(name, "time", Date.now());
+			this.set(name, "normalized", "");
+			this.set(name, "categories", 0);
+			this.set(name, "blacklists", 0);
 
-			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
+			// FIXME: don't create redundant apps. Use only 0 and 4
+            for (var i = 0; i < WOT_APPLICATIONS; ++i) {
 				this.set(name, "reputation_" + i, -1);
 				this.set(name, "confidence_" + i, -1);
 
@@ -284,6 +289,9 @@ var wot_cache =
 			this.remove(name, "inprogress");
 			this.remove(name, "status");
 			this.remove(name, "time");
+			this.remove(name, "normalized");
+			this.remove(name, "categories");
+			this.remove(name, "blacklists");
 
 			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
 				this.remove(name, "reputation_" + i);
@@ -300,8 +308,7 @@ var wot_cache =
 	add_target: function(nonce, target, islink)
 	{
 		try {
-			var index = target.attributes.getNamedItem(
-							WOT_SERVICE_XML_QUERY_TARGET_INDEX);
+			var index = target.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_TARGET_INDEX);
 
 			if (index && index.value != null) {
 				nonce += "-" + index.value;
@@ -310,7 +317,7 @@ var wot_cache =
 			var name = this.resolve_nonce(nonce);
 
 			if (!name) {
-				dump("wot_cache.add_target: unknown nonce: " + nonce + "\n");
+				wdump("wot_cache.add_target: unknown nonce: " + nonce);
 				return;
 			}
 
@@ -320,13 +327,14 @@ var wot_cache =
 				this.create(name);
 			}
 
+            var normalized_attr = target.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_TARGET_NORMAL);
+            this.set(name, "normalized", normalized_attr ? normalized_attr.value : "");
+
 			var child = target.firstChild;
-			var a, r, c, t, i, l, x;
 
 			if (islink) {
 				if (this.get(name, "status") == WOT_QUERY_OK) {
-					dump("wot_cache.add_target: not overwriting on link for " +
-						name + "\n");
+					wdump("wot_cache.add_target: not overwriting on link for " + name);
 					return;
 				}
 				this.set(name, "status", WOT_QUERY_LINK);
@@ -334,116 +342,184 @@ var wot_cache =
 				this.set(name, "status", WOT_QUERY_OK);
 			}
 
+            var categories_number = 0,
+                blacklists_number = 0;
+
 			while (child) {
-				if (child.localName == WOT_SERVICE_XML_QUERY_APPLICATION) {
-					a = child.attributes.getNamedItem(
-							WOT_SERVICE_XML_QUERY_APPLICATION_NAME);
-					r = child.attributes.getNamedItem(
-							WOT_SERVICE_XML_QUERY_APPLICATION_R);
-					c = child.attributes.getNamedItem(
-							WOT_SERVICE_XML_QUERY_APPLICATION_C);
-					i = child.attributes.getNamedItem(
-							WOT_SERVICE_XML_QUERY_APPLICATION_I);
-					l = child.attributes.getNamedItem(
-							WOT_SERVICE_XML_QUERY_APPLICATION_L);
-					x = child.attributes.getNamedItem(
-							WOT_SERVICE_XML_QUERY_APPLICATION_E);
-					t = child.attributes.getNamedItem(
-							WOT_SERVICE_XML_QUERY_APPLICATION_T);
+                switch (child.localName) {
+                    case WOT_SERVICE_XML_QUERY_APPLICATION:
+                        this.add_application(name, child);
+                        break;
 
-					if (a && a.value) {
-						if (r && r.value && c && c.value) {
-							this.set(name, "reputation_" + a.value,
-								Number(r.value));
-							this.set(name, "confidence_" + a.value,
-								Number(c.value));
-						}
-						if (i && i.value) {
-							this.set(name, "inherited_" + a.value,
-								Number(i.value));
-						}
-						if (l && l.value) {
-							this.set(name, "lowered_" + a.value,
-								Number(l.value));
-						}
-						if (x && x.value) {
-							this.set(name, "excluded_" + a.value,
-								Number(x.value));
-						}
-						if (t && t.value) {
-							this.set(name, "testimony_" + a.value,
-								Number(t.value));
-						}
-					} else {
-						dump("wot_cache.add_target: application name missing\n");
-					}
+                    case WOT_SERVICE_XML_QUERY_QUESTION:
+                        // just skip it. Questions are processed later (out of the cycle)
+                        break;
+
+                    case WOT_SERVICE_XML_QUERY_CATEGORY:
+                        categories_number += this.add_category(name, child, categories_number);
+                        break;
+
+                    case WOT_SERVICE_XML_QUERY_BLACKLIST:
+                        blacklists_number += this.add_blacklist(name, child, blacklists_number);
+                        break;
+
+                    default:
+                        // unknown node found inside TARGET tag
+                        wdump("Unknown tag " + child.localName + " inside the TARGET");
 				}
-
-				// process Feedback Question
-				this.add_question(name, child);
-
-				child = child.nextSibling;
+                child = child.nextSibling;
 			}
-		} catch (e) {
-			dump("wot_cache.add_target: failed with " + e + "\n");
+
+            this.set(name, "categories", categories_number);
+            this.set(name, "blacklists", blacklists_number);
+
+            // process GFeedbackLoop Question
+            this.add_question(name, target.firstChild);
+
+        } catch (e) {
+			wdump("ERROR: wot_cache.add_target: failed with " + e);
 		}
 	},
 
+    add_application: function (hostname, app_node) {
+        try {
+            var a, r, c, t, i, l, x;
+            a = app_node.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_APPLICATION_NAME);
+            r = app_node.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_APPLICATION_R);
+            c = app_node.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_APPLICATION_C);
+            i = app_node.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_APPLICATION_I);
+            l = app_node.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_APPLICATION_L);
+            x = app_node.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_APPLICATION_E);
+            t = app_node.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_APPLICATION_T);
+
+            if (a && a.value) {
+                if (r && r.value !== null && c && c.value !== null) {
+                    this.set(hostname, "reputation_" + a.value, Number(r.value));
+                    this.set(hostname, "confidence_" + a.value, Number(c.value));
+                }
+                if (i && i.value) {
+                    this.set(hostname, "inherited_" + a.value, Number(i.value));
+                }
+                if (l && l.value) {
+                    this.set(hostname, "lowered_" + a.value, Number(l.value));
+                }
+                if (x && x.value) {
+                    this.set(hostname, "excluded_" + a.value, Number(x.value));
+                }
+                if (t && t.value) {
+                    this.set(hostname, "testimony_" + a.value, Number(t.value));
+                }
+            }
+        } catch (e) {
+            wdump("ERROR: wot_cache.add_application: failed with " + e);
+        }
+
+    },
+
+    process_attributes: function (attrs_list, hostname, node, slot_name, slot_index) {
+        for (var i = 0; i < attrs_list.length; i++) {
+            var attr = attrs_list[i],
+                attr_node = node.attributes.getNamedItem(attr),
+                val = null;
+            if (attr_node && attr_node.value !== null) {
+                if (isNaN(attr_node.value)) {
+                    val = String(attr_node.value);
+                } else {
+                    val = Number(attr_node.value);
+                }
+                this.set(hostname, slot_name + "_" + slot_index + "_" + attr, val);
+            }
+        }
+    },
+
+    add_category: function (hostname, node, index) {
+        try {
+            var attrs_list = [
+                WOT_SERVICE_XML_QUERY_CATEGORY_NAME,
+                WOT_SERVICE_XML_QUERY_CATEGORY_GROUP,
+                WOT_SERVICE_XML_QUERY_CATEGORY_C,
+                WOT_SERVICE_XML_QUERY_CATEGORY_I,
+                WOT_SERVICE_XML_QUERY_CATEGORY_VOTE
+            ];
+
+            this.process_attributes(attrs_list, hostname, node, "category", index);
+
+        } catch (e) {
+            wdump("ERROR: wot_cache.add_category: failed with " + e);
+            return 0;
+        }
+
+        return 1;
+    },
+
+    add_blacklist: function (hostname, node, index) {
+        try {
+            var attrs_list = [
+                WOT_SERVICE_XML_QUERY_BLACKLIST_TYPE,
+                WOT_SERVICE_XML_QUERY_BLACKLIST_TIME
+            ];
+
+            this.process_attributes(attrs_list, hostname, node, "blacklist", index);
+
+        } catch (e) {
+            wdump("ERROR: wot_cache.add_category: failed with " + e);
+            return 0;
+        }
+
+        return 1;
+    },
+
 	add_question: function (hostname, target_node)
 	{
-		if (target_node.localName == WOT_SERVICE_XML_QUERY_QUESTION) {
+        try {
+            var doc = target_node.ownerDocument;
+            var id_node       = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_QUESTION_ID).item(0),
+                text_node     = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_QUESTION_TEXT).item(0),
+                dismiss_node  = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_DISMISS_TEXT).item(0),
+                choices_nodes = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_CHOICE_TEXT);
 
-			try {
-				var doc = target_node.ownerDocument;
-				var id_node = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_QUESTION_ID).item(0),
-					text_node = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_QUESTION_TEXT).item(0),
-                    dismiss_node = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_DISMISS_TEXT).item(0),
-					choices_nodes = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_CHOICE_TEXT);
+            if (id_node && id_node.firstChild && text_node && text_node.firstChild) {
+                var id = String(id_node.firstChild.nodeValue),
+                    text = String(text_node.firstChild.nodeValue),
+                    dismiss_text = "";
 
-				if (id_node && id_node.firstChild && text_node && text_node.firstChild) {
-					var id = String(id_node.firstChild.nodeValue),
-						text = String(text_node.firstChild.nodeValue),
-                        dismiss_text = "";
+                if (dismiss_node && dismiss_node.firstChild) {
+                    dismiss_text = String(dismiss_node.firstChild.nodeValue);
+                }
 
-                    if (dismiss_node && dismiss_node.firstChild) {
-                        dismiss_text = String(dismiss_node.firstChild.nodeValue);
+                if (id && text) {
+
+                    var choice = choices_nodes.item(0),
+                        choices = [];
+
+                    while(choice) {
+
+                        var choice_text = choice.firstChild.nodeValue;
+                        var choice_value = choice.attributes.getNamedItem("value").value;
+
+                        if (choice_text && choice_value) {
+                            choices.push({ value: choice_value, text: choice_text });
+                        }
+
+                        choice = choice.nextSibling;
                     }
 
-
-					if (id && text) {
-
-						var choice = choices_nodes.item(0),
-							choices = [];
-
-						while(choice) {
-
-							var choice_text = choice.firstChild.nodeValue;
-							var choice_value = choice.attributes.getNamedItem("value").value;
-
-							if (choice_text && choice_value) {
-								choices.push({ value: choice_value, text: choice_text });
-							}
-
-							choice = choice.nextSibling;
-						}
-
-						// now store question data to global WOT cache (if there are any choices)
-						if (choices.length) {
-							this.set(hostname, "question_id", id);
-							this.set(hostname, "question_text", text);
-                            this.set(hostname, "dismiss_text", dismiss_text);
-							this.set(hostname, "choices_number", Number(choices.length));
-							for(var j=0; j < choices.length; j++) {
-								this.set(hostname, "choice_value_" + String(j), choices[j]['value']);
-								this.set(hostname, "choice_text_" + String(j), choices[j]['text']);
-							}
-						}
-					}
-				}
-			} catch(e) {
-				dump("Failed to extract Question data from XML\n");
-			}
-		}
+                    // now store question data to global WOT cache (if there are any choices)
+                    if (choices.length) {
+                        this.set(hostname, "question_id", id);
+                        this.set(hostname, "question_text", text);
+                        this.set(hostname, "dismiss_text", dismiss_text);
+                        this.set(hostname, "choices_number", Number(choices.length));
+                        for(var j=0; j < choices.length; j++) {
+                            this.set(hostname, "choice_value_" + String(j), choices[j]['value']);
+                            this.set(hostname, "choice_text_" + String(j), choices[j]['text']);
+                        }
+                    }
+                }
+            }
+        } catch(e) {
+            wdump("Failed to extract Question data from XML");
+        }
 	},
 
 	add_query: function(queries, targets, islink)

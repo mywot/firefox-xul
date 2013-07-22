@@ -19,7 +19,7 @@
 */
 
 const WOT_PLATFORM = "firefox";
-const WOT_VERSION  = "20130515";
+const WOT_VERSION  = "20130722";
 
 /*
  * Constants
@@ -52,7 +52,7 @@ const WOT_TESTIMONY_ROUND = 1; /* Testimony steps */
 const WOT_MIN_COMMENT_DIFF = 35;
 
 /* Applications */
-const WOT_APPLICATIONS = 6;
+const WOT_APPLICATIONS = 5;
 
 /* Search */
 const WOT_SAFESEARCH_OSD_URL = "https://search.mywot.com/osd/en-US.xml";
@@ -78,6 +78,7 @@ const WOT_SERVICE_XML_QUERY						= "query";
 const WOT_SERVICE_XML_QUERY_NONCE				= "nonce";
 const WOT_SERVICE_XML_QUERY_TARGET				= "target";
 const WOT_SERVICE_XML_QUERY_TARGET_INDEX		= "index";
+const WOT_SERVICE_XML_QUERY_TARGET_NORMAL		= "normalized";
 const WOT_SERVICE_XML_QUERY_APPLICATION			= "application";
 const WOT_SERVICE_XML_QUERY_APPLICATION_NAME	= "name";
 const WOT_SERVICE_XML_QUERY_APPLICATION_R		= "r";
@@ -86,6 +87,15 @@ const WOT_SERVICE_XML_QUERY_APPLICATION_I		= "inherited";
 const WOT_SERVICE_XML_QUERY_APPLICATION_L		= "lowered";
 const WOT_SERVICE_XML_QUERY_APPLICATION_E		= "excluded";
 const WOT_SERVICE_XML_QUERY_APPLICATION_T		= "t";
+const WOT_SERVICE_XML_QUERY_CATEGORY		    = "category";
+const WOT_SERVICE_XML_QUERY_CATEGORY_NAME	    = "name";
+const WOT_SERVICE_XML_QUERY_CATEGORY_GROUP	    = "group";
+const WOT_SERVICE_XML_QUERY_CATEGORY_C		    = "c";
+const WOT_SERVICE_XML_QUERY_CATEGORY_I		    = "inherited";
+const WOT_SERVICE_XML_QUERY_CATEGORY_VOTE	    = "vote";
+const WOT_SERVICE_XML_QUERY_BLACKLIST		    = "bl";
+const WOT_SERVICE_XML_QUERY_BLACKLIST_TYPE	    = "type";
+const WOT_SERVICE_XML_QUERY_BLACKLIST_TIME	    = "time";
 const WOT_SERVICE_XML_QUERY_QUESTION			= "question";
 const WOT_SERVICE_XML_QUERY_QUESTION_ID			= "questionId";
 const WOT_SERVICE_XML_QUERY_QUESTION_TEXT		= "questionText";
@@ -129,7 +139,8 @@ const WOT_SERVICE_XML_UPDATE_SHARED_DOMAINS		= "domains";
 const WOT_SERVICE_XML_UPDATE_SHARED_LEVEL		= "level";
 
 /* My */
-const WOT_MY_URL = "http://www.mywot.com/";
+//const WOT_MY_URL = "http://www.mywot.com/";
+const WOT_MY_URL = "http://beta.mywot.com/";
 const WOT_MY_COOKIE_DOMAIN = ".mywot.com";
 const WOT_MY_TRIGGER = /^(.+\.)?mywot.com$/;
 const WOT_MY_SESSION_LENGTH = 86340 * 1000; /* < 1d */
@@ -184,8 +195,8 @@ const WOT_BLOCK_BLOCKED = "chrome://wot/locale/blocked.html";
 
 const WOT_PREF_PATH = "settings/";
 const WOT_PREF_FORWARD_TAB_MATCH = 7;
-const WOT_PREF_FORWARD = /^http(s)?\:\/\/(www\.)?mywot\.com\/([^\/]{2}(-[^\/]+)?\/)?(settings|update)(\/([^\/]+))?\/?$/;
-const WOT_PREF_TRIGGER = /^http(s)?\:\/\/(www\.)?mywot\.com\/([^\/]{2}(-[^\/]+)?\/)?(settings|update)\/.+/;
+const WOT_PREF_FORWARD = /^http(s)?\:\/\/(www\.|beta\.)?mywot\.com\/([^\/]{2}(-[^\/]+)?\/)?(settings|update)(\/([^\/]+))?\/?$/;
+const WOT_PREF_TRIGGER = /^http(s)?\:\/\/(www\.|beta\.)?mywot\.com\/([^\/]{2}(-[^\/]+)?\/)?(settings|update)\/.+/;
 
 const WOT_PREF = "weboftrust.";
 
@@ -222,11 +233,11 @@ const wot_prefs_bool = [
 	[ "search_ignore_4",			true  ],
 	[ "search_scripts",				true  ],
 	[ "show_application_0",			true  ],
-	[ "show_application_1",			true  ],
-	[ "show_application_2",			true  ],
+	[ "show_application_1",			false  ],
+	[ "show_application_2",			false  ],
 	[ "show_application_3",			false ],
 	[ "show_application_4",			true  ],
-	[ "show_application_5",			false ],
+//	[ "show_application_5",			false ],
 	[ "show_search_popup",			true  ],
 	[ "use_search_level",			false ],
 	[ "ninja_donuts",   			false ],
@@ -235,7 +246,7 @@ const wot_prefs_bool = [
 	[ "warning_unknown_2",			false ],
 	[ "warning_unknown_3",			false ],
 	[ "warning_unknown_4",			false ],
-	[ "warning_unknown_5",			false ],
+//	[ "warning_unknown_5",			false ],
 	[ "feedback_enabled",			true  ],
 	[ "feedback_optedout",			false ]
 ];
@@ -269,13 +280,13 @@ const wot_prefs_int = [
 	[ "warning_level_2",			WOT_DEFAULT_WARNING_LEVEL ],
 	[ "warning_level_3",			WOT_DEFAULT_WARNING_LEVEL ],
 	[ "warning_level_4",			0 ],
-	[ "warning_level_5",			WOT_DEFAULT_WARNING_LEVEL ],
+//	[ "warning_level_5",			WOT_DEFAULT_WARNING_LEVEL ],
 	[ "warning_type_0",				WOT_WARNING_DOM ],
 	[ "warning_type_1",				WOT_WARNING_DOM ],
 	[ "warning_type_2",				WOT_WARNING_DOM ],
 	[ "warning_type_3",				WOT_WARNING_NONE ],
 	[ "warning_type_4",				WOT_WARNING_NONE ],
-	[ "warning_type_5",				WOT_WARNING_NONE ]
+//	[ "warning_type_5",				WOT_WARNING_NONE ]
 ];
 
 /* Search rules */
@@ -323,3 +334,8 @@ const WOT_URL_BTN =          "button";
 const WOT_URL_CTX =          "contextmenu";
 
 var wot_modules = [];
+
+// Dirty hack. This function should be moved to other place
+function wdump (str) {
+    dump(str + "\n");
+}
