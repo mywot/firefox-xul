@@ -137,6 +137,7 @@ const WOT_SERVICE_XML_UPDATE_SEARCH_NAME		= "name";
 const WOT_SERVICE_XML_UPDATE_SHARED				= "shared";
 const WOT_SERVICE_XML_UPDATE_SHARED_DOMAINS		= "domains";
 const WOT_SERVICE_XML_UPDATE_SHARED_LEVEL		= "level";
+const WOT_SERVICE_XML_UPDATE_CATEGORIES			= "categories";
 
 /* My */
 //const WOT_MY_URL = "http://www.mywot.com/";
@@ -285,7 +286,7 @@ const wot_prefs_int = [
 	[ "warning_type_1",				WOT_WARNING_DOM ],
 	[ "warning_type_2",				WOT_WARNING_DOM ],
 	[ "warning_type_3",				WOT_WARNING_NONE ],
-	[ "warning_type_4",				WOT_WARNING_NONE ],
+	[ "warning_type_4",				WOT_WARNING_NONE ]
 //	[ "warning_type_5",				WOT_WARNING_NONE ]
 ];
 

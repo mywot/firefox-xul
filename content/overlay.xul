@@ -26,6 +26,7 @@
 		xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 	<script type="application/x-javascript" src="chrome://wot/content/config.js"/>
+	<script type="application/x-javascript" src="chrome://wot/content/categories.js"/>
 	<script type="application/x-javascript" src="chrome://wot/content/cache.js"/>
 	<script type="application/x-javascript" src="chrome://wot/content/commands.js"/>
 	<script type="application/x-javascript" src="chrome://wot/content/shared.js"/>

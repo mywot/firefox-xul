@@ -39,6 +39,13 @@ var wot_util =
 		return true;
 	},
 
+    isEmpty: function (obj) {
+        for (var name in obj) {
+            return false;
+        }
+        return true;
+    },
+
 	getstring: function(str, arr)
 	{
 		try {
@@ -56,6 +63,19 @@ var wot_util =
 
 		return null;
 	},
+
+    copy_attrs: function (node) {
+        var obj = {};
+        if (node) {
+            for (var a in node.attributes) {
+                var attr = node.attributes[a];
+                obj[attr.name] = attr.value;
+            }
+        } else {
+            wdump("wot_utils.copy_attrs() - empty node is provided");
+        }
+        return obj;
+    },
 
 	time_sincefirstrun: function()
 	{

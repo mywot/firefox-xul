@@ -925,16 +925,10 @@ var wot_api_update =
 			}
 
 			var request = event.target;
-
-			if (!request || request.status != 200) {
-				return;
-			}
+			if (!request || request.status != 200) return;
 
 			var response = request.responseXML;
-
-			if (!response) {
-				return;
-			}
+			if (!response) return;
 
 			/* Update the the last check time */
 			wot_prefs.setChar("update_checked", Date.now());
@@ -946,33 +940,27 @@ var wot_api_update =
 				update = tags.item(0);
 			}
 
-			if (!update) {
-				return;
-			}
+			if (!update) return;
 
 			/* Attributes */
-			var interval =
-				update.getAttribute(WOT_SERVICE_XML_UPDATE_INTERVAL);
+			var interval = update.getAttribute(WOT_SERVICE_XML_UPDATE_INTERVAL);
 
 			if (interval && Number(interval) > 0) {
 				wot_prefs.setInt("update_interval", interval * 1000);
 			}
 
-			/* Search rules */
-			var search = response.getElementsByTagName(
-							WOT_SERVICE_XML_UPDATE_SEARCH);
+            /* Categories */
+            var cats = response.getElementsByTagName(WOT_SERVICE_XML_UPDATE_CATEGORIES);
+            if (cats && cats[0]) wot_categories.parse(cats[0]);
 
-			if (search) {
-				wot_search.parse(search);
-			}
+			/* Search rules */
+			var search = response.getElementsByTagName(WOT_SERVICE_XML_UPDATE_SEARCH);
+			if (search) wot_search.parse(search);
 
 			/* Shared domains */
-			var shared = response.getElementsByTagName(
-							WOT_SERVICE_XML_UPDATE_SHARED);
+			var shared = response.getElementsByTagName(WOT_SERVICE_XML_UPDATE_SHARED);
+			if (shared) wot_shared.parse(shared);
 
-			if (shared) {
-				wot_shared.parse(shared);
-			}
 
 			wot_prefs.flush();
 		} catch (e) {
