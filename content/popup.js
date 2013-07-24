@@ -18,7 +18,8 @@
 	along with WOT. If not, see <http://www.gnu.org/licenses/>.
 */
 
-const WOT_POPUP_LAYER =
+/*
+const WOT_POPUP_HTML =
 	"<div id=\"wot-logo\"></div>" +
 	"<div id=\"wot-popup-ratings-ID\" class=\"wot-popup-ratings\">" +
 		"<div id=\"wot-r0-stack-ID\" class=\"wot-stack\">" +
@@ -42,23 +43,57 @@ const WOT_POPUP_LAYER =
 			"<div id=\"wot-r4-cnf-ID\" class=\"wot-cnf\"></div>" +
 		"</div>" +
 	"</div>";
+*/
 
-const WOT_POPUP_STYLE =
-	"@import \"chrome://wot/skin/include/popup.css\";";
+const WOT_POPUP_HTML =
+    '<div id="wot-logo">{POPUPHEADERTEXT}</div>' +
+        '<div id="wot-ratings{ID}" class="wot-ratings">' +
+        '<div id="wot-hostname"></div>' +
+        '<div id="wot-r0-stack{ID}" class="wot-stack wot-stack-left">' +
+        '<div id="wot-r0-header{ID}" class="wot-header">{POPUPTEXT0}</div>' +
+        '<div id="wot-r0-rep{ID}" class="wot-rep {ACCESSIBLE}"></div>' +
+        '<div id="wot-r0-cnf{ID}" class="wot-cnf"></div>' +
+        '<div class="rating-legend-wrapper">' +
+            '<div class="rating-legend">{REPTEXT0}</div>' +
+        '</div>' +
+
+        '</div>' +
+        '<div id="wot-r4-stack{ID}" class="wot-stack wot-stack-right">' +
+        '<div id="wot-r4-header{ID}" class="wot-header">{POPUPTEXT4}</div>' +
+        '<div id="wot-r4-rep{ID}" class="wot-rep {ACCESSIBLE}"></div>' +
+        '<div id="wot-r4-cnf{ID}" class="wot-cnf"></div>' +
+        '<div class="rating-legend-wrapper">' +
+            '<div class="rating-legend">{REPTEXT4}</div>' +
+        '</div>' +
+
+        '</div>' +
+        '</div>' +
+        '<div id="wot-categories">' +
+        '<div id="wot-cat-text">{POPUPNOCAT}</div>' +
+        '<ul id="wot-cat-list"></ul>' +
+        '</div>' +
+        '<div class="wot-corners-wrapper">' +
+        '<div id="wot-pp-tr" class="wot-pp-tr"></div>' +
+        '<div id="wot-pp-cs" class="wot-pp-cs"></div>' +
+        '</div>';
+
+const WOT_POPUP_STYLE = "@import \"chrome://wot/skin/include/popup.css\";";
 
 var wot_popup =
 {
-	offsety:		15,
-	offsetx:		0,
-	height:			235,
-	width:			137,
-	ratingheight:	52,
-	areaheight:		214,
+	offsety:		-15,
+	offsetx:		4,
+	height:			220,
+	width:			300,
+//	ratingheight:	52,
+//	areaheight:		214,
 	barsize:		20,
 	offsetheight:	0,
 	postfix:		"-" + Date.now(),
 	id:				"wot-popup-layer",
 	onpopup:		false,
+    layer:          null,
+    MAX_CATEGORIES: 3,
 
 	load_delayed: function()
 	{
@@ -100,18 +135,17 @@ var wot_popup =
                 return false;
             }
 
+            var replaces = [
+                { from: "ID", to: this.postfix },
+                { from: "POPUPTEXT0", to: wot_util.getstring("popup_0") },
+                { from: "POPUPTEXT4", to: wot_util.getstring("popup_4") },
+                { from: "ACCESSIBLE", to: wot_prefs.accessible ? "accessible" : "" },
+                { from: "POPUPHEADERTEXT", to: wot_util.getstring("popup_headertext") },
+                { from: "POPUPNOCAT", to: wot_util.getstring("popup_nocattext") }
+            ];
+
 			if (!this.layer) {
-				this.layer = WOT_POPUP_LAYER;
-				this.layer = this.layer.replace(/-ID/g,
-					this.postfix);
-				this.layer = this.layer.replace(/WOT_POPUP_TEXT_0/g,
-					wot_util.getstring("popup_0") + ":");
-				this.layer = this.layer.replace(/WOT_POPUP_TEXT_1/g,
-					wot_util.getstring("popup_1") + ":");
-				this.layer = this.layer.replace(/WOT_POPUP_TEXT_2/g,
-					wot_util.getstring("popup_2") + ":");
-				this.layer = this.layer.replace(/WOT_POPUP_TEXT_4/g,
-					wot_util.getstring("popup_4") + ":");
+				this.layer = wot_util.processhtml(WOT_POPUP_HTML, replaces);
 			}
 
 			if (content.getElementById(this.id)) {
@@ -124,6 +158,8 @@ var wot_popup =
                 if (body && body.length) {
                     elem = body[0];
                 }
+
+                if (!elem) return false;
             }
 
             if (elem.isContentEditable) return false;
@@ -131,7 +167,7 @@ var wot_popup =
             var layer = content.createElement("div");
 			layer.setAttribute("id", this.id);
 			layer.setAttribute("class", "wot-popup-layer");
-			layer.setAttribute("style", "display: none; cursor: pointer;");
+			layer.setAttribute("style", "visibility: hidden;");
 			layer.innerHTML = this.layer;
 
 			var style = content.createElement("style");
@@ -146,8 +182,7 @@ var wot_popup =
 			}
 
 			layer.addEventListener("click", function() {
-					wot_browser.openscorecard(layer.getAttribute("target"),
-						null, WOT_URL_POPUPVIEWSC);
+					wot_browser.openscorecard(layer.getAttribute("target"), null, WOT_URL_POPUPVIEWSC);
 				}, false);
 
 			elem.appendChild(layer);
@@ -163,126 +198,151 @@ var wot_popup =
 	loadlayer: function(content, layer, target)
 	{
 		try {
-			var status = wot_cache.get(target, "status");
+			var status = wot_cache.get(target, "status"),
+                tr_t, cs_t, r, c, x, t;
 
 			if (status != WOT_QUERY_OK && status != WOT_QUERY_LINK) {
 				return false;
 			}
 
-			var cls = layer.getAttribute("class");
+			for (var i = 0; i < WOT_COMPONENTS.length; ++i) {
+                var app = WOT_COMPONENTS[i];
+				var rep_elem = content.getElementById("wot-r" + app + "-rep" + this.postfix);
+				var cnf_elem = content.getElementById("wot-r" + app + "-cnf" + this.postfix);
 
-			if (wot_prefs.accessible) {
-
-				if (!cls || !cls.length) {
-					cls = "accessible";
-				} else if (cls.indexOf("accessible") < 0) {
-					cls += " accessible";
-				}
-
-				layer.setAttribute("class", cls);
-			} else if (cls && cls.indexOf("accessible") >= 0) {
-				cls = cls.replace(/accessible/g, "");
-				layer.setAttribute("class", cls);
-			}
-
-			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-				var rep = content.getElementById("wot-r" + i + "-rep" +
-							this.postfix);
-				var cnf = content.getElementById("wot-r" + i + "-cnf" +
-							this.postfix);
-
-				if (!rep || !cnf) {
+				if (!rep_elem || !cnf_elem) {
 					continue;
 				}
 
-				var r = wot_cache.get(target, "reputation_" + i);
-				var c = wot_cache.get(target, "confidence_" + i);
-				var x = wot_cache.get(target, "excluded_" + i);
+				r = wot_cache.get(target, "reputation_" + app),
+				c = wot_cache.get(target, "confidence_" + app),
+		        x = wot_cache.get(target, "excluded_" + app),
+                t = wot_util.get_level(WOT_REPUTATIONLEVELS, wot_cache.get(target, "testimony_" + app)).name;
 
-				if (x) {
-					rep.setAttribute("reputation", "excluded");
-				} else if (r >= WOT_MIN_REPUTATION_5) {
-					rep.setAttribute("reputation", 5);
-				} else if (r >= WOT_MIN_REPUTATION_4) {
-					rep.setAttribute("reputation", 4);
-				} else if (r >= WOT_MIN_REPUTATION_3) {
-					rep.setAttribute("reputation", 3);
-				} else if (r >= WOT_MIN_REPUTATION_2) {
-					rep.setAttribute("reputation", 2);
-				} else if (r >= 0) {
-					rep.setAttribute("reputation", 1);
-				} else {
-					rep.setAttribute("reputation", 0);
-				}
+                r = x ? -2 : r; // if Excluded is set, select proper rep level (rx);
+                rep_elem.setAttribute("reputation", wot_util.get_level(WOT_REPUTATIONLEVELS, r).name);
 
-				if (x) {
-					cnf.setAttribute("confidence", 0);
-				} else if (c >= WOT_MIN_CONFIDENCE_5) {
-					cnf.setAttribute("confidence", 5);
-				} else if (c >= WOT_MIN_CONFIDENCE_4) {
-					cnf.setAttribute("confidence", 4);
-				} else if (c >= WOT_MIN_CONFIDENCE_3) {
-					cnf.setAttribute("confidence", 3);
-				} else if (c >= WOT_MIN_CONFIDENCE_2) {
-					cnf.setAttribute("confidence", 2);
-				} else if (c >= WOT_MIN_CONFIDENCE_1) {
-					cnf.setAttribute("confidence", 1);
-				} else {
-					cnf.setAttribute("confidence", 0);
-				}
+                c = x ? -2 : c;
+			    cnf_elem.setAttribute("confidence", wot_util.get_level(WOT_CONFIDENCELEVELS, c).name);
+
+                // set testimonies for TR and CS to bottom corners of the popup testimony_
+                if (app == 0) {
+                    tr_t = t;
+                } else if (app == 4) {
+                    cs_t = t;
+                }
 			}
 
-			wot_popup.offsetheight = 0;
-			var bottom = content.getElementById("wot-r0-stack" +
-							this.postfix);
+            // set target name
+            var normalized_target = wot_cache.get(target, "normalized") || null;
 
-			if (wot_prefs.show_application_1) {
-				bottom = content.getElementById("wot-r1-stack" +
-							this.postfix);
-				bottom.style.display = "block";
-			} else {
-				content.getElementById("wot-r1-stack" +
-					this.postfix).style.display = "none";
-				wot_popup.offsetheight -= wot_popup.ratingheight;
-			}
-			if (wot_prefs.show_application_2) {
-				bottom = content.getElementById("wot-r2-stack" +
-							this.postfix);
-				bottom.style.display = "block";
-			} else {
-				content.getElementById("wot-r2-stack" +
-					this.postfix).style.display = "none";
-				wot_popup.offsetheight -= wot_popup.ratingheight;
-			}
-			if (wot_prefs.show_application_4) {
-				bottom = content.getElementById("wot-r4-stack" +
-							this.postfix);
-				bottom.style.display = "block";
-			} else {
-				content.getElementById("wot-r4-stack" +
-					this.postfix).style.display = "none";
-				wot_popup.offsetheight -= wot_popup.ratingheight;
-			}
-			bottom.style.borderBottom = "0";
-			content.getElementById("wot-popup-ratings" +
-				this.postfix).style.height =
-				wot_popup.offsetheight + wot_popup.areaheight + "px";
+            var hostname_elem = content.getElementById("wot-hostname");
+            if (hostname_elem) {
+                var display_target = normalized_target && normalized_target.length ? normalized_target : target;
+                hostname_elem.textContent = wot_util.htmlescape(wot_shared.decodehostname(display_target));
+            }
+
+            // show user's ratings for the site
+            if (wot_prefs.super_showtestimonies) {
+                var tr_t_corner = content.getElementById("wot-pp-tr");
+                if (tr_t_corner && tr_t) {
+                    tr_t_corner.setAttribute("r", tr_t);
+                }
+
+                var cs_t_corner = content.getElementById("wot-pp-cs");
+                if (cs_t_corner && cs_t) {
+                    cs_t_corner.setAttribute("r", cs_t);
+                }
+            }
+
+            // Update categories in the popup
+            var target_cats = wot_categories.target_categories(target),
+                cats = wot_categories.select_identified(target_cats),
+                cat_list = content.getElementById("wot-cat-list"),
+                cat_text = content.getElementById("wot-cat-text");
+
+            if (cats && !wot_util.isEmpty(cats) && cat_list) {
+                var ordered_cats = wot_categories.rearrange_categories(cats);
+                cat_text.style.display = "none";
+                if (wot_popup.update_categories(cat_list, ordered_cats.all, content) > 0) {
+                    wot_popup.toggle_categories(true, content); // show categories
+                } else {
+                    wot_popup.toggle_categories(false, content);
+                }
+
+            } else {
+                wot_popup.toggle_categories(false, content); // hide categories list
+            }
+
+
+
 			return true;
+
 		} catch (e) {
-			dump("wot_popup.loadlayer: failed with " + e + "\n");
+			wdump("wot_popup.loadlayer: failed with " + e);
 		}
 		return false;
 	},
+
+    toggle_categories: function (show, content) {
+        var cat_list = content.getElementById("wot-cat-list"),
+            cat_text = content.getElementById("wot-cat-text");
+        if (cat_list && cat_text) {
+            if (show) {
+                cat_text.style.display = "none";
+                cat_list.style.display = "block";
+            }
+            else {
+                cat_text.style.display = "block";
+                cat_list.style.display = "none";
+            }
+        }
+    },
+
+    update_categories: function (list_node, categories, content) {
+        var cnt = 0;
+
+        // remove all list items
+        while(list_node.firstChild) {
+            list_node.removeChild(list_node.firstChild);
+        }
+
+        for (var k in categories) {
+            if (cnt >= this.MAX_CATEGORIES) break;
+
+            var cat = categories[k],
+                cid = cat.id,
+                li = content.createElement("li"),
+                cls = ["cat-item"],
+                cat_name = wot_categories.get_category_name(cid, true); // name is already htmlescaped
+
+            if (!cat_name) {
+                continue;   // skip undefined categories, don't take them into account
+            }
+
+            cls.push(wot_categories.get_category_css(cid)); // css type is already htmlescaped
+            var cl = wot_util.get_level(WOT_CONFIDENCELEVELS, cat.c).name;
+            cls.push(cl);
+
+            li.textContent = cat_name;
+            li.setAttribute("class", cls.join(" "));
+
+            cnt++;
+            list_node.appendChild(li);
+        }
+
+        return cnt;
+    },
 
 	hidelayer: function(content, appearance)
 	{
 		try {
 			var layer = content.getElementById(this.id);
 
-			if (layer && layer.style.display != "none" &&
+			if (layer && layer.style.visibility != "hidden" &&
 					(appearance == null || appearance == this.appearance) &&
 					!this.onpopup) {
-				layer.style.display = "none";
+				layer.style.visibility = "hidden";
 			}
 		} catch (e) {
 			/* dump("wot_popup.hidelayer: failed with " + e + "\n"); */
@@ -335,15 +395,11 @@ var wot_popup =
 
 			var content = event_view.document;
 
-			if (!content) {
-				return;
-			}
-			
+			if (!content) return;
+
 			var layer = content.getElementById(wot_popup.id);
 
-			if (!layer) {
-				return;
-			}
+			if (!layer) return;
 
 			wot_popup.target = wot_popup.findelem(event);
 
@@ -357,11 +413,10 @@ var wot_popup =
 				return;
 			}
 
-			var attr = wot_popup.target.attributes.getNamedItem(
-							wot_search.attribute);
-			var target = attr.value;
+			var attr = wot_popup.target.attributes.getNamedItem(wot_search.attribute),
+			    target = attr.value;
 
-			if (layer.style.display == "block" &&
+			if (layer.style.visibility == "visible" &&
 					layer.getAttribute("target") == target) {
 				return;
 			}
@@ -373,21 +428,20 @@ var wot_popup =
 				return;
 			}
 
-			var popupheight = wot_popup.height + wot_popup.offsetheight;
+            var style = event_view.getComputedStyle(layer),
+                popupheight = Math.max(isNaN(style.height) ? 0 : style.height , wot_popup.height),
+                popupwidth = style.width || wot_popup.width;
 			
-			layer.style.height = popupheight + "px";
-			layer.style.width  = wot_popup.width  + "px";
+			var height = parseInt(event_view.innerHeight - wot_popup.barsize);
+			var width  = 0 + event_view.innerWidth  - wot_popup.barsize;
 
-			var height = event_view.innerHeight - wot_popup.barsize;
-			var width  = event_view.innerWidth  - wot_popup.barsize;
-
-			if (height < popupheight ||	width < wot_popup.width) {
+			if (height < popupheight ||	width < popupwidth) {
 				wot_popup.hidelayer(content);
-				return
+				return;
 			}
 
-			var vscroll = event_view.pageYOffset;
-			var hscroll = event_view.pageXOffset;
+			var vscroll = isNaN(event_view.pageYOffset) ? 0 : parseInt(event_view.pageYOffset);
+			var hscroll = isNaN(event_view.pageXOffset) ? 0 : parseInt(event_view.pageXOffset);
 
 			// more accurate way to calc position
 			// got from http://javascript.ru/ui/offset
@@ -396,18 +450,29 @@ var wot_popup =
 
 			var docElem = content.documentElement;
 			var body = content.body;
-			var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
-			var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+
+            var y_offset = 0;   // vertical offset for the pointer (which is not implemented yet)
+
+            var scrollTop = event_view.pageYOffset || docElem.scrollTop || body.scrollTop;
+			var scrollLeft = event_view.pageXOffset || docElem.scrollLeft || body.scrollLeft;
 			var clientTop = docElem.clientTop || body.clientTop || 0;
 			var clientLeft = docElem.clientLeft || body.clientLeft || 0;
 			var y  = box.top +  scrollTop - clientTop;
 			var x = box.left + scrollLeft - clientLeft;
 
-			var posy = wot_popup.offsety + y + wot_popup.target.offsetHeight;
+			var posy = wot_popup.offsety + y;// + wot_popup.target.offsetHeight;
 			var posx = wot_popup.offsetx + x + wot_popup.target.offsetWidth;
 
+            if (posy < vscroll) {
+                // if placeholder's top doesn't fit into view, align it to the view
+                posy = vscroll;
+            }
+
 			if (posy + popupheight > height + vscroll) {
-				posy = y - popupheight - wot_popup.offsety;
+                if (posy < height + vscroll) {
+                    y_offset = height + vscroll - y;
+                }
+                posy = (y - popupheight + height + vscroll + wot_popup.offsety)/2;
 			}
 
 			if (posx - hscroll < 0) {
@@ -418,7 +483,7 @@ var wot_popup =
 			
 			var appearance = ++wot_popup.appearance;
 
-			if (layer.style.display != "none") {
+			if (layer.style.visibility != "hidden") {
 				layer.style.top  = posy + "px";
 				layer.style.left = posx + "px";
 			} else {
@@ -427,12 +492,12 @@ var wot_popup =
 								appearance == wot_popup.appearance) {
 							layer.style.top  = posy + "px";
 							layer.style.left = posx + "px";
-							layer.style.display = "block";
+							layer.style.visibility = "visible";
 						}
 					}, wot_prefs.popup_show_delay);
 			}
 		} catch (e) {
-			dump("wot_popup.onmouseover: failed with " + e + "\n");
+			wdump("wot_popup.onmouseover: failed with " + e);
 		}
 	}
 };

@@ -327,8 +327,17 @@ var wot_cache =
 				this.create(name);
 			}
 
-            var normalized_attr = target.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_TARGET_NORMAL);
-            this.set(name, "normalized", normalized_attr ? normalized_attr.value : "");
+            var normalized_attr = target.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_TARGET_NORMAL),
+                normalized = null;
+
+            if (normalized_attr && normalized_attr.value != null) {
+                normalized = wot_crypto.decrypt(normalized_attr.value, nonce, -1); // index = 0 since nonce already has it
+                if (!/^[\x00-\xFF]*$/.test(normalized)) {
+                    normalized = null;
+                }
+            }
+
+            this.set(name, "normalized", normalized);
 
 			var child = target.firstChild;
 

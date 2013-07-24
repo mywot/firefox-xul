@@ -34,6 +34,16 @@ const WOT_MIN_REPUTATION_4 = 60;
 const WOT_MIN_REPUTATION_3 = 40;
 const WOT_MIN_REPUTATION_2 = 20;
 
+const WOT_REPUTATIONLEVELS = [
+        { name: "rx", min: -2 },
+        { name: "r0", min: -1 },
+        { name: "r1", min:  0 },
+        { name: "r2", min: WOT_MIN_REPUTATION_2 },
+        { name: "r3", min: WOT_MIN_REPUTATION_3 },
+        { name: "r4", min: WOT_MIN_REPUTATION_4 },
+        { name: "r5", min: WOT_MIN_REPUTATION_5 }
+    ];
+
 /* Confidence values */
 const WOT_MAX_CONFIDENCE   = 100;
 const WOT_MIN_CONFIDENCE_5 = 45;
@@ -41,6 +51,16 @@ const WOT_MIN_CONFIDENCE_4 = 34;
 const WOT_MIN_CONFIDENCE_3 = 23;
 const WOT_MIN_CONFIDENCE_2 = 12;
 const WOT_MIN_CONFIDENCE_1 = 6;
+
+const WOT_CONFIDENCELEVELS = [
+        { name: "cx", min: -2 },
+        { name: "c0", min: -1 },
+        { name: "c1", min: WOT_MIN_CONFIDENCE_1 },
+        { name: "c2", min: WOT_MIN_CONFIDENCE_2 },
+        { name: "c3", min: WOT_MIN_CONFIDENCE_3 },
+        { name: "c4", min: WOT_MIN_CONFIDENCE_4 },
+        { name: "c5", min: WOT_MIN_CONFIDENCE_5 }
+    ];
 
 /* Testimony values and rounding */
 const WOT_TESTIMONY_QUICK_5 = WOT_MIN_REPUTATION_5;
@@ -51,8 +71,26 @@ const WOT_TESTIMONY_QUICK_1 = 0;
 const WOT_TESTIMONY_ROUND = 1; /* Testimony steps */
 const WOT_MIN_COMMENT_DIFF = 35;
 
+// reference: http://www.mywot.com/wiki/Activity_scores
+const WOT_ACTIVITYSCORE_LEVELS = [
+        { name: "rookie", min: 0 },
+        { name: "bronze", min: 1500 },
+        { name: "silver", min: 3000 },
+        { name: "gold",     min: 6000 },
+        { name: "platinum", min: 10000 }
+    ];
+
+const WOT_AS_LEVELS = {
+        ROOKIE: 0,
+        BRONZE: 1500,
+        SILVER: 3000,
+        GOLD: 6000,
+        PLATINUM: 10000
+    };
+
 /* Applications */
 const WOT_APPLICATIONS = 5;
+const WOT_COMPONENTS = [0, 4];
 
 /* Search */
 const WOT_SAFESEARCH_OSD_URL = "https://search.mywot.com/osd/en-US.xml";
@@ -249,7 +287,8 @@ const wot_prefs_bool = [
 	[ "warning_unknown_4",			false ],
 //	[ "warning_unknown_5",			false ],
 	[ "feedback_enabled",			true  ],
-	[ "feedback_optedout",			false ]
+	[ "feedback_optedout",			false ],
+	[ "super_showtestimonies",	    false ] // show my rating on the search popup at bottom corners of the popup
 ];
 
 const wot_prefs_char = [

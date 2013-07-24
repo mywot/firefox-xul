@@ -22,7 +22,7 @@ var wot_categories = {
 
     PREF_CATEGORY: "category",
     PREF_GROUPINGS: "groupings",
-    category_threshold: 3,  // confidence level to show a category as identified
+    CATEGORY_THRESHOLD: 3,  // confidence level to show a category as identified
     inited: false,
     loading: false,
     categories: {},
@@ -151,8 +151,134 @@ var wot_categories = {
         } catch (e) {
             wdump("wot_search.init_categories(): failed with " + e);
         }
-    }
+    },
 
+    get_category: function (cat_id) {
+        var cid = String(cat_id),
+            cat = {};
+        if (this.categories && this.categories[cid]) {
+            cat = this.categories[cid];
+            cat.id = cid;
+        }
+        return cat;
+    },
+
+    get_category_name: function (cat_id, is_short) {
+        var cat = this.get_category(cat_id);
+        var text = is_short ? cat.shorttext : cat.text;
+        return wot_util.htmlescape(text ? text : cat.text);  // if no short name is known, return full name
+    },
+
+    get_category_css: function (cat_id) {
+        var type = wot_util.htmlescape(this.get_category(cat_id).type);
+        return type !== null ? "c-" + type : "";
+    },
+
+    target_categories: function (target) {
+        // return categories reported by API server (both identified and votes) taking them from cache.
+        // Result is an Object.
+
+        var count = wot_cache.get(target, "categories", 0),
+            cats = {},
+            attrs_list = [
+                WOT_SERVICE_XML_QUERY_CATEGORY_NAME,
+                WOT_SERVICE_XML_QUERY_CATEGORY_GROUP,
+                WOT_SERVICE_XML_QUERY_CATEGORY_C,
+                WOT_SERVICE_XML_QUERY_CATEGORY_I,
+                WOT_SERVICE_XML_QUERY_CATEGORY_VOTE
+            ];
+
+        for (var i = 0, slot=""; i < count; i++) {
+            var cat_obj = {}, val = null;
+            for (var a = 0; a < attrs_list.length; a++) {
+                slot = "category_" + i + "_" + attrs_list[a];
+                val = wot_cache.get(target, slot, null);
+                if (val !== null) {
+                    cat_obj[attrs_list[a]] = val;
+                }
+            }
+            if (!wot_util.isEmpty(cat_obj)) {
+                cat_obj['id'] = cat_obj.name;
+                cats[cat_obj.name] = cat_obj;
+            }
+        }
+
+//        wdump("target_categories:: " + JSON.stringify(cats));
+        return cats;
+    },
+
+    select_identified: function (target_cats) {
+        // Returns categories identified by community (unsorted!)
+        var res = {};
+        for (var i in target_cats) {
+            var cat = target_cats[i];
+            if (cat.c >= this.CATEGORY_THRESHOLD) res[i] = cat;
+        }
+
+//        wdump("select_identified:: " + JSON.stringify(res));
+
+        return res;
+    },
+
+    rearrange_categories: function (cats_object) {
+        // sorts the categories given as object and return two arrays of category objects ordered by confidence
+        var sort_array = [],
+            cs_array = [];
+
+        if (cats_object) {
+
+            try {
+                // Make the array of objects (categories)
+                for (var key in cats_object) {
+                    var cat = this.get_category(key);
+                    cats_object[key].id = key;
+                    cats_object[key].cs = cat.cs;
+                    cats_object[key].group = cat.group;
+                    sort_array.push(cats_object[key]);
+                }
+
+                // Sort the array
+                sort_array.sort(function(a, b) {
+                    if (a.c != b.c) {   // try to sort by confidence level
+                        return a.c - b.c
+                    } else {    // otherwise try to sort by group id
+                        if (a.group != b.group) {
+                            return a.group - b.group;
+                        } else {
+                            return a.id > b.id;
+                        }
+                    }
+                });
+                sort_array.reverse();
+            } catch (e) {
+                wdump("ERROR: wot_categories.rearrange_categories(): Failed to rearrange categories / 1", e);
+            }
+
+            var alltogether = sort_array.slice(0);
+
+            try {
+                // filter out Child Safety cats to other array
+                for (var i=sort_array.length-1; i>=0; i--) {
+                    if (sort_array[i].cs) {
+                        cs_array.push(sort_array.splice(i, 1)[0]);
+                    }
+                }
+                cs_array.reverse();
+            } catch (e) {
+                wdump("ERROR: wot_categories.rearrange_categories(): Failed to rearrange categories / 2", e);
+            }
+        }
+
+        var res = {
+            all: alltogether,
+            trustworthy: sort_array,
+            childsafety: cs_array
+        };
+
+//        wdump("rearrange_categories:: " + JSON.stringify(res));
+
+        return res;
+    }
 };
 
 wot_modules.push({ name: "wot_categories", obj: wot_categories });

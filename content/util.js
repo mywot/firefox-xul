@@ -64,6 +64,21 @@ var wot_util =
 		return null;
 	},
 
+    get_level: function (levels, value, next) {
+        next = next ? next : false;
+
+        var next_level = levels[levels.length - 1];
+
+        for (var i = levels.length - 1; i >= 0; --i) {
+            if (value >= levels[i].min) {
+                return next ? next_level : levels[i];
+            }
+            next_level = levels[i];
+        }
+
+        return levels[1];
+    },
+
     copy_attrs: function (node) {
         var obj = {};
         if (node) {
@@ -109,7 +124,33 @@ var wot_util =
 		} catch (e) {
 			return null;
 		}
-	}
+	},
+
+    processhtml: function (html, replaces) {
+        try {
+            replaces.forEach(function(item) {
+                html = html.replace(RegExp("{" + item.from + "}", "g"),
+                    item.to);
+            });
+
+            return html;
+        } catch (e) {
+            wdump("warning.processhtml: failed with " + e);
+        }
+
+        return "";
+    },
+
+    htmlescape: function(str) {
+        var tagsToReplace = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;'
+        };
+        return str.replace(/[&<>]/g, function(symb) {
+            return tagsToReplace[symb] || symb;
+        });
+    }
 };
 
 var wot_url =
@@ -884,7 +925,33 @@ var wot_crypto =
 			dump("wot_crypto.islevel: failed with " + e + "\n");
 		}
 		return false;
-	}
+	},
+
+    decrypt: function(data, nonce, index)
+    {
+        try {
+            if (data && nonce) {
+                var key = wot_prefs.witness_key;
+
+                if (index == null || index < 0) {
+                    index = "";
+                } else {
+                    index = "-" + index;
+                }
+
+                if (key) {
+                    return wot_hash.bintostr(wot_arc4.crypt(
+                        wot_arc4.create(wot_hash.hmac_sha1hex(key,
+                            "response-" + nonce + index)),
+                        wot_hash.strtobin(atob(data))));
+                }
+            }
+        } catch (e) {
+            wdump("wot_crypto.decrypt(): failed with " + e);
+        }
+
+        return null;
+    }
 };
 
 wot_modules.push({ name: "wot_crypto", obj: wot_crypto });
