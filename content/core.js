@@ -366,23 +366,12 @@ var wot_core =
 					param += "r";
 				}
 
-				var r = wot_cache.get(hostname, "reputation_" + i);
+				var r = wot_cache.get(hostname, "reputation_" + i),
+                    x = wot_cache.get(hostname, "excluded_" + i);
 
-				if (wot_cache.get(hostname, "excluded_" + i)) {
-					param += "x";
-				} else if (r >= WOT_MIN_REPUTATION_5) {
-					param += "5";
-				} else if (r >= WOT_MIN_REPUTATION_4) {
-					param += "4";
-				} else if (r >= WOT_MIN_REPUTATION_3) {
-					param += "3";
-				} else if (r >= WOT_MIN_REPUTATION_2) {
-					param += "2";
-				} else if (r >= 0) {
-					param += "1";
-				} else {
-					param += "0";
-				}
+                r = x ? -2 : r; // if excluded, then set level to -2
+
+				param += wot_util.get_level(WOT_REPUTATIONLEVELS, r).level;
 
 				if (wot_prefs.accessible) {
 					param += "a";
@@ -714,24 +703,6 @@ var wot_core =
 
 	wot_service_url: function() {
 		return this.force_https ? WOT_SERVICE_SECURE : WOT_SERVICE_NORMAL;
-	},
-
-	get_level: function(r) {
-		if (r >= WOT_MIN_REPUTATION_5) {
-			return 5;
-		} else if (r >= WOT_MIN_REPUTATION_4) {
-			return 4;
-		} else if (r >= WOT_MIN_REPUTATION_3) {
-			return 3;
-		} else if (r >= WOT_MIN_REPUTATION_2) {
-			return 2;
-		} else if (r >= 0) {
-			return 1;
-		} else if (r == -1){
-			return 0;
-		} else {
-			return "x";
-		}
 	},
 
 	clean_search_rules: function () {

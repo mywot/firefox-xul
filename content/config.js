@@ -35,13 +35,13 @@ const WOT_MIN_REPUTATION_3 = 40;
 const WOT_MIN_REPUTATION_2 = 20;
 
 const WOT_REPUTATIONLEVELS = [
-        { name: "rx", min: -2 },
-        { name: "r0", min: -1 },
-        { name: "r1", min:  0 },
-        { name: "r2", min: WOT_MIN_REPUTATION_2 },
-        { name: "r3", min: WOT_MIN_REPUTATION_3 },
-        { name: "r4", min: WOT_MIN_REPUTATION_4 },
-        { name: "r5", min: WOT_MIN_REPUTATION_5 }
+        { level: "x", name: "rx", min: -2 },
+        { level: "0", name: "r0", min: -1 },
+        { level: "1", name: "r1", min:  0 },
+        { level: "2", name: "r2", min: WOT_MIN_REPUTATION_2 },
+        { level: "3", name: "r3", min: WOT_MIN_REPUTATION_3 },
+        { level: "4", name: "r4", min: WOT_MIN_REPUTATION_4 },
+        { level: "5", name: "r5", min: WOT_MIN_REPUTATION_5 }
     ];
 
 /* Confidence values */

@@ -378,7 +378,7 @@ var wot_warning =
 				}
 
 
-				var r_level = wot_core.get_level(r);
+				var r_level = wot_util.get_level(WOT_REPUTATIONLEVELS, r).level;
 
 				if (r_level >= 0) {
 					replaces.push([ "RATING" + i, "r" + r_level ]);

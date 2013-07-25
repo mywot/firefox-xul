@@ -83,20 +83,7 @@ var wot_status = {
 				status = "excluded";
 				description = "";
 			} else {
-				if (reputation >= WOT_MIN_REPUTATION_5) {
-					status = "5";
-				} else if (reputation >= WOT_MIN_REPUTATION_4) {
-					status = "4";
-				} else if (reputation >= WOT_MIN_REPUTATION_3) {
-					status = "3";
-				} else if (reputation >= WOT_MIN_REPUTATION_2) {
-					status = "2";
-				} else if (reputation >= 0) {
-					status = "1";
-				} else {
-					status = "0";
-				}
-
+                status = wot_util.get_level(WOT_REPUTATIONLEVELS, reputation).level;
 				description = wot_util.getstring("description_rating_" + status);
 			}
 
@@ -512,23 +499,8 @@ var wot_ui = {
 
 	geticonurl: function(r, size, plain)
 	{
-		var image = "r0";
-
-		if (r >= WOT_MIN_REPUTATION_5) {
-			image = "r5";
-		} else if (r >= WOT_MIN_REPUTATION_4) {
-			image = "r4";
-		} else if (r >= WOT_MIN_REPUTATION_3) {
-			image = "r3";
-		} else if (r >= WOT_MIN_REPUTATION_2) {
-			image = "r2";
-		} else if (r >= 0) {
-			image = "r1";
-		} else if (r < -1) {
-			image = "rx";
-		}
-
-		var base = "chrome://wot/skin/fusion/";
+        var image = wot_util.get_level(WOT_REPUTATIONLEVELS, r).name,
+		    base = "chrome://wot/skin/fusion/";
 
 		if (r >= -1 && wot_prefs.accessible) {
 			base += "accessible/";
