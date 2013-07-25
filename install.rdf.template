@@ -8,7 +8,7 @@
 		<em:description>Web of trust.</em:description>
 		<em:creator>WOT Services Oy</em:creator>
 		<em:homepageURL>http://www.mywot.com/</em:homepageURL>
-		<em:iconURL>chrome://wot/skin/fusion/32_32/new_trusted.png</em:iconURL>
+		<em:iconURL>chrome://wot/skin/fusion/32_32/new_r5.png</em:iconURL>
 		<em:optionsURL>chrome://wot/content/settings.xul</em:optionsURL>
 
 		<!-- Firefox -->

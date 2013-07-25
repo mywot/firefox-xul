@@ -20,25 +20,25 @@ body {
 	float: left;
 }
 #image-0 {
-	background: url("chrome://wot/skin/fusion/28_28/danger.png") top left no-repeat;
+	background: url("chrome://wot/skin/fusion/28_28/r1.png") top left no-repeat;
 }
 #image-1 {
-	background: url("chrome://wot/skin/fusion/28_28/not_safe.png") top left no-repeat;
+	background: url("chrome://wot/skin/fusion/28_28/r2.png") top left no-repeat;
 }
 #image-2 {
-	background: url("chrome://wot/skin/fusion/28_28/caution.png") top left no-repeat;
+	background: url("chrome://wot/skin/fusion/28_28/r3.png") top left no-repeat;
 }
 .accessible .image {
-	background: url("chrome://wot/skin/fusion/accessible/28_28/no_rep_calculated.png") top left no-repeat;
+	background: url("chrome://wot/skin/fusion/accessible/28_28/r0.png") top left no-repeat;
 }
 .accessible #image-0 {
-	background: url("chrome://wot/skin/fusion/accessible/28_28/danger.png") top left no-repeat;
+	background: url("chrome://wot/skin/fusion/accessible/28_28/r1.png") top left no-repeat;
 }
 .accessible #image-1 {
-	background: url("chrome://wot/skin/fusion/accessible/28_28/not_safe.png") top left no-repeat;
+	background: url("chrome://wot/skin/fusion/accessible/28_28/r2.png") top left no-repeat;
 }
 .accessible #image-2 {
-	background: url("chrome://wot/skin/fusion/accessible/28_28/caution.png") top left no-repeat;
+	background: url("chrome://wot/skin/fusion/accessible/28_28/r3.png") top left no-repeat;
 }
 #text {
 	clear: both;

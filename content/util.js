@@ -425,9 +425,9 @@ var wot_browser =
 			}
 
 			if (known) {
-				icon += "16_16/plain/danger.png";
+				icon += "16_16/plain/r1.png";
 			} else {
-				icon += "16_16/plain/no_rep_available.png";
+				icon += "16_16/plain/r0.png";
 			}
 
 			/* There's a chance the user has already changed the tab */

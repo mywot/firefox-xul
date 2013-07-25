@@ -1182,33 +1182,34 @@ var wot_search =
 
 			var r = wot_cache.get(name, "reputation_0");
 
-			if (wot_prefs.search_type == WOT_SEARCH_TYPE_OPTIMIZED) {
-				for (var i = 1; i < WOT_APPLICATIONS; ++i) {
-					if (wot_prefs["search_ignore_" + i]) {
-						continue;
-					}
-
-					if (wot_warning.getwarningtype(name, i, false) !=
-							WOT_WARNING_NONE) {
-						var a = wot_cache.get(name, "reputation_" + i);
-						if (r > a) {
-							r = a;
-						}
-					}
-				}
-			} else if (wot_prefs.search_type == WOT_SEARCH_TYPE_WORST) {
-				for (var i = 1; i < WOT_APPLICATIONS; ++i) {
-					if (!wot_prefs["show_application_" + i] ||
-							wot_prefs["search_ignore_" + i]) {
-						continue;
-					}
-
-					var a = wot_cache.get(name, "reputation_" + i);
-					if (a >= 0 && a < r) {
-						r = a;
-					}
-				}
-			}
+            // TODO: remove below since we don't have this type of logic in settings any more
+//			if (wot_prefs.search_type == WOT_SEARCH_TYPE_OPTIMIZED) {
+//				for (var i = 1; i < WOT_APPLICATIONS; ++i) {
+//					if (wot_prefs["search_ignore_" + i]) {
+//						continue;
+//					}
+//
+//					if (wot_warning.getwarningtype(name, i, false) !=
+//							WOT_WARNING_NONE) {
+//						var a = wot_cache.get(name, "reputation_" + i);
+//						if (r > a) {
+//							r = a;
+//						}
+//					}
+//				}
+//			} else if (wot_prefs.search_type == WOT_SEARCH_TYPE_WORST) {
+//				for (var i = 1; i < WOT_APPLICATIONS; ++i) {
+//					if (!wot_prefs["show_application_" + i] ||
+//							wot_prefs["search_ignore_" + i]) {
+//						continue;
+//					}
+//
+//					var a = wot_cache.get(name, "reputation_" + i);
+//					if (a >= 0 && a < r) {
+//						r = a;
+//					}
+//				}
+//			}
 
 			return r;
 		} catch (e) {

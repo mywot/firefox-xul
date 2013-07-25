@@ -512,20 +512,20 @@ var wot_ui = {
 
 	geticonurl: function(r, size, plain)
 	{
-		var image = "no_rep_available";
+		var image = "r0";
 
 		if (r >= WOT_MIN_REPUTATION_5) {
-			image = "trusted";
+			image = "r5";
 		} else if (r >= WOT_MIN_REPUTATION_4) {
-			image = "alright";
+			image = "r4";
 		} else if (r >= WOT_MIN_REPUTATION_3) {
-			image = "caution";
+			image = "r3";
 		} else if (r >= WOT_MIN_REPUTATION_2) {
-			image = "not_safe";
+			image = "r2";
 		} else if (r >= 0) {
-			image = "danger";
+			image = "r1";
 		} else if (r < -1) {
-			image = "excluded";
+			image = "rx";
 		}
 
 		var base = "chrome://wot/skin/fusion/";
