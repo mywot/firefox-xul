@@ -1182,6 +1182,8 @@ var wot_search =
 
 			var r = wot_cache.get(name, "reputation_0");
 
+            // TODO: respect "Parental control" setting and take the worst reputation between 0 and 4 in this case
+
             // TODO: remove below since we don't have this type of logic in settings any more
 //			if (wot_prefs.search_type == WOT_SEARCH_TYPE_OPTIMIZED) {
 //				for (var i = 1; i < WOT_APPLICATIONS; ++i) {

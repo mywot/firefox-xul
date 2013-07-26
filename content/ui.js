@@ -102,7 +102,7 @@ var wot_status = {
 				if(type != WOT_WARNING_BLOCK) wot_warning.hide(content);
 			}
 		} catch (e) {
-			dump("wot_status.update: failed with " + e + "\n");
+			wdump("wot_status.update: failed with " + e);
 		}
 	}
 };

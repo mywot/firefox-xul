@@ -207,6 +207,36 @@ var wot_categories = {
         return cats;
     },
 
+    target_blacklists: function (target) {
+        // return categories reported by API server (both identified and votes) taking them from cache.
+        // Result is an Object.
+
+        var count = wot_cache.get(target, "blacklists", 0),
+            bls = [],
+            attrs_list = [
+                WOT_SERVICE_XML_QUERY_BLACKLIST_TYPE,
+                WOT_SERVICE_XML_QUERY_BLACKLIST_TIME
+            ];
+
+        for (var i = 0, slot=""; i < count; i++) {
+            var obj = {}, val = null;
+            for (var a = 0; a < attrs_list.length; a++) {
+                slot = "blacklist_" + i + "_" + attrs_list[a];
+                val = wot_cache.get(target, slot, null);
+                if (val !== null) {
+                    obj[attrs_list[a]] = val;
+                }
+            }
+            if (!wot_util.isEmpty(obj)) {
+                bls.push(obj);
+            }
+        }
+
+//        wdump("target_categories:: " + JSON.stringify(cats));
+        return bls;
+
+    },
+
     select_identified: function (target_cats) {
         // Returns categories identified by community (unsorted!)
         var res = {};
