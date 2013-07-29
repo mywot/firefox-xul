@@ -25,6 +25,25 @@ var blocked_target = null;
 var l10n = {};
 var wot_modules = [];
 
+// Implementation of core's module
+var wot_categories = {
+
+    select_identified: function (target) {
+        // TODO: implement extracting categories info from URL
+        return {};
+    },
+
+    target_categories: function (target) {
+        // TODO: implement extracting categories info from URL and show them on WS
+        return {};
+    },
+
+    target_blacklists: function (target) {
+        // TODO: implement extracting blacklisting info from URL and show it on WS
+        return [];
+    }
+};
+
 function load_l10n(callback) {
 	// loads locale stings for add-on, parse them and store in l10n object
 	try {
@@ -58,10 +77,32 @@ function load_l10n(callback) {
 
 // emulation of original wot_util module
 var wot_util = {
-	getstring: function(str)
-	{
+	getstring: function(str) {
 		return l10n[str] || "?!";
-	}
+	},
+
+    // Dirty hack: avoid copying functions from other modules!
+    isEmpty: function (obj) {
+        for (var name in obj) {
+            return false;
+        }
+        return true;
+    },
+
+    get_level: function (levels, value, next) {
+        next = next ? next : false;
+
+        var next_level = levels[levels.length - 1];
+
+        for (var i = levels.length - 1; i >= 0; --i) {
+            if (value >= levels[i].min) {
+                return next ? next_level : levels[i];
+            }
+            next_level = levels[i];
+        }
+
+        return levels[1];
+    }
 };
 
 // stub

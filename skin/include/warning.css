@@ -314,12 +314,12 @@
 .rating-legend-wrapper {
     position: relative !important;
     margin: 3px 18px auto 74px !important;
-    background: url("../b/bubl_speech_c_150.png")  top left repeat-x !important;
+    background: url("chrome://wot/skin/b/bubl_speech_c_150.png")  top left repeat-x !important;
     background-size: 1px 23px !important;
     height: 23px !important;
     left: 1px;
     display: inline-block;
-    padding: 4px 0 !important;
+    padding: 3px 0 !important;
 }
 
 .rating-legend-wrapper:before {
@@ -327,7 +327,7 @@
     content: "" !important;
     height: 23px !important;
     width: 17px !important;
-    background: url("../b/bubl_speech_l_150.png") top left no-repeat !important;
+    background: url("chrome://wot/skin/b/bubl_speech_l_150.png") top left no-repeat !important;
     background-size: 17px 23px !important;
     left: -17px;
     top: 0;
@@ -339,7 +339,7 @@
     height: 23px !important;
     width: 17px !important;
     right: -17px !important;
-    background: url("../b/bubl_speech_r_150.png") top left no-repeat !important;
+    background: url("chrome://wot/skin/b/bubl_speech_r_150.png") top left no-repeat !important;
     background-size: 10px 23px !important;
     top: 0 !important;
 }
@@ -404,25 +404,25 @@
 
 .c-neutral.cat-item:before {
     background-color: #707070 !important;
-    background: -webkit-radial-gradient(center, ellipse cover, #9e9c9c 0%,#707070 100%) !important; /* Chrome10+,Safari5.1+ */
+    background: -moz-radial-gradient(center, ellipse cover, #9e9c9c 0%,#707070 100%) !important; /* Chrome10+,Safari5.1+ */
     border-color: #7d7d7d !important;
 }
 
 .c-questionable.cat-item:before {
     background-color: #ffd100 !important;
-    background: -webkit-radial-gradient(center, ellipse cover, #f8df68 0%,#f6cd0e 100%) !important; /* Chrome10+,Safari5.1+ */
+    background: -moz-radial-gradient(center, ellipse cover, #f8df68 0%,#f6cd0e 100%) !important; /* Chrome10+,Safari5.1+ */
     border-color: #f6cd0e !important;
 }
 
 .c-negative.cat-item:before {
     background-color: #f66d3f !important;
-    background: -webkit-radial-gradient(center, ellipse cover, #fca080 0%,#f77448 100%) !important; /* Chrome10+,Safari5.1+ */
+    background: -moz-radial-gradient(center, ellipse cover, #fca080 0%,#f77448 100%) !important;
     border-color: #f66d3f !important;
 }
 
 .c-positive.cat-item:before {
     background-color: #68c800 !important;
-    background: -webkit-radial-gradient(center, ellipse cover, #83d561 0%,#6dc14a 100%) !important; /* Chrome10+,Safari5.1+ */
+    background: -moz-radial-gradient(center, ellipse cover, #83d561 0%,#6dc14a 100%) !important; /* Chrome10+,Safari5.1+ */
     border-color: #6dc14a !important;
 }
 
@@ -545,14 +545,14 @@
     font-weight: bold !important;
     color: #585858 !important;
 
-    background-image: -webkit-linear-gradient(top, #FFF 0%, #e7e5e5 100%) !important;
+    background-image: -moz-linear-gradient(top, #FFF 0%, #e7e5e5 100%) !important;
     box-shadow: 1px 1px 5px #d2d2d2 !important;
     text-shadow: 1px 1px rgba(255,255,255,0.75) !important;
     cursor: pointer !important;
 }
 
 .wot-button:hover {
-    background-image: -webkit-linear-gradient(top, #FFF 0%,#dadada 83%, #f3f1f1 100%) !important;
+    background-image: -moz-linear-gradient(top, #FFF 0%,#dadada 83%, #f3f1f1 100%) !important;
     /*color: #6aac43 !important;*/
 }
 
@@ -647,7 +647,7 @@
 
 /* BEGIN: Copy&Paste from welcometips.css */
 .wot-wt-button {
-    -webkit-transition: box-shadow 0.1s !important;
+    -moz-transition: box-shadow 0.1s !important;
     width: 12em;
     height: 24px !important;
     margin: 1.3em auto 0.5em auto !important;
@@ -657,7 +657,7 @@
     border-radius: 3px !important;
     box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.47);;
     text-shadow: 0px 0px 8px #fff !important;
-    background-image: -webkit-linear-gradient(top, #CCEFAC 0%, #9AD265 39%, #6FA736 83%, #83BC4A) !important;
+    background-image: -moz-linear-gradient(top, #CCEFAC 0%, #9AD265 39%, #6FA736 83%, #83BC4A) !important;
 
     color: #375914 !important;
     font-size: 10pt;
@@ -667,14 +667,14 @@
 }
 
 .wot-wt-button:hover {
-    background-image: -webkit-linear-gradient(top, #e5fad1 0%, #b2e186 39%, #83bc4a 83%, #83BC4A) !important;
+    background-image: -moz-linear-gradient(top, #e5fad1 0%, #b2e186 39%, #83bc4a 83%, #83BC4A) !important;
 }
 
 .wot-wt-button:active {
     top: 1px;
     border-color: #babbbb;
     box-shadow: none;
-    background-image: -webkit-linear-gradient(top, #a9d185 0%, #8abf58 39%, #6fa736 83%, #83bc4a) !important;
+    background-image: -moz-linear-gradient(top, #a9d185 0%, #8abf58 39%, #6fa736 83%, #83bc4a) !important;
 }
 /* END */
 
