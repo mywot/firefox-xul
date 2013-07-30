@@ -28,10 +28,8 @@
 <!ENTITY wotRating.title			"Initializing WOT…">
 <!ENTITY wotRating.wot				"WOT rating">
 <!ENTITY wotRating.my				"My rating">
-<!ENTITY wotRating.app0				"Trustworthiness:">
-<!ENTITY wotRating.app1				"Vendor reliability:">
-<!ENTITY wotRating.app2				"Privacy:">
-<!ENTITY wotRating.app4				"Child safety:">
+<!ENTITY wotRating.app0				"Trustworthiness">
+<!ENTITY wotRating.app4				"Child safety">
 <!ENTITY wotRating.scorecard		"View scorecard for rating details">
 <!ENTITY wotRating.comment			"Add your comment">
 <!ENTITY wotRating.guide			"Guide">

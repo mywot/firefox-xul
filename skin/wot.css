@@ -401,7 +401,7 @@
 }
 #wot-elements {
 	background: #ffffff;
-	width: 326px;
+	width: 580px;
 }
 /* header */
 #wot-header {
@@ -410,7 +410,7 @@
 	margin-left: 7px;
 	margin-right: 7px;
 	margin-top: 7px;
-	width: 312px;
+	/*width: 500px;*/
 }
 #wot-header-logo {
 	background: url("chrome://wot/skin/fusion/logo.png") top left no-repeat;
@@ -419,7 +419,7 @@
 	margin-bottom: 6px;
 	margin-left: 1px;
 	margin-top: 1px;
-	width: 110px;
+	width: 45px;
 }
 #main-window[wot-mode="accessible"] #wot-header-logo {
 	background: url("chrome://wot/skin/fusion/accessible/logo.png") top left no-repeat;
@@ -427,7 +427,7 @@
 #wot-header-links {
 	padding-right: 10px;
 	margin-top: 1px;
-	width: 185px;
+	width: 200px;
 	-moz-box-pack: end;
 }
 .wot-header-link,
@@ -478,7 +478,7 @@
 	background: url("chrome://wot/skin/fusion/accessible/close-active.png") top left no-repeat;
 }
 /* title */
-#wot-title {
+#wot-hostname {
 	border-bottom: 1px solid #cacaca;
 	height: 26px;
 	padding-top: 4px;
@@ -492,8 +492,8 @@
 	margin-left:0;
 	margin-right:0;
 	padding-left: 4px;
-	width: 312px;
-	max-width: 312px;
+	/*width: 312px;*/
+	/*max-width: 312px;*/
 }
 #main-window[wot-status="disabled"] #wot-title-text:hover {
 	color: #3073c5;
@@ -528,13 +528,6 @@
 	margin-right:0;
 }
 /* rating */
-.wot-rating-border {
-	border-top: 1px solid #f4f4f4;
-	height: 1px;
-	margin-left: 7px;
-	margin-right: 7px;
-	width: 312px;
-}
 .wot-rating {
 	height: 59px;
 	margin-left: 7px;
@@ -642,7 +635,7 @@
 .wot-rating-slider {
 	background: url("chrome://wot/skin/fusion/slider.png") top left no-repeat;
 	height: 16px;
-	width: 194px;
+	width: 194px;   /* Make sure here is the same value as in ui.js wot_ui.SLIDER_WIDTH ! */
 	margin-top: 3px;
 }
 .wot-rating-stack[testimony="true"] .wot-rating-slider {

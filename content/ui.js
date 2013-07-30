@@ -59,8 +59,7 @@ var wot_status = {
 			var reputation = -1;
 
 			if (wot_cache.isok(wot_core.hostname)) {
-				reputation = wot_cache.get(wot_core.hostname,
-								"reputation_0");
+				reputation = wot_cache.get(wot_core.hostname, "reputation_0");
 			}
 			
 			if (reputation > WOT_MAX_REPUTATION) {
@@ -108,10 +107,18 @@ var wot_status = {
 };
 
 var wot_ui = {
-	show_accessible: function()
+
+    SLIDER_WIDTH: 194,  // make sure there is same value as in wot.css for .wot-rating-slider selector.
+
+    getElem: function (id) {
+        // just a shortcut
+        return document.getElementById(id);
+    },
+
+    show_accessible: function()
 	{
 		try {
-			var mainwnd = document.getElementById("main-window");
+			var mainwnd = this.getElem("main-window");
 			if (mainwnd) {
 				var mode = "normal";
 
@@ -125,14 +132,14 @@ var wot_ui = {
 				}
 			}
 		} catch (e) {
-			dump("wot_ui.show_accessible: failed with " + e + "\n");
+			wdump("wot_ui.show_accessible: failed with " + e);
 		}
 	},
 
 	show_partner: function()
 	{
 		try {
-			var mainwnd = document.getElementById("main-window");
+			var mainwnd = this.getElem("main-window");
 			if (mainwnd) {
 				var partner = wot_partner.getpartner() || "";
 
@@ -140,24 +147,22 @@ var wot_ui = {
 					mainwnd.setAttribute("wot-partner", partner);
 				}
 
-				document.getElementById("wot-partner").hidden =
-					!partner.length;
+				this.getElem("wot-partner").hidden = !partner.length;
 			}
 		} catch (e) {
-			dump("wot_ui.show_partner: failed with " + e + "\n");
+			wdump("wot_ui.show_partner: failed with " + e);
 		}
 	},
 
-	show_toolbar_button: function(id, after)
-	{
+	show_toolbar_button: function(id, after) {
 		try {
-			var nbr = document.getElementById("nav-bar");
+			var nbr = this.getElem("nav-bar");
 
 			if (!nbr || nbr.currentSet.indexOf(id) != -1) {
 				return;
 			}
 
-			var box = document.getElementById("navigator-toolbox");
+			var box = this.getElem("navigator-toolbox");
 
 			if (!box) {
 				return;
@@ -172,7 +177,7 @@ var wot_ui = {
 				bar = bar.nextSibling;
 			}
 
-			var target = document.getElementById(after);
+			var target = this.getElem(after);
 
 			if (target) {
 				target = target.nextSibling;
@@ -182,7 +187,7 @@ var wot_ui = {
 			nbr.setAttribute("currentset", nbr.currentSet);
 			document.persist("nav-bar", "currentset");
 		} catch (e) {
-			dump("wot_ui.show_toolbar_button: failed with " + e + "\n");
+			wdump("wot_ui.show_toolbar_button: failed with " + e);
 		}
 	},
 
@@ -200,12 +205,8 @@ var wot_ui = {
 			this.show_accessible();
 
 			/* Rating components */
-			document.getElementById("wot-rating-1").hidden =
-				!wot_prefs.show_application_1;
-			document.getElementById("wot-rating-2").hidden =
-				!wot_prefs.show_application_2;
-			document.getElementById("wot-rating-4").hidden =
-				!wot_prefs.show_application_4;
+//			document.getElementById("wot-rating-4").hidden =
+//				!wot_prefs.show_application_4;
 
 			/* Partner */
 			this.show_partner();
@@ -230,21 +231,24 @@ var wot_ui = {
 		}
 	},
 
-	update_title: function(description)
-	{
+	update_title: function(description) {
 		try {
-			var title = document.getElementById("wot-title-text");
-			if (title) {
+			var title_elem = this.getElem("wot-title-text"),
+                hostname_elem = this.getElem("wot-hostname-text");
+
+			if (title_elem && hostname_elem) {
 				if (wot_cache.isok(wot_core.hostname)) {
-					title.value = wot_shared.decodehostname(wot_core.hostname);
-					title.setAttribute("status", "target");
+					title_elem.value = wot_util.getstring("description_reputation");
+					title_elem.setAttribute("status", "target");
+                    hostname_elem.value = wot_shared.decodehostname(wot_core.hostname);
 				} else {
-					title.value = description;
-					title.setAttribute("status", "information");
+					title_elem.value = description;
+					title_elem.setAttribute("status", "information");
+                    hostname_elem.value = "";
 				}
 			}
 		} catch (e) {
-			dump("wot_ui.update_title: failed with " + e + "\n");
+			wdump("wot_ui.update_title: failed with " + e);
 		}
 	},
 
@@ -253,59 +257,40 @@ var wot_ui = {
 		try {
 			var cached = wot_cache.isok(wot_core.hostname);
 
-			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-				var reputation = document.getElementById("wot-rating-" + i +
-									"-reputation");
-				var confidence = document.getElementById("wot-rating-" + i +
-									"-confidence");
+			for (var i = 0; i < WOT_COMPONENTS.length; ++i) {
+                var a = WOT_COMPONENTS[i],
+				    rep_elem = this.getElem("wot-rating-" + a + "-reputation"),
+				    conf_elem = this.getElem("wot-rating-" + a + "-confidence"),
+                    rep = -1,
+                    cnf = -1,
+                    exl,
+                    level;
 
-				var rep = -1, cnf = -1, exl;
 				if (cached) {
-					rep = wot_cache.get(wot_core.hostname, "reputation_" + i);
-					cnf = wot_cache.get(wot_core.hostname, "confidence_" + i);
-					exl = wot_cache.get(wot_core.hostname, "excluded_" + i);
+					rep = wot_cache.get(wot_core.hostname, "reputation_" + a);
+					cnf = wot_cache.get(wot_core.hostname, "confidence_" + a);
+					exl = wot_cache.get(wot_core.hostname, "excluded_" + a);
 				}
 
-				if (reputation) {
+				if (rep_elem) {
 					if (exl) {
-						reputation.setAttribute("reputation", "excluded");
-					} else if (rep >= WOT_MIN_REPUTATION_5) {
-						reputation.setAttribute("reputation", 5);
-					} else if (rep >= WOT_MIN_REPUTATION_4) {
-						reputation.setAttribute("reputation", 4);
-					} else if (rep >= WOT_MIN_REPUTATION_3) {
-						reputation.setAttribute("reputation", 3);
-					} else if (rep >= WOT_MIN_REPUTATION_2) {
-						reputation.setAttribute("reputation", 2);
+						rep_elem.setAttribute("reputation", "excluded");
 					} else if (rep >= 0) {
-						reputation.setAttribute("reputation", 1);
+						rep_elem.setAttribute("reputation", wot_util.get_level(WOT_REPUTATIONLEVELS, rep).level);
 					} else if (cached) {
-						reputation.setAttribute("reputation", 0);
+						rep_elem.setAttribute("reputation", 0);
 					} else {
-						reputation.removeAttribute("reputation");
+						rep_elem.removeAttribute("reputation");
 					}
 				}
 
-				if (confidence) {
-					if (exl) {
-						confidence.setAttribute("confidence", 0);
-					} else if (cnf >= WOT_MIN_CONFIDENCE_5) {
-						confidence.setAttribute("confidence", 5);
-					} else if (cnf >= WOT_MIN_CONFIDENCE_4) {
-						confidence.setAttribute("confidence", 4);
-					} else if (cnf >= WOT_MIN_CONFIDENCE_3) {
-						confidence.setAttribute("confidence", 3);
-					} else if (cnf >= WOT_MIN_CONFIDENCE_2) {
-						confidence.setAttribute("confidence", 2);
-					} else if (cnf >= WOT_MIN_CONFIDENCE_1) {
-						confidence.setAttribute("confidence", 1);
-					} else {
-						confidence.setAttribute("confidence", 0);
-					}
+				if (conf_elem) {
+                    level = exl ? 0 : wot_util.get_level(WOT_CONFIDENCELEVELS, cnf).level;
+                    conf_elem.setAttribute("confidence", level);
 				}
 			}
 		} catch (e) {
-			dump("wot_ui.update_rating: failed with " + e + "\n");
+			wdump("wot_ui.update_rating: failed with " + e);
 		}
 	},
 
@@ -315,25 +300,12 @@ var wot_ui = {
 		try {
 			var cached = wot_cache.isok(wot_core.hostname);
 
-			/* CSS rules */
-			var sld_rule = wot_css.getstyle(WOT_STYLESHEET,
-								".wot-rating-slider");
-
-			if (!sld_rule) {
-				dump("wot_ui.update_testimonies: no style rule?\n");
-				return;
-			}
-
-			/* Dimensions */
-			var sld_w = wot_css.getstyle_numeric(sld_rule, "width");
-
-			/* Sliders */
-			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
+			/* Sliders for components */
+			for (var i = 0, a = 0; i < WOT_COMPONENTS.length; ++i) {
+                a = WOT_COMPONENTS[i];
 				/* Slider elements */
-				var stack     = document.getElementById("wot-rating-" +	i +
-									"-stack");
-				var indicator = document.getElementById("wot-rating-" +	i +
-									"-indicator");
+				var stack     = this.getElem("wot-rating-" +	a + "-stack");
+				var indicator = this.getElem("wot-rating-" +	a + "-indicator");
 
 				if (!stack || !indicator) {
 					continue;
@@ -341,18 +313,17 @@ var wot_ui = {
 
 				var testimony = -1;
 				if (cached) {
-					testimony = wot_cache.get(wot_core.hostname,
-								"testimony_" + i);
+					testimony = wot_cache.get(wot_core.hostname, "testimony_" + a);
 				}
 
 				if (testimony >= 0) {
-					indicator.left = testimony * sld_w / WOT_MAX_REPUTATION;
+					indicator.left = testimony * this.SLIDER_WIDTH / WOT_MAX_REPUTATION;
 					if (testimony == WOT_MAX_REPUTATION) {
 						--indicator.left;
 					}
 					stack.setAttribute("testimony", "true");
-				} else if (hover != null && i == hover) {
-					indicator.left = pos * sld_w / WOT_MAX_REPUTATION;
+				} else if (hover != null && a == hover) {
+					indicator.left = pos * this.SLIDER_WIDTH / WOT_MAX_REPUTATION;
 					if (pos == WOT_MAX_REPUTATION) {
 						--indicator.left;
 					}
@@ -361,10 +332,8 @@ var wot_ui = {
 					stack.setAttribute("testimony", "false");
 				}
 
-				var help = document.getElementById("wot-rating-" + i +
-							"-help-text");
-				var link = document.getElementById("wot-rating-" + i +
-							"-help-link");
+				var help = this.getElem("wot-rating-" + a + "-help-text"),
+				    link = this.getElem("wot-rating-" + a + "-help-link");
 
 				if (help && link) {
 					if (testimony >= WOT_MIN_REPUTATION_5) {
@@ -385,8 +354,7 @@ var wot_ui = {
 					link.value = "";
 
 					if (cached && testimony >= 0) {
-						var r = wot_cache.get(wot_core.hostname,
-									"reputation_" + i);
+						var r = wot_cache.get(wot_core.hostname, "reputation_" + a);
 						if (r != null && r >= 0 &&
 							Math.abs(r - testimony) > WOT_MIN_COMMENT_DIFF) {
 							help.value = wot_util.getstring("help_comment");
@@ -410,8 +378,8 @@ var wot_ui = {
 	update_message: function()
 	{
 		try {
-			var msg = document.getElementById("wot-message");
-			var txt = document.getElementById("wot-message-text");
+			var msg = this.getElem("wot-message");
+			var txt = this.getElem("wot-message-text");
 
 			if (!msg || !txt || !txt.firstChild) {
 				return;
@@ -444,14 +412,14 @@ var wot_ui = {
 			var i, j = 0;
 
 			for (i = 0; i < wot_api_query.users.length; ++i) {
-				var user    = document.getElementById("wot-user-" + j);
-				var content = document.getElementById("wot-user-" + j + "-content");
-				var stack   = document.getElementById("wot-user-" + j + "-stack");
-				var header  = document.getElementById("wot-user-" + j + "-header");
-				var bar     = document.getElementById("wot-user-" + j + "-bar-image");
-				var label   = document.getElementById("wot-user-" + j + "-bar-text");
-				var text    = document.getElementById("wot-user-" + j + "-text");
-				var notice  = document.getElementById("wot-user-" + j + "-notice");
+				var user    = this.getElem("wot-user-" + j);
+				var content = this.getElem("wot-user-" + j + "-content");
+				var stack   = this.getElem("wot-user-" + j + "-stack");
+				var header  = this.getElem("wot-user-" + j + "-header");
+				var bar     = this.getElem("wot-user-" + j + "-bar-image");
+				var label   = this.getElem("wot-user-" + j + "-bar-text");
+				var text    = this.getElem("wot-user-" + j + "-text");
+				var notice  = this.getElem("wot-user-" + j + "-notice");
 
 				if (!user || !header || !bar || !label || !text || !notice) {
 					return;

@@ -4,3 +4,8 @@ patches
 certs
 install.rdf
 extra/
+XULSchemas/xul.xsd
+XULSchemas/xulAttributeGroups.xsd
+XULSchemas/xulAttributeTypes.xsd
+XULSchemas/xulHtml.xsd
+xul.xsd

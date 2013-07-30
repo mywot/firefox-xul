@@ -53,13 +53,13 @@ const WOT_MIN_CONFIDENCE_2 = 12;
 const WOT_MIN_CONFIDENCE_1 = 6;
 
 const WOT_CONFIDENCELEVELS = [
-        { name: "cx", min: -2 },
-        { name: "c0", min: -1 },
-        { name: "c1", min: WOT_MIN_CONFIDENCE_1 },
-        { name: "c2", min: WOT_MIN_CONFIDENCE_2 },
-        { name: "c3", min: WOT_MIN_CONFIDENCE_3 },
-        { name: "c4", min: WOT_MIN_CONFIDENCE_4 },
-        { name: "c5", min: WOT_MIN_CONFIDENCE_5 }
+        { level: "x", name: "cx", min: -2 },
+        { level: "0", name: "c0", min: -1 },
+        { level: "1", name: "c1", min: WOT_MIN_CONFIDENCE_1 },
+        { level: "2", name: "c2", min: WOT_MIN_CONFIDENCE_2 },
+        { level: "3", name: "c3", min: WOT_MIN_CONFIDENCE_3 },
+        { level: "4", name: "c4", min: WOT_MIN_CONFIDENCE_4 },
+        { level: "5", name: "c5", min: WOT_MIN_CONFIDENCE_5 }
     ];
 
 /* Testimony values and rounding */
