@@ -31,6 +31,7 @@
     <script type="application/x-javascript" src="chrome://wot/content/commands.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/shared.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/util.js"/>
+    <script type="application/x-javascript" src="chrome://wot/content/ratingwindow.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/ui.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/prefs.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/my.js"/>
@@ -45,6 +46,7 @@
     <script type="application/x-javascript" src="chrome://wot/content/firstrun.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/partner.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/core.js"/>
+
 
     <stringbundleset id="stringbundleset">
         <stringbundle id="wot-strings" src="chrome://wot/locale/wot.properties"/>
@@ -78,186 +80,12 @@
     <popupset id="mainPopupSet">
         <!-- Testimony window -->
         <menupopup id="wot-popup" noautohide="true" position="after_start"
-                   onpopupshowing="wot_core.update();"
-                   onpopuphiding="wot_events.hide_popup();"
-                   onmouseup="wot_events.slider_up(event, -1);">
+                   onpopupshowing="wot_rw.on_rw_open(event);"
+                   onpopuphiding="wot_rw.hide_popup();">
 
-            <vbox id="wot-elements">
-                <!-- header -->
-                <hbox id="wot-header">
-                    <box id="wot-header-logo" onclick="wot_events.click_logo(event);"/>
-                    <label id="wot-title-text"/>
-                    <hbox id="wot-header-links">
-                        <label id="wot-header-link-0" class="wot-header-link" value="&wotRating.prefs;"
-                               onclick="wot_events.click_prefs(event);"/>
-                        <box id="wot-header-link-separator"/>
-                        <label id="wot-header-link-1" class="wot-header-link" value="&wotRating.guide;"
-                               onclick="wot_events.click_guide(event);"/>
-                    </hbox>
-                    <box id="wot-header-button" onclick="wot_events.popup_hide();"/>
-                </hbox>
+            <iframe id="wot-rwframe" src="chrome://wot/content/rw/ratingwindow.html" type="content-primary"
+                    flex="1" transparent="true" showcaret="true" width="100%" height="380px"/>
 
-                <!-- hostname -->
-                <vbox id="wot-hostname">
-                    <label id="wot-hostname-text" onclick="wot_events.click_title(event);"/>
-                </vbox>
-
-                <vbox id="wot-ratings-area">
-                    <!-- rating header -->
-                    <hbox id="wot-rating-header">
-                        <label id="wot-rating-header-wot" crop="end" value="&wotRating.wot;"/>
-                        <label id="wot-rating-header-my" crop="end" value="&wotRating.my;"/>
-                    </hbox>
-
-
-
-                    <!-- rating 0 -->
-                    <vbox id="wot-rating-0" class="wot-rating">
-                        <label id="wot-rating-0-header" class="wot-rating-header" crop="end"
-                               value="&wotRating.app0;"/>
-                        <hbox id="wot-rating-0-data" class="wot-rating-data">
-                            <box id="wot-rating-0-reputation" class="wot-rating-reputation"/>
-                            <box id="wot-rating-0-confidence" class="wot-rating-confidence"/>
-                            <vbox id="wot-rating-0-testimony" class="wot-rating-testimony">
-                                <stack id="wot-rating-0-stack" class="wot-rating-stack"
-                                       onmousedown="wot_events.slider_down(event, 0);"
-                                       onmouseup="wot_events.slider_up(event, 0);"
-                                       onmousemove="wot_events.slider_move(event, 0);">
-                                    <box id="wot-rating-0-slider" class="wot-rating-slider"
-                                         onmousedown="wot_events.slider_down(event, 0);"
-                                         onmouseup="wot_events.slider_up(event, 0);"
-                                         onmousemove="wot_events.slider_move(event, 0);"/>
-                                    <box id="wot-rating-0-indicator" class="wot-rating-indicator"
-                                         onmousedown="wot_events.slider_down(event, 0);"
-                                         onmouseup="wot_events.slider_up(event, 0);"
-                                         onmousemove="wot_events.slider_move(event, 0);"/>
-                                </stack>
-                                <hbox id="wot-rating-0-help" class="wot-rating-help">
-                                    <label id="wot-rating-0-help-text" class="wot-rating-help-text" crop="end"/>
-                                    <label id="wot-rating-0-help-link" class="wot-rating-help-link" crop="end"
-                                           onclick="wot_events.click_help(event, 0);"/>
-                                </hbox>
-                            </vbox>
-                        </hbox>
-                    </vbox>
-
-                    <!-- rating 4 -->
-                    <vbox id="wot-rating-4" class="wot-rating">
-                        <label id="wot-rating-4-header" class="wot-rating-header" crop="end"
-                               value="&wotRating.app4;"/>
-                        <hbox id="wot-rating-4-data" class="wot-rating-data">
-                            <box id="wot-rating-4-reputation" class="wot-rating-reputation"/>
-                            <box id="wot-rating-4-confidence" class="wot-rating-confidence"/>
-                            <vbox id="wot-rating-4-testimony" class="wot-rating-testimony">
-                                <stack id="wot-rating-4-stack" class="wot-rating-stack"
-                                       onmousedown="wot_events.slider_down(event, 4);"
-                                       onmouseup="wot_events.slider_up(event, 4);"
-                                       onmousemove="wot_events.slider_move(event, 4);">
-                                    <box id="wot-rating-4-slider" class="wot-rating-slider"
-                                         onmousedown="wot_events.slider_down(event, 4);"
-                                         onmouseup="wot_events.slider_up(event, 4);"
-                                         onmousemove="wot_events.slider_move(event, 4);"/>
-                                    <box id="wot-rating-4-indicator" class="wot-rating-indicator"
-                                         onmousedown="wot_events.slider_down(event, 4);"
-                                         onmouseup="wot_events.slider_up(event, 4);"
-                                         onmousemove="wot_events.slider_move(event, 4);"/>
-                                </stack>
-                                <hbox id="wot-rating-4-help" class="wot-rating-help">
-                                    <label id="wot-rating-4-help-text" class="wot-rating-help-text" crop="end"/>
-                                    <label id="wot-rating-4-help-link" class="wot-rating-help-link" crop="end"
-                                           onclick="wot_events.click_help(event, 4);"/>
-                                </hbox>
-                            </vbox>
-                        </hbox>
-                    </vbox>
-
-                </vbox>
-
-                <deck id="main-area" selectedIndex="0">
-
-                    <vbox id="wot-reputation-area"></vbox>
-
-                    <vbox id="wot-categories"></vbox>
-
-                </deck>
-
-                <!-- scorecard -->
-                <vbox id="wot-scorecard">
-                    <vbox id="wot-scorecard-content"
-                          onclick="wot_events.click_scorecard(event, false);">
-                        <label id="wot-scorecard-visit" class="wot-scorecard-text" crop="end"
-                               value="&wotRating.scorecard;"/>
-                        <box id="wot-scorecard-comment-container">
-                            <label id="wot-scorecard-comment" class="wot-scorecard-text" crop="end"
-                                   value="&wotRating.comment;"
-                                   onmouseover="document.getElementById('wot-scorecard-visit').setAttribute('inactive', true);"
-                                   onmouseout="document.getElementById('wot-scorecard-visit').removeAttribute('inactive');"
-                                   onclick="wot_events.click_scorecard(event, true);"/>
-                        </box>
-                    </vbox>
-                </vbox>
-                <!-- user 0 -->
-                <vbox id="wot-user-0" class="wot-user" hidden="true">
-                    <hbox id="wot-user-0-content" class="wot-user-content">
-                        <vbox id="wot-user-0-stack" class="wot-user-stack">
-                            <label id="wot-user-0-header" class="wot-user-header" crop="end"/>
-                            <hbox id="wot-user-0-bar" class="wot-user-bar">
-                                <box id="wot-user-0-bar-image" class="wot-user-bar-image"/>
-                                <label id="wot-user-0-bar-text" class="wot-user-bar-text" crop="end"/>
-                            </hbox>
-                        </vbox>
-                        <box id="wot-user-0-text-container" class="wot-user-text-container">
-                            <label id="wot-user-0-text" class="wot-user-text" crop="end"
-                                   onclick="wot_events.click_user(event, 0);"/>
-                        </box>
-                    </hbox>
-                    <label id="wot-user-0-notice" class="wot-user-notice" crop="end"/>
-                </vbox>
-                <!-- user 1 -->
-                <vbox id="wot-user-1" class="wot-user" hidden="true">
-                    <hbox id="wot-user-1-content" class="wot-user-content">
-                        <vbox id="wot-user-1-stack" class="wot-user-stack">
-                            <label id="wot-user-1-header" class="wot-user-header" crop="end"/>
-                            <hbox id="wot-user-1-bar" class="wot-user-bar">
-                                <box id="wot-user-1-bar-image" class="wot-user-bar-image"/>
-                                <label id="wot-user-1-bar-text" class="wot-user-bar-text" crop="end"/>
-                            </hbox>
-                        </vbox>
-                        <box id="wot-user-1-text-container" class="wot-user-text-container">
-                            <label id="wot-user-1-text" class="wot-user-text" crop="end"
-                                   onclick="wot_events.click_user(event, 1);"/>
-                        </box>
-                    </hbox>
-                    <label id="wot-user-1-notice" class="wot-user-notice" crop="end"/>
-                </vbox>
-                <!-- user 2 -->
-                <vbox id="wot-user-2" class="wot-user" hidden="true">
-                    <hbox id="wot-user-2-content" class="wot-user-content">
-                        <vbox id="wot-user-2-stack" class="wot-user-stack">
-                            <label id="wot-user-2-header" class="wot-user-header" crop="end"/>
-                            <hbox id="wot-user-2-bar" class="wot-user-bar">
-                                <box id="wot-user-2-bar-image" class="wot-user-bar-image"/>
-                                <label id="wot-user-2-bar-text" class="wot-user-bar-text" crop="end"/>
-                            </hbox>
-                        </vbox>
-                        <box id="wot-user-2-text-container" class="wot-user-text-container">
-                            <label id="wot-user-2-text" class="wot-user-text" crop="end"
-                                   onclick="wot_events.click_user(event, 2);"/>
-                        </box>
-                    </hbox>
-                    <label id="wot-user-2-notice" class="wot-user-notice" crop="end"/>
-                </vbox>
-                <!-- message -->
-                <hbox id="wot-message" hidden="true"
-                      onclick="return wot_events.click_message(event);">
-                    <description id="wot-message-text" crop="end">
-                    </description>
-                </hbox>
-                <!-- partner -->
-                <vbox id="wot-partner" hidden="true">
-                    <label id="wot-partner-text" crop="end" value="&wotRating.partner;"/>
-                </vbox>
-            </vbox>
         </menupopup>
 
         <!-- Indicator tooltip -->

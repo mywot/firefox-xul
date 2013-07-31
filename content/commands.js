@@ -360,23 +360,6 @@ var wot_events =
 		return false;
 	},
 
-	/* Called when the popup window is hidden */
-	hide_popup: function()
-	{
-		try {
-			if (wot_api_query.message_id.length > 0 &&
-				wot_api_query.message_id !=
-					WOT_SERVICE_XML_QUERY_MSG_ID_MAINT) {
-				wot_prefs.setChar("last_message", wot_api_query.message_id);
-			}
-
-			/* Stores any pending testimonies */
-			wot_core.update();
-		} catch (e) {
-			dump("wot_events.hide_popup: failed with " + e + "\n");
-		}
-	},
-
 	click_title: function(event) {
 		try {
 			if (!wot_prefs.enabled) {

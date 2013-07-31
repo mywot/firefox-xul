@@ -64,6 +64,28 @@ var wot_util =
 		return null;
 	},
 
+    get_all_strings: function () {
+        var res = {};
+        try {
+            if (!this.string_bundle) {
+                this.string_bundle = document.getElementById("wot-strings");
+            }
+
+            var strings = this.string_bundle.strings;
+
+            while (strings.hasMoreElements()) {
+                var property = strings.getNext().QueryInterface(Components.interfaces.nsIPropertyElement);
+                res[property.key] = property.value;
+            }
+            return res;
+
+        } catch (e) {
+            dump("wot_util.getstring: failed with " + e + "\n");
+        }
+
+        return res;
+    },
+
     get_level: function (levels, value, next) {
         next = next ? next : false;
 
@@ -301,7 +323,7 @@ var wot_url =
 		try {
 			base = base || WOT_PREF_PATH;
 
-			var path = base + wot_util.getstring("language") +
+			var path = base + wot_util.getstring("lang") +
 						"/" + WOT_PLATFORM + "/" + WOT_VERSION;
 
 			var url = path;
@@ -331,7 +353,7 @@ var wot_url =
 	{
 		try {
 			var params = "&lang=" +
-				(wot_util.getstring("language") || "en-US");
+				(wot_util.getstring("lang") || "en-US");
 
 			var partner = wot_partner.getpartner();
 
@@ -539,7 +561,7 @@ var wot_browser =
 						.getService(Components.interfaces.nsIBrowserSearchService);
 
 			var url = WOT_SAFESEARCH_OSD_URL;
-			var lang = wot_util.getstring("language");
+			var lang = wot_util.getstring("lang");
 
 			if (lang) {
 				url = url.replace("/en-US", "/" + lang);

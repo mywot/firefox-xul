@@ -147,7 +147,7 @@ var wot_ui = {
 					mainwnd.setAttribute("wot-partner", partner);
 				}
 
-				this.getElem("wot-partner").hidden = !partner.length;
+//				this.getElem("wot-partner").hidden = !partner.length;
 			}
 		} catch (e) {
 			wdump("wot_ui.show_partner: failed with " + e);

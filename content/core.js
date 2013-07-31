@@ -548,12 +548,13 @@ var wot_core =
 
 	update: function()
 	{
+        wdump("core.update()");
 		try {
 			wot_core.hostname = null;
 
 			if (!wot_api_register.ready || !wot_core.loaded) {
 				wot_status.set("notready",
-					wot_util.getstring("description_notready"));
+					wot_util.getstring("messages_notready"));
 				return;
 			}
 
@@ -586,7 +587,7 @@ var wot_core =
 
 			if (!wot_util.isenabled()) {
 				wot_status.set("disabled",
-					wot_util.getstring("description_disabled"));
+					wot_util.getstring("message_disabled"));
 				return;
 			}
 
@@ -613,7 +614,7 @@ var wot_core =
 			if (wot_browser.isoffline()) {
 				/* Browser offline */
 				wot_status.set("offline",
-					wot_util.getstring("description_offline"));
+					wot_util.getstring("message_offline"));
 				/* Retry after a timeout */
 				window.setTimeout(wot_core.update, WOT_INTERVAL_UPDATE_OFFLINE);
 				return;
@@ -637,14 +638,14 @@ var wot_core =
 					wot_cache.destroy(wot_core.hostname);
 				}
 				wot_status.set("nohost",
-					wot_util.getstring("description_private"));
+					wot_util.getstring("messages_notavailable"));
 				return;
 			}
 
 			if (!wot_cache.iscached(wot_core.hostname)) {
 				/* No previous record of the hostname, start a new query */
 				wot_status.set("inprogress",
-					wot_util.getstring("description_inprogress"));
+					wot_util.getstring("messages_loading"));
 				wot_api_query.send(wot_core.hostname);
 				return;
 			}
@@ -658,7 +659,7 @@ var wot_core =
 				} else {
 					/* Query already in progress, keep waiting */
 					wot_status.set("inprogress",
-						wot_util.getstring("description_inprogress"));
+						wot_util.getstring("messages_loading"));
 					return;
 				}
 			}
@@ -668,7 +669,7 @@ var wot_core =
 			if (status == WOT_QUERY_OK) {
 				if (age > WOT_INTERVAL_CACHE_REFRESH) {
 					wot_status.set("inprogress",
-						wot_util.getstring("description_inprogress"));
+						wot_util.getstring("messages_loading"));
 					wot_api_query.send(wot_core.hostname);
 				} else {
 					wot_status.update();
@@ -678,12 +679,12 @@ var wot_core =
 				if (status == WOT_QUERY_RETRY || status == WOT_QUERY_LINK) {
 					/* Retry immediately */
 					wot_status.set("inprogress",
-						wot_util.getstring("description_inprogress"));
+						wot_util.getstring("messages_loading"));
 					wot_api_query.send(wot_core.hostname);
 					return;
 				} else if (age > WOT_INTERVAL_CACHE_REFRESH_ERROR) {
 					wot_status.set("inprogress",
-						wot_util.getstring("description_inprogress"));
+						wot_util.getstring("messages_loading"));
 					wot_api_query.send(wot_core.hostname);
 					return;
 				}
@@ -695,7 +696,7 @@ var wot_core =
 		try {
 			/* For some reason, we failed to get anything meaningful to display */
 			wot_status.set("error",
-				wot_util.getstring("description_error_query"));
+				wot_util.getstring("messages_failed"));
 		} catch (e) {
 			dump("wot_core.update: failed with " + e + "\n");
 		}
