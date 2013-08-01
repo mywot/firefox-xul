@@ -25,13 +25,14 @@
 <head>
     <script type="text/javascript" src="chrome://wot/content/rw/jquery.js"></script>
     <script type="text/javascript" src="chrome://wot/content/rw/jquery.menu-aim.js"></script>
+    <script type="text/javascript" src="chrome://wot/content/rw/proxies.js"></script>
     <script type="text/javascript" src="chrome://wot/content/rw/wot.js"></script>
     <script type="text/javascript" src="chrome://wot/content/rw/keeper.js"></script>
-    <!--<script type="text/javascript" src="ga_configure.js"></script>-->
+    <script type="text/javascript" src="chrome://wot/content/injections/ga_configure.js"></script>
     <script type="text/javascript" src="chrome://wot/content/rw/ratingwindow.js"></script>
 
     <style type="text/css">
-        @import "chrome://wot/skin/b/ratingwindow.css";
+        @import "chrome://wot/skin/ratingwindow.css";
         /*@import "skin/include/welcometips.css";*/
     </style>
 </head>
@@ -272,6 +273,10 @@
     </div>
 
 </div>
-<script type="text/javascript" src="ga_init.js"></script>
+<div id="wot-comm-channel" style="display: none;">
+    <!-- this Node is used to communicate with background code of the add-on -->
+</div>
+
+<script type="text/javascript" src="chrome://wot/content/injections/ga_init.js"></script>
 </body>
 </html>

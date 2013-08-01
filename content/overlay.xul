@@ -47,7 +47,6 @@
     <script type="application/x-javascript" src="chrome://wot/content/partner.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/core.js"/>
 
-
     <stringbundleset id="stringbundleset">
         <stringbundle id="wot-strings" src="chrome://wot/locale/wot.properties"/>
     </stringbundleset>
@@ -84,7 +83,7 @@
                    onpopuphiding="wot_rw.hide_popup();">
 
             <iframe id="wot-rwframe" src="chrome://wot/content/rw/ratingwindow.html" type="content-primary"
-                    flex="1" transparent="true" showcaret="true" width="100%" height="380px"/>
+                    transparent="false" showcaret="true" width="100%" height="418px"/>
 
         </menupopup>
 

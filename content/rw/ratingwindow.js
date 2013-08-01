@@ -18,36 +18,6 @@
  along with WOT. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var chrome = {
-    extension: {
-        getBackgroundPage: function () {
-            return {    // background page object
-
-                wot: {
-                    prefs: {
-                        get: function (k) {return k;}
-                    }
-                }
-
-            };
-        }
-    },
-
-    i18n: {
-
-        messages: {},
-
-        getMessage: function(c) {
-            return chrome.i18n.messages[c];
-        },
-
-        loadMessages: function (json_data) {
-            chrome.i18n.messages = JSON.parse(json_data);
-        }
-
-    }
-};
-
 $.extend(wot, { ratingwindow: {
     MAX_VOTED_VISIBLE: 4,   // how many voted categories we can show in one line
 	sliderwidth: 154,
@@ -563,32 +533,27 @@ $.extend(wot, { ratingwindow: {
 
     update: function(target, data)
     {
-        chrome.windows.getCurrent(function(obj) {
-            chrome.tabs.getSelected(obj.id, function(tab) {
-                var _rw = wot.ratingwindow;
-                try {
-                    if (tab.id == target.id) {
-                        // TODO: check whether target is changed. If not, then don't update
-                        _rw.current = data || {};
-                        _rw.updatecontents();
-                        _rw.update_categories();
+        var _rw = wot.ratingwindow;
+        try {
+            console.log(target, data);
+            data = JSON.parse(data);    // for safety
+            _rw.current = data || {};
+            _rw.updatecontents();
+            _rw.update_categories();
 
-                        if (_rw.is_registered) {
-                            // ask server if there is my comment for the website
-                            _rw.comments.get_comment(data.target);
-                        } else {
-                            var bg = chrome.extension.getBackgroundPage();
-                            bg.wot.core.update_ratingwindow_comment(); // don't allow unregistered addons to comment
-                        }
+            if (_rw.is_registered) {
+                // ask server if there is my comment for the website
+                _rw.comments.get_comment(data.target);
+            } else {
+                var bg = chrome.extension.getBackgroundPage();
+                bg.wot.core.update_ratingwindow_comment(); // don't allow unregistered addons to comment
+            }
 
-                        _rw.modes.reset();
-                        _rw.modes.auto();
-                    }
-                } catch (e) {
-                    console.log("ratingwindow.update: failed with ", e);
-                }
-            });
-        });
+            _rw.modes.reset();
+            _rw.modes.auto();
+        } catch (e) {
+            console.log("ratingwindow.update: failed with ", e);
+        }
     },
 
     update_comment: function (cached, local_comment, captcha_required) {
@@ -810,6 +775,7 @@ $.extend(wot, { ratingwindow: {
         } else {
             // try to get user's votes from cache (server response)
             voted = wot.select_voted(_rw.getcached().value.cats);
+            console.log(JSON.stringify(_rw.getcached().value.cats));
             for(cat in voted) {
                 if (voted[cat].v == 1) {
                     up_voted.push(_rw.build_voted_category_html(wot.get_category(cat), voted[cat].v));
@@ -1061,7 +1027,7 @@ $.extend(wot, { ratingwindow: {
         bg.wot.core.update(true);     // this starts main data initialization (e.g. before it, there is no "cached" data)
 
         var wt =     bg.wot.wt,
-            locale = bg.wot.i18n("locale");
+            locale = wot.i18n("locale");
 
         // Welcome Tip button "close"
         $(".wt-rw-close").click(function (e){
@@ -1079,7 +1045,7 @@ $.extend(wot, { ratingwindow: {
         $("#wt-learnmore-link").click(function (){
             var time_before_click = Math.round(wot.time_since(wot.ratingwindow.opened_time));
             wot.ga.fire_event(wot.ga.categories.WT, wot.ga.actions.WT_RW_LEARN, String(time_before_click));
-            bg.wot.core.open_mywot(wot.urls.tour_rw, wot.urls.contexts.wt_rw_lm);
+            bg.wot.core.open_mywot(wot.urls.tour_rw, wot.urls.contexts.wt_rw_lm); // FIXME
         });
 
         // TODO: uncomment and test after public beta launch:
@@ -1288,7 +1254,7 @@ $.extend(wot, { ratingwindow: {
 
             if (mode == "unrated") {
                 var cached = _rw.getcached();
-                if (cached.value && cached.value.target) {
+                if (_rw.state.target) {
                     $_ratingarea.attr("disabled", null);
                 } else {
                     $_ratingarea.attr("disabled", "disabled");
@@ -1396,7 +1362,9 @@ $.extend(wot, { ratingwindow: {
 
             activate: function () {
                 if (!wot.ratingwindow.modes._activate("rated")) return false;
+                console.log("Rated");
                 wot.ratingwindow.update_uservoted();
+                console.log("update_uservoted");
                 return true;
             }
         },

@@ -21,8 +21,9 @@
 body {
     overflow: hidden;
     cursor: default;
-    -webkit-user-select: none;
+    -moz-user-select: none; /* FF specific */
     width: 580px;
+    margin: 0; /* FF specific */
 }
 
 #wot-ratingwindow {
@@ -57,7 +58,6 @@ body {
 /* height of rating area depends on the mode:
  low height (94px): unrated, rate
  high height: (122px): rated, commenting, thanks
-
  */
 .view-mode #ratings-area,
 .commenting #ratings-area {
@@ -86,7 +86,6 @@ body {
 #ratings-area[disabled=disabled],
 #ratings-area[disabled=disabled] .wot-rating-slider {
     filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+ */
-    -webkit-filter: grayscale(100%);
     opacity: 0.7;
 }
 
@@ -125,7 +124,7 @@ body {
     position: absolute;
     top: 2px;
     left: 0;
-    background: url("fusion/logo.png") top left no-repeat;
+    background: url("chrome://wot/skin/fusion/logo.png") top left no-repeat;
     cursor: pointer;
     display: inline-block;
     /*float: left;*/
@@ -197,11 +196,11 @@ body {
 }
 
 #wot-header-close:before {
-    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
 }
 
 #wot-header-close:after {
-    -webkit-transform: rotate(135deg);
+    -moz-transform: rotate(135deg);
 }
 
 #wot-title-text {
@@ -224,7 +223,7 @@ body {
     font-size: 13px;
     font-weight: bold;
     overflow: hidden;
-    -webkit-user-select: text;
+    -moz-user-select: text;
     margin-top: 5px;
     display: block;
 }
@@ -293,7 +292,7 @@ body {
     margin-left: 16px;
     margin-right: 0;
     width: 240px;
-    -webkit-user-select: none;
+    -moz-user-select: none;
     top: 42px;
 }
 
@@ -318,7 +317,7 @@ body {
 #rated-votes:before {
     content: "";
     position: absolute;
-    background-image: url(../skin/b/input-icons.png);
+    background-image: url("chrome://wot/skin/b/input-icons.png");
     background-repeat: no-repeat;
     background-position: 0 0;
     background-size: 40px auto;
@@ -435,7 +434,7 @@ body {
 
 .hand-up .hand-icon,
 .hand-down .hand-icon {
-    background-image: url(../skin/b/thumbs.png);
+    background-image: url("chrome://wot/skin/b/thumbs.png");
     background-repeat: no-repeat;
     width: 12px;
     height: 14px;
@@ -493,7 +492,7 @@ body {
 
 .wot-rating-reputation {
     position: absolute;
-	background: url("b/donuts_150.png") top left no-repeat;
+	background: url("chrome://wot/skin/b/donuts_150.png") top left no-repeat;
     background-position: 0 -165px;
     background-size: 35px 198px;
 	height: 33px;
@@ -536,7 +535,7 @@ body {
     margin-left: 26px;
     margin-top: -2px;
     width: 34px;
-	background: url("b/confidence_150dpi.png") top left no-repeat;
+	background: url("chrome://wot/skin/b/confidence_150dpi.png") top left no-repeat;
     background-size: 33px auto;
     background-position: 0 -168px;
 }
@@ -564,7 +563,7 @@ body {
 .rating-legend-wrapper {
     position: absolute;
     margin: 3px 0 auto 75px;
-    background: url("b/bubl_speech_c_150.png")  top left repeat-x;
+    background: url("chrome://wot/skin/b/bubl_speech_c_150.png")  top left repeat-x;
     background-size: 1px 23px;
     height: 23px;
 }
@@ -575,7 +574,7 @@ body {
     height: 23px;
     width: 17px;
     margin-left: -17px;
-    background: url("b/bubl_speech_l_150.png") top left no-repeat;
+    background: url("chrome://wot/skin/b/bubl_speech_l_150.png") top left no-repeat;
     background-size: 17px 23px;
 }
 
@@ -585,7 +584,7 @@ body {
     height: 23px;
     width: 17px;
     right: -17px;
-    background: url("b/bubl_speech_r_150.png") top left no-repeat;
+    background: url("chrome://wot/skin/b/bubl_speech_r_150.png") top left no-repeat;
     background-size: 10px 23px;
     top: 0px;
 }
@@ -664,7 +663,7 @@ body {
     color: #919191;
     opacity: 0;
     display: none;
-    -webkit-transition: opacity 5.5s;
+    -moz-transition: opacity 5.5s;
 }
 
 /* show boundary labels only when rating bars are enabled */
@@ -710,7 +709,7 @@ body {
 }
 
 .wot-rating-slider {
-	background: url("b/slider.png") top left no-repeat;
+	background: url("chrome://wot/skin/b/slider.png") top left no-repeat;
     background-size: auto 216px;
     background-position: 0 -180px;
     display: block;
@@ -752,7 +751,7 @@ body {
 	width: 21px;
     float: left;
     position: relative;
-    background: url("b/slider%20handle.png") top left no-repeat;
+    background: url("chrome://wot/skin/b/slider%20handle.png") top left no-repeat;
     background-size: 21px auto;
     z-index: 5;
     left: 166px;
@@ -799,7 +798,7 @@ body {
     margin-right: 0;
     margin-top: 4px;
     width: 154px;
-    -webkit-transition: opacity 2.5s linear 2s;
+    -moz-transition: opacity 2.5s linear 2s;
 }
 
 .wot-rating-data:not([r]) .wot-rating-help {
@@ -867,7 +866,7 @@ body {
 
 .rating-delete-icon {
     position: relative;
-    background: url("b/delete-testimony.png") top left no-repeat;
+    background: url("chrome://wot/skin/b/delete-testimony.png") top left no-repeat;
     background-size: auto 18px;
     background-position: -34px 0;
     width: 18px;
@@ -980,7 +979,7 @@ body {
     min-height: 46px;
     line-height: 9px;
     column-count: 2;
-    -webkit-column-count: 2;
+    -moz-column-count: 2;
 }
 
 .cat-item {
@@ -1006,25 +1005,25 @@ body {
 
 .cat-item .ico.c-neutral {
     background-color: #707070;
-    background: -webkit-radial-gradient(center, ellipse cover, #9e9c9c 0%,#707070 100%); /* Chrome10+,Safari5.1+ */
+    background: -moz-radial-gradient(center, ellipse cover, #9e9c9c 0%,#707070 100%); /* Chrome10+,Safari5.1+ */
     border-color: #7d7d7d;
 }
 
 .cat-item .ico.c-questionable {
     background-color: #ffd100;
-    background: -webkit-radial-gradient(center, ellipse cover, #f8df68 0%,#f6cd0e 100%); /* Chrome10+,Safari5.1+ */
+    background: -moz-radial-gradient(center, ellipse cover, #f8df68 0%,#f6cd0e 100%); /* Chrome10+,Safari5.1+ */
     border-color: #f6cd0e;
 }
 
 .cat-item .ico.c-negative {
     background-color: #f66d3f;
-    background: -webkit-radial-gradient(center, ellipse cover, #fca080 0%,#f77448 100%); /* Chrome10+,Safari5.1+ */
+    background: -moz-radial-gradient(center, ellipse cover, #fca080 0%,#f77448 100%); /* Chrome10+,Safari5.1+ */
     border-color: #f66d3f;
 }
 
 .cat-item .ico.c-positive {
     background-color: #68c800;
-    background: -webkit-radial-gradient(center, ellipse cover, #83d561 0%,#6dc14a 100%); /* Chrome10+,Safari5.1+ */
+    background: -moz-radial-gradient(center, ellipse cover, #83d561 0%,#6dc14a 100%); /* Chrome10+,Safari5.1+ */
     border-color: #6dc14a;
 }
 
@@ -1288,7 +1287,7 @@ body {
     font-size: 12px;
     font-weight: bold;
     color: #585858;
-    background-image: -webkit-linear-gradient(top, #FFF 0%, #e7e5e5 100%);
+    background-image: -moz-linear-gradient(top, #FFF 0%, #e7e5e5 100%);
     box-shadow: 1px 1px 5px #D2D2D2;
     text-shadow: 1px 1px rgba(255,255,255,0.75);
     cursor: pointer;
@@ -1300,7 +1299,7 @@ body {
 }
 
 .rw-button:not(.disabled):hover {
-    background-image: -webkit-linear-gradient(top, #FFF 0%,#dadada 83%, #f3f1f1 100%);
+    background-image: -moz-linear-gradient(top, #FFF 0%,#dadada 83%, #f3f1f1 100%);
     /*color: #6aac43;*/
 }
 
@@ -1318,7 +1317,7 @@ body {
 .btn-delete_icon {
     height: 18px;
     width: 18px;
-    background: url("b/delete-myrating.png") top left no-repeat;
+    background: url("chrome://wot/skin/b/delete-myrating.png") top left no-repeat;
     background-size: auto 18px;
     float: left;
     margin-right: 4px;
@@ -1569,11 +1568,11 @@ body {
 }
 
 .category-selector .delete-icon:before {
-    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
 }
 
 .category-selector .delete-icon:after {
-    -webkit-transform: rotate(135deg);
+    -moz-transform: rotate(135deg);
 }
 
 
@@ -1623,7 +1622,7 @@ input[type=checkbox].css-checkbox:checked + label.css-label {
     background-position: 0 -15px;
 }
 
-.css-label { background-image:url(b/checkbox.png); }
+.css-label { background-image:url("chrome://wot/skin/b/checkbox.png"); }
 
 .cat-full-list {
     margin: 1em 0.5em;

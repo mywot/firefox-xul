@@ -220,7 +220,7 @@ var wot_ui = {
 		try {
 			wot_commands.update();
 			this.show_elements();
-			this.update_title(description);
+//			this.update_title(description);
 			this.update_rating();
 			this.update_testimonies();
 			this.update_scorecard();
@@ -228,27 +228,6 @@ var wot_ui = {
 			this.update_message();
 		} catch (e) {
 			dump("wot_ui.update: failed with " + e + "\n");
-		}
-	},
-
-	update_title: function(description) {
-		try {
-			var title_elem = this.getElem("wot-title-text"),
-                hostname_elem = this.getElem("wot-hostname-text");
-
-			if (title_elem && hostname_elem) {
-				if (wot_cache.isok(wot_core.hostname)) {
-					title_elem.value = wot_util.getstring("description_reputation");
-					title_elem.setAttribute("status", "target");
-                    hostname_elem.value = wot_shared.decodehostname(wot_core.hostname);
-				} else {
-					title_elem.value = description;
-					title_elem.setAttribute("status", "information");
-                    hostname_elem.value = "";
-				}
-			}
-		} catch (e) {
-			wdump("wot_ui.update_title: failed with " + e);
 		}
 	},
 

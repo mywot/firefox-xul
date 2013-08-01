@@ -58,7 +58,7 @@
 	list-style-image: url("chrome://wot/skin/fusion/16_16/no_rep_calculated.png");
 }
 #main-window[wot-status="nohost-update"] toolbar[iconsize="small"] #wot-button {
-	list-style-image: url("chrome://wot/skin/fusion/16_16/message_no_rep_available.png");
+	list-style-image: url("chrome://wot/skin/fusion/16_16/message_r0.png");
 }
 #main-window[wot-status="notready"] toolbar[iconsize="small"] #wot-button {
 	list-style-image: url("chrome://wot/skin/fusion/16_16/getting_info.png");
@@ -82,11 +82,11 @@
 }
 #main-window[wot-status="0"] toolbar[iconsize="small"] #wot-button,
 #main-window[wot-status="0-testimony"] toolbar[iconsize="small"] #wot-button {
-	list-style-image: url("chrome://wot/skin/fusion/16_16/no_rep_available.png");
+	list-style-image: url("chrome://wot/skin/fusion/16_16/r0.png");
 }
 #main-window[wot-status="0-testimony-update"] toolbar[iconsize="small"] #wot-button,
 #main-window[wot-status="0-update"] toolbar[iconsize="small"] #wot-button {
-	list-style-image: url("chrome://wot/skin/fusion/16_16/message_no_rep_available.png");
+	list-style-image: url("chrome://wot/skin/fusion/16_16/message_r0.png");
 }
 #main-window[wot-status="excluded"] toolbar[iconsize="small"] #wot-button,
 #main-window[wot-status="excluded-testimony"] toolbar[iconsize="small"] #wot-button,
@@ -155,7 +155,7 @@
 	list-style-image: url("chrome://wot/skin/fusion/accessible/16_16/no_rep_calculated.png");
 }
 #main-window[wot-mode="accessible"][wot-status="nohost-update"] toolbar[iconsize="small"] #wot-button {
-	list-style-image: url("chrome://wot/skin/fusion/accessible/16_16/message_no_rep_available.png");
+	list-style-image: url("chrome://wot/skin/fusion/accessible/16_16/message_r0.png");
 }
 #main-window[wot-mode="accessible"][wot-status="notready"] toolbar[iconsize="small"] #wot-button {
 	list-style-image: url("chrome://wot/skin/fusion/accessible/16_16/getting_info.png");
@@ -179,11 +179,11 @@
 }
 #main-window[wot-mode="accessible"][wot-status="0"] toolbar[iconsize="small"] #wot-button,
 #main-window[wot-mode="accessible"][wot-status="0-testimony"] toolbar[iconsize="small"] #wot-button {
-	list-style-image: url("chrome://wot/skin/fusion/accessible/16_16/no_rep_available.png");
+	list-style-image: url("chrome://wot/skin/fusion/accessible/16_16/r0.png");
 }
 #main-window[wot-mode="accessible"][wot-status="0-testimony-update"] toolbar[iconsize="small"] #wot-button,
 #main-window[wot-mode="accessible"][wot-status="0-update"] toolbar[iconsize="small"] #wot-button {
-	list-style-image: url("chrome://wot/skin/fusion/accessible/16_16/message_no_rep_available.png");
+	list-style-image: url("chrome://wot/skin/fusion/accessible/16_16/message_r0.png");
 }
 #main-window[wot-mode="accessible"][wot-status="excluded"] toolbar[iconsize="small"] #wot-button,
 #main-window[wot-mode="accessible"][wot-status="excluded-testimony"] toolbar[iconsize="small"] #wot-button,
@@ -252,7 +252,7 @@
 	list-style-image: url("chrome://wot/skin/fusion/24_24/no_rep_calculated.png");
 }
 #main-window[wot-status="nohost-update"] #wot-button {
-	list-style-image: url("chrome://wot/skin/fusion/24_24/message_no_rep_available.png");
+	list-style-image: url("chrome://wot/skin/fusion/24_24/message_r0.png");
 }
 #main-window[wot-status="notready"] #wot-button {
 	list-style-image: url("chrome://wot/skin/fusion/24_24/getting_info.png");
@@ -276,11 +276,11 @@
 }
 #main-window[wot-status="0"] #wot-button,
 #main-window[wot-status="0-testimony"] #wot-button {
-	list-style-image: url("chrome://wot/skin/fusion/24_24/no_rep_available.png");
+	list-style-image: url("chrome://wot/skin/fusion/24_24/r0.png");
 }
 #main-window[wot-status="0-testimony-update"] #wot-button,
 #main-window[wot-status="0-update"] #wot-button {
-	list-style-image: url("chrome://wot/skin/fusion/24_24/message_no_rep_available.png");
+	list-style-image: url("chrome://wot/skin/fusion/24_24/message_r0.png");
 }
 #main-window[wot-status="excluded"] #wot-button,
 #main-window[wot-status="excluded-testimony"] #wot-button,
@@ -349,7 +349,7 @@
 	list-style-image: url("chrome://wot/skin/fusion/accessible/24_24/no_rep_calculated.png");
 }
 #main-window[wot-mode="accessible"][wot-status="nohost-update"] #wot-button {
-	list-style-image: url("chrome://wot/skin/fusion/accessible/24_24/message_no_rep_available.png");
+	list-style-image: url("chrome://wot/skin/fusion/accessible/24_24/message_r0.png");
 }
 #main-window[wot-mode="accessible"][wot-status="notready"] #wot-button {
 	list-style-image: url("chrome://wot/skin/fusion/accessible/24_24/getting_info.png");
@@ -373,11 +373,11 @@
 }
 #main-window[wot-mode="accessible"][wot-status="0"] #wot-button,
 #main-window[wot-mode="accessible"][wot-status="0-testimony"] #wot-button {
-	list-style-image: url("chrome://wot/skin/fusion/accessible/24_24/no_rep_available.png");
+	list-style-image: url("chrome://wot/skin/fusion/accessible/24_24/r0.png");
 }
 #main-window[wot-mode="accessible"][wot-status="0-testimony-update"] #wot-button,
 #main-window[wot-mode="accessible"][wot-status="0-update"] #wot-button {
-	list-style-image: url("chrome://wot/skin/fusion/accessible/24_24/message_no_rep_available.png");
+	list-style-image: url("chrome://wot/skin/fusion/accessible/24_24/message_r0.png");
 }
 #main-window[wot-mode="accessible"][wot-status="excluded"] #wot-button,
 #main-window[wot-mode="accessible"][wot-status="excluded-testimony"] #wot-button,
@@ -395,12 +395,21 @@
 
 /* rating window */
 #wot-popup {
+    background: #ffffff !important;
+    opacity: 1;
 	padding: 0;
 	margin: 0;
 	font-family: Tahoma, Arial, sans-serif;
     width: 580px;
-    height: 390px;
+    height: 426px;
+    overflow: hidden;
 }
+
+#wot-rwframe {
+    background: #ffffff !important;
+    opacity: 1;
+}
+
 #wot-elements {
 	background: #ffffff;
 	width: 580px;
@@ -574,7 +583,7 @@
 	background: url("chrome://wot/skin/fusion/28_28/r5.png") top left no-repeat;
 }
 .wot-rating-reputation[reputation="0"] {
-	background: url("chrome://wot/skin/fusion/28_28/no_rep_available.png") top left no-repeat;
+	background: url("chrome://wot/skin/fusion/28_28/r0.png") top left no-repeat;
 }
 .wot-rating-reputation[reputation="excluded"] {
 	background: url("chrome://wot/skin/fusion/28_28/excluded.png") top left no-repeat;
@@ -598,7 +607,7 @@
 	background: url("chrome://wot/skin/fusion/accessible/28_28/r5.png") top left no-repeat;
 }
 #main-window[wot-mode="accessible"] .wot-rating-reputation[reputation="0"] {
-	background: url("chrome://wot/skin/fusion/accessible/28_28/no_rep_available.png") top left no-repeat;
+	background: url("chrome://wot/skin/fusion/accessible/28_28/r0.png") top left no-repeat;
 }
 #main-window[wot-mode="accessible"] .wot-rating-reputation[reputation="excluded"] {
 	background: url("chrome://wot/skin/fusion/28_28/excluded.png") top left no-repeat;

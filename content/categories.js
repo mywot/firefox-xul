@@ -199,6 +199,8 @@ var wot_categories = {
             }
             if (!wot_util.isEmpty(cat_obj)) {
                 cat_obj['id'] = cat_obj.name;
+                cat_obj.v = cat_obj.vote;   // comply with Chrome's codebase
+                delete cat_obj.vote;
                 cats[cat_obj.name] = cat_obj;
             }
         }
