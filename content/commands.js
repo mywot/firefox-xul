@@ -118,14 +118,14 @@ var wot_commands =
 				setAttribute("disabled", !wot_util.isenabled() || !cached);
 
 			/* Quick testimonies */
-			var quicks = [];
+			var i, quicks = [];
 
-			for (var i = 0; i < 5; ++i) {
+			for (i = 0; i < 5; ++i) {
 				quicks[i] =	document.getElementById("wot-" + what +
 								"-testify-" + (i + 1));
 			}
 
-			for (var i = 0; i < quicks.length; ++i) {
+			for (i = 0; i < quicks.length; ++i) {
 				quicks[i].setAttribute("disabled",
 					!wot_prefs.enabled || !cached);
 				quicks[i].setAttribute("checked", false);
@@ -158,7 +158,7 @@ var wot_commands =
 			wot_prefs.setBool("enabled", wot_prefs.enabled);
 			wot_core.update();
 		} catch (e) {
-			dump("wot_commands.enabled: failed with " + e + "\n");
+			wdump("wot_commands.enabled: failed with " + e);
 		}
 	},
 
@@ -166,12 +166,11 @@ var wot_commands =
 	{
 		try {
 			if (wot_cache.iscached(wot_core.hostname)) {
-				wot_cache.set(wot_core.hostname, "status",
-					WOT_QUERY_RETRY);
+				wot_cache.set(wot_core.hostname, "status", WOT_QUERY_RETRY);
 				wot_core.update();
 			}
 		} catch (e) {
-			dump("wot_commands.refresh: failed with " + e + "\n");
+			wdump("wot_commands.refresh: failed with " + e);
 		}
 	},
 
@@ -220,11 +219,11 @@ var wot_commands =
 		}
 	},
 
-	openlinkscorecard: function(event)
+	open_scorecard_link: function()
 	{
+        // Opens scorecard in a new tab for the URL selected via context menu
 		try {
-			wot_browser.openscorecard(wot_commands.getcontexthostname(),
-				null, WOT_URL_CTX);
+			wot_browser.openscorecard(wot_commands.getcontexthostname(), null, WOT_URL_CTX);
 		} catch (e) {
 		}
 	}
@@ -271,68 +270,68 @@ var wot_events =
 		return pos;
 	},
 
-	/* Handles testimony slider events and updates the new pending testimony to
-	   query cache */
-	slider_down: function(event, testimony)
-	{
-		try {
-			if (!wot_cache.isok(wot_core.hostname)) {
-				return false;
-			}
+//	/* Handles testimony slider events and updates the new pending testimony to
+//	   query cache */
+//	slider_down: function(event, testimony)
+//	{
+//		try {
+//			if (!wot_cache.isok(wot_core.hostname)) {
+//				return false;
+//			}
+//
+//			this.testimonydown = testimony;
+//
+//			var pos = this.get_slider_pos(event, testimony);
+//			if (pos < 0) {
+//				return false;
+//			}
+//
+//			/* Insert into cache */
+//			if (wot_cache.get(wot_core.hostname, "testimony_" +
+//					testimony) != pos) {
+//				wot_cache.set(wot_core.hostname, "testimony_" +
+//					testimony, Number(pos));
+//				wot_cache.set(wot_core.hostname, "pending", true);
+//				wot_core.pending[wot_core.hostname] = true;
+//
+////				/* Update testimony window */
+////				wot_ui.update_testimonies();
+//			}
+//
+//			/* Any pending testimonies will be stored in wot_core.update,
+//				which is called when the popup window is closed */
+//			return true;
+//		} catch (e) {
+//			dump("wot_events.slider: failed with " + e + "\n");
+//		}
+//		return false;
+//	},
 
-			this.testimonydown = testimony;
+//	slider_up: function(event, testimony)
+//	{
+//		this.testimonydown = -1;
+//		return true;
+//	},
 
-			var pos = this.get_slider_pos(event, testimony);
-			if (pos < 0) {
-				return false;
-			}
-
-			/* Insert into cache */
-			if (wot_cache.get(wot_core.hostname, "testimony_" +
-					testimony) != pos) {
-				wot_cache.set(wot_core.hostname, "testimony_" +
-					testimony, Number(pos));
-				wot_cache.set(wot_core.hostname, "pending", true);
-				wot_core.pending[wot_core.hostname] = true;
-
-				/* Update testimony window */
-				wot_ui.update_testimonies();
-			}
-
-			/* Any pending testimonies will be stored in wot_core.update,
-				which is called when the popup window is closed */
-			return true;
-		} catch (e) {
-			dump("wot_events.slider: failed with " + e + "\n");
-		}
-		return false;
-	},
-
-	slider_up: function(event, testimony)
-	{
-		this.testimonydown = -1;
-		return true;
-	},
-
-	slider_move: function(event, testimony)
-	{
-		/* Apparently, there is no way to detect if the mouse button is
-			down besides counting clicks. This means that if the mouse
-			button is released while outside the window, we won't be able
-			to detect it and the slider keeps moving... */
-		if (this.testimonydown == testimony) {
-			this.slider_down(event, testimony);
-		} else {
-			this.testimonydown = -1;
-			if (wot_cache.isok(wot_core.hostname)) {
-				var pos = this.get_slider_pos(event, testimony);
-				if (pos >= 0) {
-					wot_ui.update_testimonies(testimony, pos);
-				}
-			}
-		}
-		return true;
-	},
+//	slider_move: function(event, testimony)
+//	{
+//		/* Apparently, there is no way to detect if the mouse button is
+//			down besides counting clicks. This means that if the mouse
+//			button is released while outside the window, we won't be able
+//			to detect it and the slider keeps moving... */
+//		if (this.testimonydown == testimony) {
+//			this.slider_down(event, testimony);
+//		} else {
+//			this.testimonydown = -1;
+//			if (wot_cache.isok(wot_core.hostname)) {
+//				var pos = this.get_slider_pos(event, testimony);
+//				if (pos >= 0) {
+//					wot_ui.update_testimonies(testimony, pos);
+//				}
+//			}
+//		}
+//		return true;
+//	},
 
 	click_button: function(event)
 	{

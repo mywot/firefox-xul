@@ -288,6 +288,7 @@ const wot_prefs_bool = [
 //	[ "warning_unknown_5",			false ],
 	[ "feedback_enabled",			true  ],
 	[ "feedback_optedout",			false ],
+	[ "show_fulllist",			    false ],
 	[ "super_showtestimonies",	    false ] // show my rating on the search popup at bottom corners of the popup
 ];
 
@@ -312,6 +313,8 @@ const wot_prefs_int = [
 	[ "min_confidence_level",		WOT_DEFAULT_MIN_CONFIDENCE_LEVEL ],
 	[ "popup_hide_delay",			1000 ],
 	[ "popup_show_delay",			200 ],
+	[ "ratingwindow_shown",			0 ],
+	[ "activity_score",			    0 ],
 	[ "search_level",				WOT_MIN_REPUTATION_4 ],
 	[ "search_type",				WOT_SEARCH_TYPE_OPTIMIZED ],
 	[ "update_interval",			WOT_INTERVAL_UPDATE_CHECK ],

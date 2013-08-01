@@ -52,35 +52,24 @@
     </stringbundleset>
 
     <commandset id="mainCommandSet">
-        <command id="wot-command-enabled"
-                 oncommand="wot_commands.enabled();"/>
-        <command id="wot-command-refresh"
-                 oncommand="wot_commands.refresh();"/>
-        <command id="wot-command-preferences"
-                 oncommand="wot_commands.preferences();"/>
-        <command id="wot-command-checkupdates"
-                 oncommand="wot_commands.checkupdates();"/>
-        <command id="wot-command-testify-5"
-                 oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_5);"/>
-        <command id="wot-command-testify-4"
-                 oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_4);"/>
-        <command id="wot-command-testify-3"
-                 oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_3);"/>
-        <command id="wot-command-testify-2"
-                 oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_2);"/>
-        <command id="wot-command-testify-1"
-                 oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_1);"/>
-        <command id="wot-command-my"
-                 oncommand="wot_commands.my();"/>
-        <command id="wot-command-openlinkscorecard"
-                 oncommand="wot_commands.openlinkscorecard();"/>
+        <command id="wot-command-enabled" oncommand="wot_commands.enabled();"/>
+        <command id="wot-command-refresh" oncommand="wot_commands.refresh();"/>
+        <command id="wot-command-preferences" oncommand="wot_commands.preferences();"/>
+        <command id="wot-command-checkupdates" oncommand="wot_commands.checkupdates();"/>
+        <command id="wot-command-testify-5" oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_5);"/>
+        <command id="wot-command-testify-4" oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_4);"/>
+        <command id="wot-command-testify-3" oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_3);"/>
+        <command id="wot-command-testify-2" oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_2);"/>
+        <command id="wot-command-testify-1" oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_1);"/>
+        <command id="wot-command-my" oncommand="wot_commands.my();"/>
+        <command id="wot-command-openlinkscorecard" oncommand="wot_commands.open_scorecard_link();"/>
     </commandset>
 
     <popupset id="mainPopupSet">
         <!-- Testimony window -->
         <menupopup id="wot-popup" noautohide="true" position="after_start"
                    onpopupshowing="wot_rw.on_rw_open(event);"
-                   onpopuphiding="wot_rw.hide_popup();">
+                   onpopuphiding="wot_rw.on_hide_popup();">
 
             <iframe id="wot-rwframe" src="chrome://wot/content/rw/ratingwindow.html" type="content-primary"
                     transparent="false" showcaret="true" width="100%" height="418px"/>

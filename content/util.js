@@ -304,13 +304,13 @@ var wot_url =
 		return false;
 	},
 
-	getwoturl: function(path, context)
+	getwoturl: function(path, context, has_base)
 	{
 		try {
 			var new_path = path;
 			new_path += ( (path.indexOf("?") > 0) ? "&" : "?" );
 			new_path += "utm_source=addon" + (context ? "&utm_content=" + context : "");
-			return WOT_MY_URL + new_path;
+			return has_base ? new_path : WOT_MY_URL + new_path;
 		} catch (e) {
 			dump("wot_url.getwoturl: failed with " + e + "\n");
 		}
@@ -525,26 +525,35 @@ var wot_browser =
 		}
 	},
 
-	openscorecard: function(hostname, action, context)
+    open_wotsite: function (page, target, action, context, new_tab, has_base) {
+        try {
+            new_tab = new_tab === null ? true : new_tab;
+            var browser = getBrowser(),
+                path = page + encodeURIComponent(target);
+
+            if (action) {
+                path += action;
+            }
+
+            var url = wot_url.getwoturl(path, context, has_base);
+
+            if (browser && url) {
+                browser.selectedTab = browser.addTab(url);
+                return true;
+            }
+
+        } catch (e) {
+            wdump("ERROR: wot_util.wot_browser.open_wotsite() raised an exception. " + e);
+        }
+
+    },
+
+	openscorecard: function (hostname, action, context)
 	{
 		try {
-			if (!hostname) {
-				return false;
-			}
-			
-			var path = WOT_SCORECARD_PATH + encodeURIComponent(hostname);
+			if (!hostname) return false;
+            return this.open_wotsite(WOT_SCORECARD_PATH, hostname, action, context, true, false);
 
-			if (action) {
-				path += action;
-			}
-
-			var browser = getBrowser();
-			var url = wot_url.getwoturl(path, context);
-
-			if (browser && url) {
-				browser.selectedTab = browser.addTab(url);
-				return true;
-			}
 		} catch (e) {
 			dump("wot_browser.openscorecard: failed with " + e + "\n");
 		}

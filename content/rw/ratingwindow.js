@@ -310,13 +310,14 @@ $.extend(wot, { ratingwindow: {
     {
         try {
             fragment = fragment ? "#" + fragment : "";
-            var contextedurl = wot.contextedurl(url, context) + fragment;
-            chrome.tabs.create({ url: contextedurl, active:!keep_opened },
-                function(tab) {
-                    if (!keep_opened) wot.ratingwindow.hide();
-                }
-            );
-            if (!keep_opened) wot.ratingwindow.hide();
+
+            var bg = wot.ratingwindow.get_bg();
+            bg.wot.core.moz_send("navigate", {
+                url: url,
+                context: context,
+                fragment: fragment
+            });
+
         } catch (e) {
             console.error("ratingwindow.navigate: failed with ", e);
         }

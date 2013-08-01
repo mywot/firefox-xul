@@ -53,8 +53,15 @@ var wot_rw = {
         }
     },
 
+    hide_ratingwindow: function () {
+        var popup = document.getElementById("wot-popup");
+        if (popup) {
+            popup.hidePopup();
+        }
+    },
+
     /* Called when the popup window is hidden */
-    hide_popup: function()
+    on_hide_popup: function()
     {
         try {
             wot_rw.unseenmessage();
@@ -78,12 +85,12 @@ var wot_rw = {
             this.initialize(rw, rw_doc, rw_wot);
             // RW will ask BG to update it, so no need to update it here
         } else {
-            // RW is already loaded so we need to just update it
-            wot_rw.update();
+            wot_rw.update(); // RW is already loaded so we need to just update it
         }
     },
 
     update: function () {
+        // Updates content of Rating Window. RW must be already initialized (locales, categories info, etc).
         wdump("RW.update()");
 
         var rw = this.get_rw_window(),
@@ -96,10 +103,10 @@ var wot_rw = {
 
         if (!rw || !rw_doc || !rw_wot) return;
 
-        if (wot_cache.isok(target)) {
-            wdump("target " + target + " is cached. Good.");
+        if (target && wot_cache.isok(target)) {
             var normalized_target = wot_cache.get(target, "normalized") || target;
 
+            // prepare data for the RW
             data = {
                 target: target,
                 normalized: wot_shared.decodehostname(normalized_target),
@@ -110,6 +117,7 @@ var wot_rw = {
                 }
             };
 
+            // fill it with reputation data
             for (var i = 0; i < WOT_COMPONENTS.length; i++) {
                 var app = WOT_COMPONENTS[i];
                 var rep = wot_cache.get(target, "reputation_" + app),
@@ -149,7 +157,10 @@ var wot_rw = {
     get_preferences: function () {
 
         var prefs = {
-            accessible: wot_prefs.accessible
+            accessible:         wot_prefs.accessible,
+            show_fulllist:      wot_prefs.show_fulllist,
+            ratingwindow_shown: wot_prefs.ratingwindow_shown,
+            activity_score:     wot_prefs.activity_score
         };
 
         return prefs;
@@ -176,6 +187,7 @@ var wot_rw = {
                     wot_rw.update();
                 }
                 // TODO: do other updates (e.g. toolbar icon, etc)
+                wot_commands.update();  // Update button's context menu
                 break;
 
             case "update_ratingwindow_comment":
@@ -184,6 +196,11 @@ var wot_rw = {
 
             case "unseenmessage":
                 wot_rw.unseenmessage();
+                break;
+
+            case "navigate":
+                wot_browser.open_wotsite(data.url, "", "", data.context, true, true);
+                wot_rw.hide_ratingwindow();
                 break;
         }
     },
@@ -229,27 +246,6 @@ var wot_rw = {
         rw_wot.ratingwindow.onload();   // this runs only once in FF
 
         this.is_inited = true;
-    },
-
-    update_title: function(description) {
-        try {
-            var title_elem = this.getElem("wot-title-text"),
-                hostname_elem = this.getElem("wot-hostname-text");
-
-            if (title_elem && hostname_elem) {
-                if (wot_cache.isok(wot_core.hostname)) {
-                    title_elem.value = wot_util.getstring("description_reputation");
-                    title_elem.setAttribute("status", "target");
-                    hostname_elem.value = wot_shared.decodehostname(wot_core.hostname);
-                } else {
-                    title_elem.value = description;
-                    title_elem.setAttribute("status", "information");
-                    hostname_elem.value = "";
-                }
-            }
-        } catch (e) {
-            wdump("wot_ui.update_title: failed with " + e);
-        }
     }
 
 };
