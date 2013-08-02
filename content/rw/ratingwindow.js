@@ -443,16 +443,16 @@ $.extend(wot, { ratingwindow: {
         /* content for user (messages / communications) */
         $(".wot-user").hide();
 
-        // TODO: rewrite below
+        // TODO: rewrite below: use activity score stored in Prefs instead.
         var index = 0,
             item = (bg.wot.core.usercontent && bg.wot.core.usercontent.length > 0) ? bg.wot.core.usercontent[0] : {},
             user_header = wot.i18n("activityscore","text"),
-            user_as = "",
+            user_as = 0,
             $_user_text = $("#wot-user-0-text"),
             as_notice = wot.i18n("activityscore", "next");
 
-        if (item.label) {
-            user_as = item.label;
+        if (item.label && !isNaN(item.label)) {
+            user_as = parseInt(item.label); // for better security we use numeric
         }
 
         // insert next level name

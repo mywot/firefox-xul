@@ -354,32 +354,32 @@ var wot_ui = {
 //	{
 //	},
 
-	update_message: function()
-	{
-		try {
-			var msg = this.getElem("wot-message");
-			var txt = this.getElem("wot-message-text");
-
-			if (!msg || !txt || !txt.firstChild) {
-				return;
-			}
-
-			if (wot_api_query.message.length == 0 ||
-					wot_api_query.message_type.length == 0) {
-				msg.hidden = true;
-				txt.firstChild.nodeValue = "";
-				return;
-			}
-
-			txt.firstChild.nodeValue = wot_api_query.message;
-			txt.setAttribute("url-type",
-				wot_api_query.message_url.substring(0,4));
-			msg.setAttribute("message-status", wot_api_query.message_type);
-			msg.hidden = false;
-		} catch (e) {
-			dump("wot_ui.update_message: failed with " + e + "\n");
-		}
-	},
+//	update_message: function()
+//	{
+//		try {
+//			var msg = this.getElem("wot-message");
+//			var txt = this.getElem("wot-message-text");
+//
+//			if (!msg || !txt || !txt.firstChild) {
+//				return;
+//			}
+//
+//			if (wot_api_query.message.length == 0 ||
+//					wot_api_query.message_type.length == 0) {
+//				msg.hidden = true;
+//				txt.firstChild.nodeValue = "";
+//				return;
+//			}
+//
+//			txt.firstChild.nodeValue = wot_api_query.message;
+//			txt.setAttribute("url-type",
+//				wot_api_query.message_url.substring(0,4));
+//			msg.setAttribute("message-status", wot_api_query.message_type);
+//			msg.hidden = false;
+//		} catch (e) {
+//			dump("wot_ui.update_message: failed with " + e + "\n");
+//		}
+//	},
 
 //	update_users: function()
 //	{

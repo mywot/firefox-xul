@@ -116,6 +116,55 @@ var wot_rw = {
         }
     },
 
+    update_user_info: function () {
+
+//        wot_api_query.users[0]
+//        .bar - header
+//        .label - activity score?
+//        .length
+//        .url
+//        .notice
+//        .text
+//
+
+//				if (wot_api_query.users[i].bar &&
+//						wot_api_query.users[i].length != null &&
+//						wot_api_query.users[i].label) {
+//					header.value = wot_api_query.users[i].bar;
+//					label.value = wot_api_query.users[i].label;
+//					bar.setAttribute("length", wot_api_query.users[i].length);
+//					bar.hidden = false;
+//				} else {
+//					header.value = "";
+//					label.value = "";
+//					bar.hidden = true;
+//				}
+//
+//				if (wot_api_query.users[i].url) {
+//					content.setAttribute("url", wot_api_query.users[i].url);
+//				} else {
+//					content.removeAttribute("url");
+//				}
+//
+//				if (wot_api_query.users[i].notice) {
+//					notice.value = wot_api_query.users[i].notice;
+//					notice.hidden = false;
+//				} else {
+//					notice.hidden = true;
+//				}
+//
+//				if (wot_api_query.users[i].text) {
+//					text.value = wot_api_query.users[i].text;
+//					user.hidden = false;
+//					++j;
+//				} else {
+//					text.value = "";
+//					user.hidden = true;
+//				}
+//			}
+        wdump(JSON.stringify(wot_api_query.users[0]));
+    },
+
     update: function () {
         // Updates content of Rating Window. RW must be already initialized (locales, categories info, etc).
         wdump("RW.update()");
@@ -164,8 +213,6 @@ var wot_rw = {
             data.cached.value.cats = wot_categories.target_categories(target);
             data.cached.value.blacklist = wot_categories.target_blacklists(target);
 
-            wot_rw.update_messages();
-
         } else {
             data = {
                 target: target,
@@ -178,59 +225,91 @@ var wot_rw = {
             };
         }
 
+        wot_rw.push_preferences(rw, wot_rw.get_preferences());  // update preferences every time before showing RW
+
+        wot_rw.update_messages();
+        wot_rw.update_user_info();
+
+        // set the user's activity score additionally to bg.wot.core.
+        // FIXME: use activity score provided by preferences in RW instead of direct manupulation of core.usercontent[]
+        if (rw.wot_bg) {
+            rw.wot_bg.wot.core.usercontent = [
+                { "label": wot_prefs.activity_score }
+            ];
+        }
+
         wdump("data: " + JSON.stringify(data));
 
         rw_wot.ratingwindow.update(target, JSON.stringify(data));
     },
 
     get_preferences: function () {
+        var prefs = {};
+        try {
+            prefs = {
+                accessible:         wot_prefs.accessible,
+                show_fulllist:      wot_prefs.show_fulllist,
+                ratingwindow_shown: wot_prefs.ratingwindow_shown,
+                activity_score:     wot_prefs.activity_score
+            };
 
-        var prefs = {
-            accessible:         wot_prefs.accessible,
-            show_fulllist:      wot_prefs.show_fulllist,
-            ratingwindow_shown: wot_prefs.ratingwindow_shown,
-            activity_score:     wot_prefs.activity_score
-        };
+        } catch (e) {
+            wdump("ERROR: wot_rw.get_preferences() raised an exception: " + e);
+        }
+
+        wdump("prefs: " + JSON.stringify(prefs));
 
         return prefs;
     },
 
     push_preferences: function (rw, prefs) {
-        rw.wot_bg.wot.prefs.load_prefs(JSON.stringify(prefs));
+        try {
+            rw.wot_bg.wot.prefs.load_prefs(JSON.stringify(prefs));
+
+        } catch (e) {
+            wdump("ERROR: wot_rw.push_preferences() raised an exception: " + e);
+        }
     },
 
     on_ratingwindow_event: function (event) {
-        var details = event.detail;
-        if (!details) return false;
+        try {
+            var details = event.detail;
+            if (!details) return false;
 
-        wdump("on_ratingwindow_event() " + JSON.stringify(details));
+            wdump("on_ratingwindow_event() " + JSON.stringify(details));
 
-        var message_id = details.message_id,
-            data = details.data;
+            var message_id = details.message_id,
+                data = details.data;
 
-        // Important: don't use "this" here, because it points to other than wot_rw object!
+            // Important: don't use "this" here, because it points to other than wot_rw object!
 
-        switch (message_id) {
-            case "update":  // bg.wot.core.update() is called from RW
-                if (data && data.update_rw) {
-                    wot_rw.update();
-                }
-                // TODO: do other updates (e.g. toolbar icon, etc)
-                wot_commands.update();  // Update button's context menu
-                break;
+            switch (message_id) {
+                case "update":  // bg.wot.core.update() is called from RW
+                    if (data && data.update_rw) {
+                        wot_rw.update();
+                    }
+                    // TODO: do other updates (e.g. toolbar icon, etc)
+                    wot_commands.update();  // Update button's context menu
+                    break;
 
-            case "update_ratingwindow_comment":
-                // TODO: implement
-                break;
+                case "update_ratingwindow_comment":
+                    // TODO: implement
+                    break;
 
-            case "unseenmessage":
-                wot_rw.unseenmessage();
-                break;
+                case "unseenmessage":
+                    wot_rw.unseenmessage();
+                    break;
 
-            case "navigate":
-                wot_browser.open_wotsite(data.url, "", "", data.context, true, true);
-                wot_rw.hide_ratingwindow();
-                break;
+                case "navigate":
+                    wot_browser.open_wotsite(data.url, "", "", data.context, true, true);
+                    wot_rw.hide_ratingwindow();
+                    break;
+            }
+
+            return true;
+
+        } catch (e) {
+            wdump("ERROR: wot_rw.on_ratingwindow_event() raised an exception: " + e);
         }
     },
 

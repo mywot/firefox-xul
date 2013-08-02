@@ -156,13 +156,19 @@ var wot_api_link =
 
 var wot_api_query =
 {
-	message: "",
+	/* Variables */
+    message: "",
 	message_id: "",
 	message_type: "",
 	message_url: "",
 	users: [],
 
-	send: function(hostname, callback)
+    /* Constants */
+    XML_QUERY_STATUS_LEVEL: "level",
+    XML_QUERY_USER_LABEL: "label",
+
+	/* Methods */
+    send: function(hostname, callback)
 	{
 		try {
 			if (!wot_util.isenabled()) {
@@ -363,67 +369,37 @@ var wot_api_query =
 		try {
 			this.users = [];
 
-			if (!users) {
-				return;
-			}
+			if (!users) return;
 
-			var i = 0;
-			var u = users.item(0);
-			var a;
+			var u = users.item(0),// take only first items, ignore others
+                user_item = {},
+                a = null,
+                user_props = {
+//                icon:       WOT_SERVICE_XML_QUERY_USER_ICON,
+//                bar:        WOT_SERVICE_XML_QUERY_USER_BAR,
+//                "length":   WOT_SERVICE_XML_QUERY_USER_LENGTH,
+//                url:        WOT_SERVICE_XML_QUERY_USER_URL,
+//                text:       WOT_SERVICE_XML_QUERY_USER_TEXT,
+//                notice:     WOT_SERVICE_XML_QUERY_USER_NOTICE,
+                label:      this.XML_QUERY_USER_LABEL        // this is the only property we need
+            };
 
-			while (u) {
-				var item = {};
-				a = u.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_USER_ICON);
+			if (u) {
+                for (var k in user_props) {
+                    a = u.attributes.getNamedItem(user_props[k]);
+                    if (a && a.value) {
+                        user_item[k] = a.value;
+                    }
+                }
+                this.users.push(user_item);
 
-				if (a && a.value) {
-					item.icon = a.value;
-				}
-
-				a = u.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_USER_BAR);
-
-				if (a && a.value) {
-					item.bar = a.value;
-				}
-
-				a = u.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_USER_LENGTH);
-
-				if (a && a.value) {
-					item.length = a.value;
-				}
-
-				a = u.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_USER_LABEL);
-
-				if (a && a.value) {
-					item.label = a.value;
-				}
-
-				a = u.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_USER_URL);
-
-				if (a && a.value) {
-					item.url = a.value;
-				}
-
-				a = u.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_USER_TEXT);
-
-				if (a && a.value) {
-					item.text = a.value;
-				}
-
-				a = u.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_USER_NOTICE);
-
-				if (a && a.value) {
-					item.notice = a.value;
-				}
-
-				if (item.text && (!item.bar ||
-						(item.length != null && item.label))) {
-					this.users[i] = item;
-				}
-
-				u = users.item(++i);
+                // set activity score from "user's label"
+                if (!isNaN(user_item.label)) {
+                    wot_prefs.setInt("activity_score", parseInt(user_item.label));
+                }
 			}
 		} catch (e) {
-			dump("wot_api_query.parse_users: failed with " + e + "\n");
+			wdump("wot_api_query.parse_users: failed with " + e);
 		}
 	},
 
@@ -432,24 +408,20 @@ var wot_api_query =
 		try {
 			wot_prefs.clear("status_level");
 
-			if (!stats) {
-				return;
-			}
+			if (!stats) return;
 
-			var s = stats.item(0);
+            var s = stats.item(0);
 
-			if (!s) {
-				return;
-			}
+            if (!s) return;
 
-			var l = s.attributes.getNamedItem(WOT_SERVICE_XML_QUERY_STATUS_LEVEL);
+			var l = s.attributes.getNamedItem(this.XML_QUERY_STATUS_LEVEL);
 
 			if (l && l.value) {
 				wot_prefs.setChar("status_level", l.value);
 			}
 
 		} catch (e) {
-			dump("wot_api_query.parse_status: failed with " + e + "\n");
+			wdump("wot_api_query.parse_status: failed with " + e);
 		}
 	}
 };
