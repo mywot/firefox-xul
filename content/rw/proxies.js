@@ -67,6 +67,13 @@ var wot_bg = {    // background page object
                 wot_bg.wot.core.moz_send("unseenmessage", null);
             },
 
+            moz_set_usermessage: function (json_data) {
+                // Takes jsoned message to show it user in RW
+
+                var data = JSON.parse(json_data);
+                if (data && data.text) wot_bg.wot.core.usermessage = data;
+            },
+
             moz_connect: function (element_id, event_id) {
                 // init communication channel's properties
                 wot_bg.wot.core._moz_element_id = element_id;

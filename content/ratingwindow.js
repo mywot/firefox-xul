@@ -89,6 +89,33 @@ var wot_rw = {
         }
     },
 
+    update_messages: function () {
+        /* Sets message data into RW */
+        try {
+            var rw = this.get_rw_window();
+            if (!rw) return;
+
+            var msg_data = {
+                text: "",
+                id: null,
+                url: null,
+                status: null
+            };
+
+            if (wot_api_query.message.length != 0 && wot_api_query.message_type.length != 0) {
+                msg_data.text = wot_api_query.message;
+                msg_data.status = wot_api_query.message_type;
+                msg_data.id = wot_api_query.message_id;
+                msg_data.url = wot_api_query.message_url;
+            }
+
+            rw.wot_bg.wot.core.moz_set_usermessage(JSON.stringify(msg_data));
+
+        } catch (e) {
+            wdump("ERROR: wot_ratingwindow.update_messages(): Failed / " + e);
+        }
+    },
+
     update: function () {
         // Updates content of Rating Window. RW must be already initialized (locales, categories info, etc).
         wdump("RW.update()");
@@ -136,6 +163,8 @@ var wot_rw = {
 
             data.cached.value.cats = wot_categories.target_categories(target);
             data.cached.value.blacklist = wot_categories.target_blacklists(target);
+
+            wot_rw.update_messages();
 
         } else {
             data = {
@@ -224,28 +253,32 @@ var wot_rw = {
     },
 
     initialize: function (rw, rw_doc, rw_wot) {
+        try {
+            this.init_channel(this.CHAN_ELEM_ID, this.CHAN_EVENT_ID);
 
-        this.init_channel(this.CHAN_ELEM_ID, this.CHAN_EVENT_ID);
+            var locale_strings = wot_util.get_all_strings();
+            rw.chrome.i18n.loadMessages(JSON.stringify(locale_strings));    // using JSON to push data to sandboxed content
 
-        var locale_strings = wot_util.get_all_strings();
-        rw.chrome.i18n.loadMessages(JSON.stringify(locale_strings));    // using JSON to push data to sandboxed content
+            // TODO: provide preferences to RW
+            wdump(JSON.stringify(this.get_preferences()));
 
-        // TODO: provide preferences to RW
-        wdump(JSON.stringify(this.get_preferences()));
+            var prefs = this.get_preferences();
+            this.push_preferences(rw, prefs);
 
-        var prefs = this.get_preferences();
-        this.push_preferences(rw, prefs);
+            // setup categories data in the RW
+            rw_wot.categories = wot_categories.categories;
+            rw_wot.grouping = wot_categories.grouping;
+            rw_wot.cgroups = wot_categories.cgroups;
 
-        // setup categories data in the RW
-        rw_wot.categories = wot_categories.categories;
-        rw_wot.grouping = wot_categories.grouping;
-        rw_wot.cgroups = wot_categories.cgroups;
+            // TODO: provide "level" (decrypted) value
 
-        // TODO: provide "level" (decrypted) value
+            rw_wot.ratingwindow.onload();   // this runs only once in FF
 
-        rw_wot.ratingwindow.onload();   // this runs only once in FF
+            this.is_inited = true;
 
-        this.is_inited = true;
+        } catch (e) {
+
+        }
     }
 
 };

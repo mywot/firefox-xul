@@ -401,8 +401,9 @@
 	margin: 0;
 	font-family: Tahoma, Arial, sans-serif;
     width: 580px;
-    height: 426px;
+    height: 422px;
     overflow: hidden;
+    border: 0;
 }
 
 #wot-rwframe {
