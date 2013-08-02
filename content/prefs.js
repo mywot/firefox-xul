@@ -233,6 +233,26 @@ var wot_prefs =
 		}
 	},
 
+    setSmart: function (name, value) {
+        // Looks up through preferences names and call the proper function to set the value of the named preference
+        var prefs_sets = [
+            [wot_prefs_char, wot_prefs.setChar],
+            [wot_prefs_int, wot_prefs.setInt ],
+            [wot_prefs_bool, wot_prefs.setBool]
+        ];
+
+        for (var s = 0; s < prefs_sets.length; s++) {
+            var pset = prefs_sets[s][0];
+            for (var i = 0; i < pset.length; ++i) {
+                if (pset[i][0] === name) {
+                    var func = prefs_sets[s][1];
+                    func.call(wot_prefs, name, value);
+                    return;
+                }
+            }
+        }
+    },
+
 	sync: function()
 	{
 		try {

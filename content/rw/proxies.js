@@ -155,6 +155,11 @@ var wot_bg = {    // background page object
 
 };
 
+// IN order to allow RatingWindow to close itself we redefine the global method (what a nasty life!).
+window.close = function() {
+    wot_bg.wot.core.moz_send("close", null);
+};
+
 var chrome = {
     extension: {
         getBackgroundPage: function () {

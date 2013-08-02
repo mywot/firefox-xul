@@ -25,6 +25,7 @@ var wot_rw = {
     is_inited: false,
     CHAN_ELEM_ID: "wot-comm-channel",
     CHAN_EVENT_ID: "wotrw",
+    IGNORED_PREFS: ["ratingwindow_shown"],
 
     get_rw_window: function () {
         var rw_frame = document.getElementById(this.FRAME_ID);
@@ -87,6 +88,9 @@ var wot_rw = {
         } else {
             wot_rw.update(); // RW is already loaded so we need to just update it
         }
+
+        // We ignore attempts of RW to increase the counter. Instead, we increase it here.
+        wot_prefs.setInt("ratingwindow_shown", wot_prefs.ratingwindow_shown + 1);
     },
 
     update_messages: function () {
@@ -114,55 +118,6 @@ var wot_rw = {
         } catch (e) {
             wdump("ERROR: wot_ratingwindow.update_messages(): Failed / " + e);
         }
-    },
-
-    update_user_info: function () {
-
-//        wot_api_query.users[0]
-//        .bar - header
-//        .label - activity score?
-//        .length
-//        .url
-//        .notice
-//        .text
-//
-
-//				if (wot_api_query.users[i].bar &&
-//						wot_api_query.users[i].length != null &&
-//						wot_api_query.users[i].label) {
-//					header.value = wot_api_query.users[i].bar;
-//					label.value = wot_api_query.users[i].label;
-//					bar.setAttribute("length", wot_api_query.users[i].length);
-//					bar.hidden = false;
-//				} else {
-//					header.value = "";
-//					label.value = "";
-//					bar.hidden = true;
-//				}
-//
-//				if (wot_api_query.users[i].url) {
-//					content.setAttribute("url", wot_api_query.users[i].url);
-//				} else {
-//					content.removeAttribute("url");
-//				}
-//
-//				if (wot_api_query.users[i].notice) {
-//					notice.value = wot_api_query.users[i].notice;
-//					notice.hidden = false;
-//				} else {
-//					notice.hidden = true;
-//				}
-//
-//				if (wot_api_query.users[i].text) {
-//					text.value = wot_api_query.users[i].text;
-//					user.hidden = false;
-//					++j;
-//				} else {
-//					text.value = "";
-//					user.hidden = true;
-//				}
-//			}
-        wdump(JSON.stringify(wot_api_query.users[0]));
     },
 
     update: function () {
@@ -228,7 +183,6 @@ var wot_rw = {
         wot_rw.push_preferences(rw, wot_rw.get_preferences());  // update preferences every time before showing RW
 
         wot_rw.update_messages();
-        wot_rw.update_user_info();
 
         // set the user's activity score additionally to bg.wot.core.
         // FIXME: use activity score provided by preferences in RW instead of direct manupulation of core.usercontent[]
@@ -249,7 +203,7 @@ var wot_rw = {
             prefs = {
                 accessible:         wot_prefs.accessible,
                 show_fulllist:      wot_prefs.show_fulllist,
-                ratingwindow_shown: wot_prefs.ratingwindow_shown,
+                ratingwindow_shown: wot_prefs.ratingwindow_shown,   // this has special processing
                 activity_score:     wot_prefs.activity_score
             };
 
@@ -302,6 +256,16 @@ var wot_rw = {
 
                 case "navigate":
                     wot_browser.open_wotsite(data.url, "", "", data.context, true, true);
+                    wot_rw.hide_ratingwindow();
+                    break;
+
+                case "prefs:set":
+                    if (data.key && wot_rw.IGNORED_PREFS.indexOf(data.key) < 0) {   // ignore special prefs
+                        wot_prefs.setSmart(data.key, data.value);    // not good to assume Char type here, so be careful
+                    }
+                    break;
+
+                case "close":
                     wot_rw.hide_ratingwindow();
                     break;
             }
