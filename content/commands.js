@@ -208,12 +208,12 @@ var wot_commands =
 	{
 		try {
 			if (wot_cache.isok(wot_core.hostname)) {
-				wot_cache.set(wot_core.hostname, "testimony_0",
-					Number(value));
-				wot_cache.set(wot_core.hostname, "pending", true);
-				wot_core.pending[wot_core.hostname] = true;
-				wot_core.update();
-			}
+                wot_cache.set(wot_core.hostname, "testimony_0",
+                    Number(value));
+                wot_cache.set(wot_core.hostname, "pending", true);
+                wot_core.pending[wot_core.hostname] = true;
+                wot_core.update();
+            }
 		} catch (e) {
 			dump("wot_commands.quicktestify: failed with " + e + "\n");
 		}
@@ -233,42 +233,42 @@ wot_modules.push({ name: "wot_commands", obj: wot_commands });
 
 var wot_events =
 {
-	testimonydown: -1,
+//	testimonydown: -1,
 
-	get_slider_pos: function(event, testimony)
-	{
-		var pos = -1;
-		try {
-			var slider = document.getElementById("wot-rating-" +
-				testimony + "-slider");
-			var sld_rule = wot_css.getstyle(WOT_STYLESHEET,
-				".wot-rating-slider");
-
-			if (!slider || !sld_rule) {
-				return pos;
-			}
-
-			/* Calculate testimony value */
-			var sld_w = wot_css.getstyle_numeric(sld_rule, "width");
-
-			pos = WOT_MAX_REPUTATION * (event.screenX -
-						slider.boxObject.screenX) / sld_w;
-
-			/* Limit to a valid range */
-			if (pos > WOT_MAX_REPUTATION) {
-				pos = WOT_MAX_REPUTATION;
-			} else if (pos < 0) {
-				pos = 0;
-			}
-
-			/* Round */
-			pos = (pos / WOT_TESTIMONY_ROUND).toFixed() * WOT_TESTIMONY_ROUND;
-		} catch (e) {
-			dump("wot_events.get_slider_pos: failed with " + e + "\n");
-			pos = -1;
-		}
-		return pos;
-	},
+//	get_slider_pos: function(event, testimony)
+//	{
+//		var pos = -1;
+//		try {
+//			var slider = document.getElementById("wot-rating-" +
+//				testimony + "-slider");
+//			var sld_rule = wot_css.getstyle(WOT_STYLESHEET,
+//				".wot-rating-slider");
+//
+//			if (!slider || !sld_rule) {
+//				return pos;
+//			}
+//
+//			/* Calculate testimony value */
+//			var sld_w = wot_css.getstyle_numeric(sld_rule, "width");
+//
+//			pos = WOT_MAX_REPUTATION * (event.screenX -
+//						slider.boxObject.screenX) / sld_w;
+//
+//			/* Limit to a valid range */
+//			if (pos > WOT_MAX_REPUTATION) {
+//				pos = WOT_MAX_REPUTATION;
+//			} else if (pos < 0) {
+//				pos = 0;
+//			}
+//
+//			/* Round */
+//			pos = (pos / WOT_TESTIMONY_ROUND).toFixed() * WOT_TESTIMONY_ROUND;
+//		} catch (e) {
+//			dump("wot_events.get_slider_pos: failed with " + e + "\n");
+//			pos = -1;
+//		}
+//		return pos;
+//	},
 
 //	/* Handles testimony slider events and updates the new pending testimony to
 //	   query cache */

@@ -256,8 +256,9 @@ var wot_cache =
 			this.set(name, "status", WOT_QUERY_RETRY);
 			this.set(name, "time", Date.now());
 			this.set(name, "normalized", "");
-			this.set(name, "categories", 0);
-			this.set(name, "blacklists", 0);
+			this.set(name, "cats", "");
+			this.set(name, "blacklists", "");
+			this.set(name, "votes", "");
 
 			// FIXME: don't create redundant apps. Use only 0 and 4
             for (var i = 0; i < WOT_APPLICATIONS; ++i) {
@@ -290,10 +291,12 @@ var wot_cache =
 			this.remove(name, "status");
 			this.remove(name, "time");
 			this.remove(name, "normalized");
-			this.remove(name, "categories");
+			this.remove(name, "cats");
 			this.remove(name, "blacklists");
+			this.remove(name, "votes");
 
-			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
+			// FIXME: use WOT_COMPONTENTS here
+            for (var i = 0; i < WOT_APPLICATIONS; ++i) {
 				this.remove(name, "reputation_" + i);
 				this.remove(name, "confidence_" + i);
 				this.remove(name, "testimony_" + i);
@@ -351,8 +354,8 @@ var wot_cache =
 				this.set(name, "status", WOT_QUERY_OK);
 			}
 
-            var categories_number = 0,
-                blacklists_number = 0;
+            var blacklists = [], bl_object = {},
+                cats = {}, cat_object = {};
 
 			while (child) {
                 switch (child.localName) {
@@ -365,11 +368,13 @@ var wot_cache =
                         break;
 
                     case WOT_SERVICE_XML_QUERY_CATEGORY:
-                        categories_number += this.add_category(name, child, categories_number);
+                        cat_object = this.add_category(name, child);
+                        cats[cat_object.name] = cat_object;
                         break;
 
                     case WOT_SERVICE_XML_QUERY_BLACKLIST:
-                        blacklists_number += this.add_blacklist(name, child, blacklists_number);
+                        bl_object = this.add_blacklist(name, child);
+                        blacklists.push(bl_object);
                         break;
 
                     default:
@@ -379,8 +384,8 @@ var wot_cache =
                 child = child.nextSibling;
 			}
 
-            this.set(name, "categories", categories_number);
-            this.set(name, "blacklists", blacklists_number);
+            this.set(name, "cats", JSON.stringify(cats));
+            this.set(name, "blacklists", JSON.stringify(blacklists));
 
             // process GFeedbackLoop Question
             this.add_question(name, target.firstChild);
@@ -425,7 +430,10 @@ var wot_cache =
 
     },
 
-    process_attributes: function (attrs_list, hostname, node, slot_name, slot_index) {
+    process_attributes: function (attrs_list, hostname, node) {
+
+        var obj = {};
+
         for (var i = 0; i < attrs_list.length; i++) {
             var attr = attrs_list[i],
                 attr_node = node.attributes.getNamedItem(attr),
@@ -436,12 +444,15 @@ var wot_cache =
                 } else {
                     val = Number(attr_node.value);
                 }
-                this.set(hostname, slot_name + "_" + slot_index + "_" + attr, val);
+
+                obj[attr] = val;
             }
         }
+
+        return obj;
     },
 
-    add_category: function (hostname, node, index) {
+    add_category: function (hostname, node) {
         try {
             var attrs_list = [
                 WOT_SERVICE_XML_QUERY_CATEGORY_NAME,
@@ -451,31 +462,32 @@ var wot_cache =
                 WOT_SERVICE_XML_QUERY_CATEGORY_VOTE
             ];
 
-            this.process_attributes(attrs_list, hostname, node, "category", index);
+            var cat = this.process_attributes(attrs_list, hostname, node);
+            // small hack to comply with Chrome's add-on codebase
+            cat.v = cat.vote;
+            delete cat.vote;
+            cat.id = cat.name;
+            return cat;
 
         } catch (e) {
             wdump("ERROR: wot_cache.add_category: failed with " + e);
-            return 0;
+            return {};
         }
-
-        return 1;
     },
 
-    add_blacklist: function (hostname, node, index) {
+    add_blacklist: function (hostname, node) {
         try {
             var attrs_list = [
                 WOT_SERVICE_XML_QUERY_BLACKLIST_TYPE,
                 WOT_SERVICE_XML_QUERY_BLACKLIST_TIME
             ];
 
-            this.process_attributes(attrs_list, hostname, node, "blacklist", index);
+            return this.process_attributes(attrs_list, hostname, node);
 
         } catch (e) {
             wdump("ERROR: wot_cache.add_category: failed with " + e);
-            return 0;
+            return {};
         }
-
-        return 1;
     },
 
 	add_question: function (hostname, target_node)

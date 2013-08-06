@@ -109,8 +109,8 @@ var wot_bg = {    // background page object
 
         api: {
 
-            submit: function () {
-
+            submit: function (target, params) {
+                wot_bg.wot.core.moz_send("submit", { target: target, params: params });
             },
 
             comments: {
@@ -131,6 +131,36 @@ var wot_bg = {    // background page object
 
         },
 
+        cache: {
+            cacheratingstate: function (target, state, votes) {
+                // Detects whether testimonies where changed.
+                // This function doesn't store anything in the Cache as against Chrome implementation.
+
+                var changed = false,
+                    obj = wot.ratingwindow.getcached();
+
+                wot.components.forEach(function(item) {
+                    if (state[item.name]) {
+                        obj.value[item.name] = obj.value[item.name] || {};
+
+                        if (obj.value[item.name].t != state[item.name].t) {
+//                            obj.value[item.name].t  = state[item.name].t;
+                            changed = true;
+                            return false;   // exit the cycle
+                        }
+                    }
+                });
+
+                return changed;
+
+            },
+
+            setflags: function (target, flags) {
+                // {warned: true, warned_expire: warned_expire }
+                // TODO: implement sending flags to BG cache
+            }
+        },
+
         ga: {}  // this object is replaced on every chrome.extension.getBackgroundPage() call
     },
 
@@ -140,16 +170,19 @@ var wot_bg = {    // background page object
             if (window.console && window.console.log) {
                 window.console.log("LOG: " + arguments[1] + " , " + arguments[2] + " , " + arguments[3]);
             }
+            wot_bg.wot.core.moz_send("log", { args: arguments });
         },
         warn: function (args) {
             if (window.console && window.console.log) {
                 window.console.log("WARN: " + arguments[1] + " , " + arguments[2] + " , " + arguments[3]);
             }
+            wot_bg.wot.core.moz_send("log", { args: arguments });
         },
         error: function (args) {
             if (window.console && window.console.log) {
                 window.console.log("ERROR: " + arguments[1] + " , " + arguments[2] + " , " + arguments[3]);
             }
+            wot_bg.wot.core.moz_send("log", { args: arguments });
         }
     }
 

@@ -693,7 +693,7 @@ var wot_api_reload =
 
 var wot_api_submit =
 {
-	send: function(pref, target, testimonies)
+	send: function(pref, target, testimonies, votes)
 	{
 		try {
 			if (!wot_util.isenabled() || !pref || !target ||
@@ -703,49 +703,47 @@ var wot_api_submit =
 
 			var nonce = wot_crypto.nonce();
 
-			var context = wot_arc4.create(wot_hash.hmac_sha1hex(
-								wot_prefs.witness_key, nonce));
+			var context = wot_arc4.create(wot_hash.hmac_sha1hex(wot_prefs.witness_key, nonce));
 
 			if (!context) {
 				return;
 			}
 
-			var crypted = wot_arc4.crypt(context,
-								wot_hash.strtobin(target));
+			var crypted = wot_arc4.crypt(context,wot_hash.strtobin(target));
 
-			if (!crypted) {
-				return;
-			}
+			if (!crypted) return;
 
 			var qs = WOT_SERVICE_API_SUBMIT +
 				"?id="		+ wot_prefs.witness_id +
 				"&nonce="	+ nonce +
-				"&target="	+ encodeURIComponent(btoa(
-									wot_hash.bintostr(crypted)));
+				"&target="	+ encodeURIComponent(btoa(wot_hash.bintostr(crypted)));
 
 			var found = 0;
 
-			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-				if (testimonies[i] >= 0) {
-					qs += "&testimony_" + i + "=" + testimonies[i];
+			for (var i = 0; i < WOT_COMPONENTS.length; ++i) {
+                var app = WOT_COMPONENTS[i];
+				if (testimonies[app] >= -1) {
+					qs += "&testimony_" + app + "=" + testimonies[app];
 					++found;
 				}
 			}
 
-			if (!found) {
-				return;
-			}
+            if (votes && votes.length > 0) {
+                qs += "&votes=" + votes;
+            }
+
+			if (!found) return;
 
 			qs += wot_url.getapiparams();
 			   
 			var request = new XMLHttpRequest();
 
-			if (!request) {
-				return;
-			}
+			if (!request) return;
 
-			request.open("GET", wot_core.wot_service_url() +
-					wot_crypto.authenticate_query(qs));
+            var url = wot_core.wot_service_url() + wot_crypto.authenticate_query(qs);
+            wdump("API Submit: " + url);
+
+			request.open("GET", url);
 
 			new wot_cookie_remover(request);
 
@@ -943,33 +941,38 @@ var wot_api_update =
 
 var wot_pending =
 {
-	store: function(name) /* host */
-	{
+	store: function(hostname) {
+        // Stores user's testimonies from memory cache to preferences (which is more persistent storage)
 		try {
-			if (!wot_cache.iscached(name) ||
-					!wot_cache.get(name, "pending")) {
+			if (!wot_cache.iscached(hostname) ||
+					!wot_cache.get(hostname, "pending")) {
 				return false;
 			}
 
-			var data = wot_idn.utftoidn(name);
+			var target = wot_idn.utftoidn(hostname),
+                obj = {};
 
-			if (!data) {
-				return false;
+			if (!target) return false;
+
+            obj.target = target;
+
+			for (var i = 0; i < WOT_COMPONENTS.length; ++i) {
+                var app = WOT_COMPONENTS[i];
+				obj["testimony_" + app] = wot_cache.get(hostname, "testimony_" + app);
 			}
 
-			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-				data += " " + wot_cache.get(name, "testimony_" + i);
-			}
+            obj.votes = wot_cache.get(hostname, "votes") || "";
 
-			var pref = Date.now();
+			var pref_name = Date.now();
 
-			if (wot_prefs.setChar("pending." + pref, data)) {
+			if (wot_prefs.setChar("pending." + pref_name, JSON.stringify(obj))) {
+                wdump("Stored in prefs: " + JSON.stringify(obj));
 				return true;
 			}
 
 			wot_prefs.flush();
 		} catch (e) {
-			dump("wot_pending.store: failed with " + e + "\n");
+			wdump("wot_pending.store: failed with " + e);
 		}
 
 		return false;
@@ -998,44 +1001,61 @@ var wot_pending =
 		}
 	},
 
-	parse: function(pref, data)
+	parse: function(pref, json_data)
 	{
 		try {
-			var m = /^([^\s]+)(.*)/.exec(data);
+//			var m = /^([^\s]+)(.*)/.exec(data);
 
-			if (!m || !m[1] || !m[2]) {
-				dump("wot_pending.parse: invalid entry: " + pref + ": " +
-					data + "\n");
+            var data = JSON.parse(json_data);
+
+			if (!data || !data.target) {
+				wdump("wot_pending.parse: invalid entry: " + pref + ": " + json_data);
 				this.clear(pref);
 				return null;
 			}
 
 			var rv = {
-				target: m[1],
-				testimonies: []
+				target: data.target,
+				testimonies: [],
+                votes: data.votes || "",    // categories' votes as a string
+                votes_list: {}              // parsed votes as an object
 			};
-			var values = m[2];
 
-			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-				m = /^\s*(-?\d+)(.*)/.exec(values);
+			for (var i = 0; i < WOT_COMPONENTS.length; ++i) {
+                var app = WOT_COMPONENTS[i],
+                    t = data["testimony_" + app];
 
-				if (!m || m[1] == null || Number(m[1]) < 0) {
-					rv.testimonies[i] = -1;
+				if (t === null || t < 0 || isNaN(t)) {
+					rv.testimonies[app] = -1;
 				} else {
-					rv.testimonies[i] = Number(m[1]);
+					rv.testimonies[app] = Number(t);
 
-					if (rv.testimonies[i] > WOT_MAX_REPUTATION) {
-						rv.testimonies[i] = WOT_MAX_REPUTATION;
+					if (rv.testimonies[app] > WOT_MAX_REPUTATION) {
+						rv.testimonies[app] = WOT_MAX_REPUTATION;
 					}
 				}
-
-				values = m[2];
 			}
 
-			dump("wot_pending.parse: " + pref + ": " + rv.target + "\n");
+//            // parsing string votes
+            // FIXME: use the code below for restoring user's votes from pending submission when cache doesn't have them
+//            if (data.votes && data.votes.length > 2) {
+//                var votes_array = data.votes.split("/");
+//                for (i = 0; i < votes_array.length; i++) {
+//                    var vv = votes_array[i];
+//                    if (vv && vv.length > 0) {
+//                        var v = vv.split(":", 2);
+//                        if (v && v.length == 2) {
+//                            rv.votes_list[v[0]] = { v: v[1] };
+//                        }
+//                    }
+//                }
+//            }
+
+			wdump("wot_pending.parse: " + pref + ": " + rv.target);
 			return rv;
+
 		} catch (e) {
-			dump("wot_pending.parse: failed with " + e + "\n");
+			wdump("wot_pending.parse: failed with " + e);
 		}
 
 		return null;
@@ -1055,17 +1075,15 @@ var wot_pending =
 				}
 
 				var base = "pending." + pref;
-				var data = wot_prefs.getChar(base, null);
+				var json_data = wot_prefs.getChar(base, null);
 
-				if (!data) {
-					continue;
-				}
+				if (!json_data) continue;
 
-				var submit = wot_prefs.getChar(base + ".submit", null);
+				var submit_time = wot_prefs.getChar(base + ".submit", null);
 
-				if (submit) {
-					submit = Date.now() - Number(submit);
-					if (submit < WOT_INTERVAL_SUBMIT_ERROR) {
+				if (submit_time) {
+					submit_time = Date.now() - Number(submit_time);
+					if (submit_time < WOT_INTERVAL_SUBMIT_ERROR) {
 						continue;
 					}
 				}
@@ -1087,30 +1105,31 @@ var wot_pending =
 					continue;
 				}
 
-				var parsed = this.parse(pref, data);
+				var parsed = this.parse(pref, json_data);
 
-				if (!parsed) {
+				if (!parsed) continue;
+
+                wdump("API Submits Parsed: " + JSON.stringify(parsed));
+
+                wot_api_submit.send(pref, parsed.target, parsed.testimonies, parsed.votes);
+
+				if (!wot_cache.iscached(parsed.target) || wot_cache.get(parsed.target, "pending")) {
 					continue;
 				}
 
-				wot_api_submit.send(pref, parsed.target, parsed.testimonies);
-
-				if (!wot_cache.iscached(parsed.target) ||
-						wot_cache.get(parsed.target, "pending")) {
-					continue;
+                // Now update cache with user's input: testimonies first
+				for (i = 0; i < WOT_COMPONENTS.length; ++i) {
+                    var app = WOT_COMPONENTS[i];
+					wot_cache.set(parsed.target, "testimony_" + app, parsed.testimonies[app]);
 				}
 
-				for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-					if (parsed.testimonies[i] < 0) {
-						continue;
-					}
+                // Categories
+                // TODO: implement restoring votes from parsed voted in case if votes were restored from "pending" data (i.e. not in cache yet)
 
-					wot_cache.set(parsed.target, "testimony_" + i,
-						parsed.testimonies[i]);
-				}
+                wot_cache.set(parsed.target, "votes", parsed.votes); // FIXME: do we still need this here?
 			}
 		} catch (e) {
-			dump("wot_pending.submit: failed with " + e + "\n");
+			dump("wot_pending.submit: failed with " + e);
 		}
 	}
 };

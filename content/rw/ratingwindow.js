@@ -59,13 +59,16 @@ $.extend(wot, { ratingwindow: {
 
     updatestate: function(target, data)
     {
+        var _this = wot.ratingwindow;
         /* initialize on target change */
-        if (this.state.target != target) {
-            this.finishstate(false);
-            this.state = { target: target, down: -1 };
+        if (_this.state.target != target) {
+            _this.finishstate(false);
+            _this.state = { target: target, down: -1 };
         }
 
-        var state = {};
+        var state = {
+            target: target
+        };
 
         /* add existing ratings to state */
         if (data && data.status == wot.cachestatus.ok) {
@@ -75,23 +78,20 @@ $.extend(wot, { ratingwindow: {
 
                 if (datav && datav.t >= 0) {
                     state[item.name] = { t: datav.t };
+                } else {
+                    state[item.name] = { t: -1 };
                 }
             });
         }
 
         /* remember previous state */
-        this.state = $.extend(state, this.state);
+        _this.state = $.extend(_this.state, state);
     },
 
     setstate: function (component, t) {
         // This only changes the user's testimonies' state
-        var new_value = {};
-        if (t >= 0) {
-            new_value = { t: parseInt(t) };
-        } else {
-            new_value = { t: -1 };
-        }
-
+        var new_value = { name: component };
+        new_value.t = t >= 0 ? parseInt(t) : -1;
         this.state[component] = new_value;
         this.update_catsel_state();
     },
@@ -247,7 +247,9 @@ $.extend(wot, { ratingwindow: {
                 });
 
                 if (votes_changed) {
-                    params.votes = rw._make_votes(changed_votes);
+                    params.votes = rw._make_votes(changed_votes);   // diff of votes
+                    params._user_votes = votes;                     // all user's votes
+                    params.changed_votes = changed_votes;
                 }
 
                 bgwot.api.submit(target, params);
@@ -373,19 +375,20 @@ $.extend(wot, { ratingwindow: {
     updatecontents: function()
     {
         var bg = chrome.extension.getBackgroundPage();
-        var cached = this.getcached(),
+        var _this = wot.ratingwindow,
+            cached = _this.getcached(),
             visible_hostname = "",
             rw_title = "";
 
         /* update current rating state */
-        this.updatestate(this.current.target, cached);
-        var normalized_target = cached.value.normalized ? cached.value.normalized : this.current.target;
+        _this.updatestate(_this.current.target, cached);
+        var normalized_target = cached.value.normalized ? cached.value.normalized : _this.current.target;
 
         var $_hostname = $("#hostname-text"),
             $_wot_title_text = $("#wot-title-text");
 
         /* target */
-        if (this.current.target && cached.status == wot.cachestatus.ok) {
+        if (_this.current.target && cached.status == wot.cachestatus.ok) {
             visible_hostname = bg.wot.url.decodehostname(normalized_target);
             rw_title = wot.i18n("messages", "ready");
         } else if (cached.status == wot.cachestatus.busy) {
@@ -393,7 +396,7 @@ $.extend(wot, { ratingwindow: {
         } else if (cached.status == wot.cachestatus.error) {
             rw_title = wot.i18n("messages", "failed");
         } else {
-            rw_title = wot.i18n("messages", this.current.status || "notavailable");
+            rw_title = wot.i18n("messages", _this.current.status || "notavailable");
         }
 
         $_hostname.text(visible_hostname);
@@ -420,8 +423,8 @@ $.extend(wot, { ratingwindow: {
             $_rep_legend.attr("r", rep_level);
             $_rep_legend.text(wot.get_level_label(item.name, rep_level, false));
 
+            _this.rate_control.updateratings({ name: item.name, t: cachedv.t }); // update visual ratingbars
         });
-        this.rate_control.updateratings();
 
         /* message */
 
@@ -520,9 +523,9 @@ $.extend(wot, { ratingwindow: {
             // delete categories from the visible area
             _rw.insert_categories({}, $_tr_list);
 
-            if (this.current.target && cached.status == wot.cachestatus.ok && cached.value) {
+            if (_rw.current.target && cached.status == wot.cachestatus.ok && cached.value) {
                 var cats = cached.value.cats;
-                if (cats != null) {
+                if (!wot.utils.isEmptyObject(cats)) {
                     var sorted = wot.rearrange_categories(wot.select_identified(cats));    // sort categories and split into two parts (TR, CS)
                     _rw.insert_categories(sorted.all, $_tr_list);
                 }
@@ -536,7 +539,6 @@ $.extend(wot, { ratingwindow: {
     {
         var _rw = wot.ratingwindow;
         try {
-            console.log(target, data);
             data = JSON.parse(data);    // for safety
             _rw.current = data || {};
             _rw.updatecontents();
@@ -551,6 +553,7 @@ $.extend(wot, { ratingwindow: {
             }
 
             _rw.modes.reset();
+            _rw.cat_selector.init_voted();
             _rw.modes.auto();
         } catch (e) {
             console.log("ratingwindow.update: failed with ", e);
@@ -776,7 +779,6 @@ $.extend(wot, { ratingwindow: {
         } else {
             // try to get user's votes from cache (server response)
             voted = wot.select_voted(_rw.getcached().value.cats);
-            console.log(JSON.stringify(_rw.getcached().value.cats));
             for(cat in voted) {
                 if (voted[cat].v == 1) {
                     up_voted.push(_rw.build_voted_category_html(wot.get_category(cat), voted[cat].v));
@@ -1128,6 +1130,7 @@ $.extend(wot, { ratingwindow: {
         _rw.comments.update_hint();
 
         wot.ratingwindow.finishstate(false);
+        bg.wot.core.moz_send("update", { update_rw: true });    // force to update RW with newest state data
         _rw.modes.auto();   // switch RW mode according to current state
     },
 
@@ -1142,14 +1145,17 @@ $.extend(wot, { ratingwindow: {
             var a = item.name;
             var t = (cached.value[a] && cached.value[a].t !== undefined) ? cached.value[a].t : -1;
             if (_rw.state[a]) {
+                _rw.state[a].name = a;  // stupid hack
                 _rw.state[a].t = t;
             } else {
-                _rw.state[a] = { t: t };
+                _rw.state[a] = { name: a, t: t };
             }
+            _rw.rate_control.updateratings(_rw.state[a]);  // restore user's testimonies visually
         });
 
+        _rw.get_bg().console.log(_rw.state);
+
         _rw.cat_selector.init_voted(); // restore previous votes
-        _rw.rate_control.updateratings(_rw.state);  // restore user's testimonies visually
 
         bg.wot.keeper.remove_comment(_rw.state.target); // remove locally saved comment
         _rw.update_comment(cached, null); // restore comment to server-side version
@@ -1165,6 +1171,7 @@ $.extend(wot, { ratingwindow: {
         var _rw = wot.ratingwindow;
         wot.ratingwindow.finishstate(false);
         if (_rw.delete_action) {
+            _rw.get_bg().wot.core.update(true);
             _rw.modes.auto();   // switch RW mode according to current state
         } else {
             _rw.modes.thanks.activate();
@@ -1269,13 +1276,12 @@ $.extend(wot, { ratingwindow: {
         updateratings: function(state)
         {
             /* indicator state */
-            state = state || {};
-
             var _rw = wot.ratingwindow;
+            state = state || {};
 
             /* update each component */
             wot.components.forEach(function(item) {
-                if (state.name != null && state.name != item.name) {
+                if (state.name !== null && state.name != item.name) {
                     return;
                 }
 
@@ -1289,7 +1295,7 @@ $.extend(wot, { ratingwindow: {
                     elems[elem] = $("#wot-rating-" + item.name + "-" + elem);
                 });
 
-                t = (wrs && wrs.t != null) ? wrs.t : t;
+                t = (wrs && wrs.t !== null) ? wrs.t : t;
 
                 if (t >= 0) {
                     /* rating */
@@ -1320,7 +1326,7 @@ $.extend(wot, { ratingwindow: {
                     elems.indicator.attr("r", rep);
                     elems.data.attr("r", rep);
                 }
-                }
+            }
 
                 var helptext = wot.get_level_label(item.name, rep, true);
 
@@ -1363,9 +1369,9 @@ $.extend(wot, { ratingwindow: {
 
             activate: function () {
                 if (!wot.ratingwindow.modes._activate("rated")) return false;
-                console.log("Rated");
+                wot_bg.console.log("Rated");
                 wot.ratingwindow.update_uservoted();
-                console.log("update_uservoted");
+                wot_bg.console.log("update_uservoted");
                 return true;
             }
         },

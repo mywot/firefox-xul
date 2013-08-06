@@ -67,6 +67,9 @@ var wot_rw = {
         try {
             wot_rw.unseenmessage();
 
+            var rw_wot = wot_rw.get_rw_wot();
+            rw_wot.ratingwindow.finishstate(true);  // finish state with unload = true to indicate the unintentional closing of RW
+
             /* Stores any pending testimonies */
             wot_core.update();
         } catch (e) {
@@ -225,6 +228,45 @@ var wot_rw = {
         }
     },
 
+    on_submit: function (data) {
+        wdump("RW: on_submit() " + JSON.stringify(data));
+
+        if (!data || !data.params) {
+            wdump("on_submit() received empty data to submit.");
+            return;
+        }
+
+        var target = data.target,
+            testimony_0 = data.params.testimony_0,
+            testimony_4 = data.params.testimony_4,
+            votes = data.params.votes,
+            changed_votes = data.params.changed_votes;   // as object
+
+        if (target && wot_cache.isok(target)) {
+            wot_cache.set(target, "testimony_0", Number(testimony_0));
+            wot_cache.set(target, "testimony_4", Number(testimony_4));
+            wot_cache.set(target, "votes", votes);  // votes as a string ready to submit. Real cache update should be done later.
+
+            // Update cached categories with user's votes
+            var cached_categories = wot_categories.target_categories(target);
+            for (var cid in changed_votes) {
+                if (cached_categories[cid]) {
+                    // if category is assigned to the site already just update the vote
+                    cached_categories[cid].v = changed_votes[cid];
+                } else {
+                    // if cat is not assigned yet do it now
+                    cached_categories[cid] = wot_categories.get_category(cid);
+                    cached_categories[cid].v = changed_votes[cid];
+                }
+            }
+            wot_categories.cache_categories(target, cached_categories); // put it back to the cache
+
+            wot_cache.set(target, "pending", true);
+            wot_core.pending[target] = true;
+            wot_core.update();
+        }
+    },
+
     on_ratingwindow_event: function (event) {
         try {
             var details = event.detail;
@@ -267,6 +309,10 @@ var wot_rw = {
 
                 case "close":
                     wot_rw.hide_ratingwindow();
+                    break;
+
+                case "submit":
+                    wot_rw.on_submit(data);
                     break;
             }
 

@@ -178,34 +178,10 @@ var wot_categories = {
         // return categories reported by API server (both identified and votes) taking them from cache.
         // Result is an Object.
 
-        var count = wot_cache.get(target, "categories", 0),
-            cats = {},
-            attrs_list = [
-                WOT_SERVICE_XML_QUERY_CATEGORY_NAME,
-                WOT_SERVICE_XML_QUERY_CATEGORY_GROUP,
-                WOT_SERVICE_XML_QUERY_CATEGORY_C,
-                WOT_SERVICE_XML_QUERY_CATEGORY_I,
-                WOT_SERVICE_XML_QUERY_CATEGORY_VOTE
-            ];
+        var cats_json = wot_cache.get(target, "cats"),
+            cats = (cats_json && cats_json.length > 0) ? JSON.parse(cats_json) : {};
 
-        for (var i = 0, slot=""; i < count; i++) {
-            var cat_obj = {}, val = null;
-            for (var a = 0; a < attrs_list.length; a++) {
-                slot = "category_" + i + "_" + attrs_list[a];
-                val = wot_cache.get(target, slot, null);
-                if (val !== null) {
-                    cat_obj[attrs_list[a]] = val;
-                }
-            }
-            if (!wot_util.isEmpty(cat_obj)) {
-                cat_obj['id'] = cat_obj.name;
-                cat_obj.v = cat_obj.vote;   // comply with Chrome's codebase
-                delete cat_obj.vote;
-                cats[cat_obj.name] = cat_obj;
-            }
-        }
-
-//        wdump("target_categories:: " + JSON.stringify(cats));
+        wdump("target_categories:: " + JSON.stringify(cats));
         return cats;
     },
 
@@ -213,30 +189,37 @@ var wot_categories = {
         // return categories reported by API server (both identified and votes) taking them from cache.
         // Result is an Object.
 
-        var count = wot_cache.get(target, "blacklists", 0),
-            bls = [],
-            attrs_list = [
-                WOT_SERVICE_XML_QUERY_BLACKLIST_TYPE,
-                WOT_SERVICE_XML_QUERY_BLACKLIST_TIME
-            ];
+        var bl_json = wot_cache.get(target, "blacklists"),
+            bls = (bl_json && bl_json.length > 0) ? JSON.parse(bl_json) : [];
 
-        for (var i = 0, slot=""; i < count; i++) {
-            var obj = {}, val = null;
-            for (var a = 0; a < attrs_list.length; a++) {
-                slot = "blacklist_" + i + "_" + attrs_list[a];
-                val = wot_cache.get(target, slot, null);
-                if (val !== null) {
-                    obj[attrs_list[a]] = val;
-                }
-            }
-            if (!wot_util.isEmpty(obj)) {
-                bls.push(obj);
-            }
-        }
-
-//        wdump("target_categories:: " + JSON.stringify(cats));
+        wdump("target_blacklists:: " + JSON.stringify(bls));
         return bls;
 
+    },
+
+    cache_categories: function (target, categories) {
+
+        // remove unvoted and non-identified categories from cached cats
+        var new_cats = {};
+
+        for (var cid in categories) {
+            var cat = categories[cid];
+            if ((cat.v == 0 || cat.v === null) && !cat.c) {
+                continue;   // skip unvoted and not-identified
+            }
+
+            // clean categories object from unnesessary data
+            // FIXME: this requires cloning of the object before doing removals
+//            cat.description = undefined;
+//            cat.viewdescription = undefined;
+//            cat.text = undefined;
+//            cat.shorttext = undefined;
+
+            // copy category to new list
+            new_cats[cid] = cat;
+        }
+
+        wot_cache.set(target, "cats", JSON.stringify(new_cats));
     },
 
     select_identified: function (target_cats) {
