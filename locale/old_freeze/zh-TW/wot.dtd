@@ -1,0 +1,41 @@
+<!ENTITY wot.label					"WOT">
+<!-- Menu items -->
+<!ENTITY wotEnabled.label			"啟用">
+<!ENTITY wotEnabled.accesskey		"n">
+<!ENTITY wotRefresh.label			"重新整理">
+<!ENTITY wotRefresh.accesskey		"R">
+<!ENTITY wotContent.label			"WOT">
+<!ENTITY wotContent.accesskey		"W">
+<!ENTITY wotTestify5.label			"極佳">
+<!ENTITY wotTestify5.accesskey		"E">
+<!ENTITY wotTestify4.label			"佳">
+<!ENTITY wotTestify4.accesskey		"G">
+<!ENTITY wotTestify3.label			"不符要求">
+<!ENTITY wotTestify3.accesskey		"U">
+<!ENTITY wotTestify2.label			"不佳">
+<!ENTITY wotTestify2.accesskey		"P">
+<!ENTITY wotTestify1.label			"非常差">
+<!ENTITY wotTestify1.accesskey		"V">
+<!ENTITY wotPreferences.label		"設定…">
+<!ENTITY wotPreferences.accesskey	"S">
+<!ENTITY wotMy.label				"我的 WOT…">
+<!ENTITY wotMy.accesskey			"W">
+<!ENTITY wotCheckUpdates.label		"查看更新">
+<!ENTITY wotCheckUpdates.accesskey	"C">
+<!ENTITY wotLinkScorecard.label		"檢視 WOT 計分板…">
+<!ENTITY wotLinkScorecard.accesskey	"W">
+<!-- Rating window -->
+<!ENTITY wotRating.title			"初始化 WOT…">
+<!ENTITY wotRating.wot				"WOT 評等">
+<!ENTITY wotRating.my				"我的評等">
+<!ENTITY wotRating.app0				"可靠性：">
+<!ENTITY wotRating.app1				"供應者可信賴性：">
+<!ENTITY wotRating.app2				"隱私性：">
+<!ENTITY wotRating.app4				"兒童安全：">
+<!ENTITY wotRating.scorecard		"檢視評等詳細內容計分表">
+<!ENTITY wotRating.comment			"加入您的評語">
+<!ENTITY wotRating.guide			"指南">
+<!ENTITY wotRating.prefs			"設定">
+<!ENTITY wotRating.link				"www.mywot.com">
+<!ENTITY wotRating.partner			"In partnership with">
+<!ENTITY wotRating.update			"有新版本可供下載 -- 按一下進行更新">

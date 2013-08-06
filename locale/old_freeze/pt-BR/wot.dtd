@@ -1,0 +1,41 @@
+<!ENTITY wot.label					"WOT">
+<!-- Menu items -->
+<!ENTITY wotEnabled.label			"Habilitado">
+<!ENTITY wotEnabled.accesskey		"H">
+<!ENTITY wotRefresh.label			"Atualizar">
+<!ENTITY wotRefresh.accesskey		"A">
+<!ENTITY wotContent.label			"WOT">
+<!ENTITY wotContent.accesskey		"W">
+<!ENTITY wotTestify5.label			"Excelente">
+<!ENTITY wotTestify5.accesskey		"E">
+<!ENTITY wotTestify4.label			"Boa">
+<!ENTITY wotTestify4.accesskey		"B">
+<!ENTITY wotTestify3.label			"Insatisfatória">
+<!ENTITY wotTestify3.accesskey		"I">
+<!ENTITY wotTestify2.label			"Má">
+<!ENTITY wotTestify2.accesskey		"M">
+<!ENTITY wotTestify1.label			"Péssima">
+<!ENTITY wotTestify1.accesskey		"P">
+<!ENTITY wotPreferences.label		"Configurações…">
+<!ENTITY wotPreferences.accesskey	"C">
+<!ENTITY wotMy.label				"My WOT…">
+<!ENTITY wotMy.accesskey			"W">
+<!ENTITY wotCheckUpdates.label		"Verificar atualizações…">
+<!ENTITY wotCheckUpdates.accesskey	"V">
+<!ENTITY wotLinkScorecard.label		"Exibir indicador da WOT…">
+<!ENTITY wotLinkScorecard.accesskey	"W">
+<!-- Rating window -->
+<!ENTITY wotRating.title			"Inicializando a WOT…">
+<!ENTITY wotRating.wot				"Classificação WOT">
+<!ENTITY wotRating.my				"Minha classificação">
+<!ENTITY wotRating.app0				"Fidedignidade:">
+<!ENTITY wotRating.app1				"Confiabilidade do fornecedor:">
+<!ENTITY wotRating.app2				"Privacidade:">
+<!ENTITY wotRating.app4				"Segurança para crianças:">
+<!ENTITY wotRating.scorecard		"Ver indicador de detalhes de classificação">
+<!ENTITY wotRating.comment			"Adicionar seu comentário">
+<!ENTITY wotRating.guide			"Guia">
+<!ENTITY wotRating.prefs			"Configurações">
+<!ENTITY wotRating.link				"www.mywot.com">
+<!ENTITY wotRating.partner			"Em parceria com">
+<!ENTITY wotRating.update			"Nova versão disponível – clique para atualizar">

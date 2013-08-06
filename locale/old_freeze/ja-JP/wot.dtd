@@ -1,0 +1,41 @@
+<!ENTITY wot.label					"WOT">
+<!-- Menu items -->
+<!ENTITY wotEnabled.label			"有効化">
+<!ENTITY wotEnabled.accesskey		"n">
+<!ENTITY wotRefresh.label			"更新">
+<!ENTITY wotRefresh.accesskey		"R">
+<!ENTITY wotContent.label			"WOT">
+<!ENTITY wotContent.accesskey		"W">
+<!ENTITY wotTestify5.label			"非常に優れている">
+<!ENTITY wotTestify5.accesskey		"E">
+<!ENTITY wotTestify4.label			"良い">
+<!ENTITY wotTestify4.accesskey		"G">
+<!ENTITY wotTestify3.label			"満足できない">
+<!ENTITY wotTestify3.accesskey		"U">
+<!ENTITY wotTestify2.label			"悪い">
+<!ENTITY wotTestify2.accesskey		"P">
+<!ENTITY wotTestify1.label			"非常に悪い">
+<!ENTITY wotTestify1.accesskey		"V">
+<!ENTITY wotPreferences.label		"設定…">
+<!ENTITY wotPreferences.accesskey	"S">
+<!ENTITY wotMy.label				"My WOT…">
+<!ENTITY wotMy.accesskey			"W">
+<!ENTITY wotCheckUpdates.label		"変更の確認…">
+<!ENTITY wotCheckUpdates.accesskey	"C">
+<!ENTITY wotLinkScorecard.label		"WOTスコアカードを表示…">
+<!ENTITY wotLinkScorecard.accesskey	"W">
+<!-- Rating window -->
+<!ENTITY wotRating.title			"WOTを初期化しています…">
+<!ENTITY wotRating.wot				"WOT格付け">
+<!ENTITY wotRating.my				"自分の評価">
+<!ENTITY wotRating.app0				"信頼性：">
+<!ENTITY wotRating.app1				"業者の信頼度：">
+<!ENTITY wotRating.app2				"プライバシー：">
+<!ENTITY wotRating.app4				"子供の安全：">
+<!ENTITY wotRating.scorecard		"スコアカードで格付けの詳細を見る">
+<!ENTITY wotRating.comment			"コメントを追加してください">
+<!ENTITY wotRating.guide			"ガイド">
+<!ENTITY wotRating.prefs			"設定">
+<!ENTITY wotRating.link				"www.mywot.com">
+<!ENTITY wotRating.partner			"提携パートナー：">
+<!ENTITY wotRating.update			"新バージョンを利用できます-クリックして更新">
