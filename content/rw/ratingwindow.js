@@ -423,7 +423,9 @@ $.extend(wot, { ratingwindow: {
             $_rep_legend.attr("r", rep_level);
             $_rep_legend.text(wot.get_level_label(item.name, rep_level, false));
 
-            _this.rate_control.updateratings({ name: item.name, t: cachedv.t }); // update visual ratingbars
+            var t = (cachedv && cachedv.t >= 0) ? cachedv.t : -1;
+
+            _this.rate_control.updateratings({ name: item.name, t: t }); // update visual ratingbars
         });
 
         /* message */

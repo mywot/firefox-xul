@@ -751,7 +751,7 @@ body {
 	width: 21px;
     float: left;
     position: relative;
-    background: url("chrome://wot/skin/b/slider%20handle.png") top left no-repeat;
+    background: url("chrome://wot/skin/b/slider_handle.png") top left no-repeat;
     background-size: 21px auto;
     z-index: 5;
     left: 166px;
