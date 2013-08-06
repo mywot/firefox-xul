@@ -579,11 +579,13 @@ $.extend(wot, { ratingwindow: {
 
         var error_code = data.error_code || 0;
 
-        _comments.allow_commenting = ([
-            wot.comments.error_codes.AUTHENTICATION_FAILED,
-            wot.comments.error_codes.COMMENT_NOT_ALLOWED,
-            wot.comments.error_codes.IS_BANNED
-        ].indexOf(error_code) < 0); // if none of these codes are found
+//        _comments.allow_commenting = ([
+//            wot.comments.error_codes.AUTHENTICATION_FAILED,
+//            wot.comments.error_codes.COMMENT_NOT_ALLOWED,
+//            wot.comments.error_codes.IS_BANNED
+//        ].indexOf(error_code) < 0); // if none of these codes are found
+        _comments.allow_commenting = false; // FIXME: remove this temporary line when commenting feature is ready
+
 
         _comments.is_banned = (error_code == wot.comments.error_codes.IS_BANNED);
 
@@ -1953,7 +1955,7 @@ $.extend(wot, { ratingwindow: {
 
     /* Start of Comments API and Comments UI code */
     comments: {
-        allow_commenting: true,
+        allow_commenting: false,    // FIXME: set true again when commenting feature will be ready
         is_banned: false,
         captcha_required: false,
         MIN_LIMIT: 30,
@@ -2026,6 +2028,8 @@ $.extend(wot, { ratingwindow: {
             }
 
             $_button.toggle(!_this.is_banned);  // don't show this button to banned users
+            $_button.hide(); // FIXME: remove this when Commenting feature is ready
+
         },
 
         set_comment: function (text) {
