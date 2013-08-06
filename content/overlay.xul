@@ -94,37 +94,6 @@
                       accesskey="&wotCheckUpdates.accesskey;"
                       command="wot-command-checkupdates"/>
             <menuseparator/>
-            <menuitem id="wot-indicator-testify-5"
-                      label="&wotTestify5.label;"
-                      accesskey="&wotTestify5.accesskey;"
-                      type="radio"
-                      name="wot-indicator-quicktestify"
-                      command="wot-command-testify-5"/>
-            <menuitem id="wot-indicator-testify-4"
-                      label="&wotTestify4.label;"
-                      accesskey="&wotTestify4.accesskey;"
-                      type="radio"
-                      name="wot-indicator-quicktestify"
-                      command="wot-command-testify-4"/>
-            <menuitem id="wot-indicator-testify-3"
-                      label="&wotTestify3.label;"
-                      accesskey="&wotTestify3.accesskey;"
-                      type="radio"
-                      name="wot-indicator-quicktestify"
-                      command="wot-command-testify-3"/>
-            <menuitem id="wot-indicator-testify-2"
-                      label="&wotTestify2.label;"
-                      accesskey="&wotTestify2.accesskey;"
-                      type="radio"
-                      name="wot-indicator-quicktestify"
-                      command="wot-command-testify-2"/>
-            <menuitem id="wot-indicator-testify-1"
-                      label="&wotTestify1.label;"
-                      accesskey="&wotTestify1.accesskey;"
-                      type="radio"
-                      name="wot-indicator-quicktestify"
-                      command="wot-command-testify-1"/>
-            <menuseparator/>
             <menuitem label="&wotMy.label;"
                       accesskey="&wotMy.accesskey;"
                       command="wot-command-my"/>
