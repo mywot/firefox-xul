@@ -358,8 +358,12 @@ var wot_warning =
 
 			var content = event.originalTarget;
 
-			if (!content || !content.location || !content.location.href ||
-					wot_url.isprivate(content.location.href)) {
+            // Don't show warnings in frames
+            if (!content || !content.defaultView || content.defaultView != content.defaultView.top ) {
+                return;
+            }
+
+			if (!content.location || !content.location.href || wot_url.isprivate(content.location.href)) {
 				return;
 			}
 
