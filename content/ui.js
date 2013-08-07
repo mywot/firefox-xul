@@ -316,15 +316,15 @@ var wot_ui = {
 //
 //				if (help && link) {
 //					if (testimony >= WOT_MIN_REPUTATION_5) {
-//						help.value = wot_util.getstring("help_5");
+//						help.value = wot_util.getstring("reputationlevels_5");
 //					} else if (testimony >= WOT_MIN_REPUTATION_4) {
-//						help.value = wot_util.getstring("help_4");
+//						help.value = wot_util.getstring("reputationlevels_4");
 //					} else if (testimony >= WOT_MIN_REPUTATION_3) {
-//						help.value = wot_util.getstring("help_3");
+//						help.value = wot_util.getstring("reputationlevels_3");
 //					} else if (testimony >= WOT_MIN_REPUTATION_2) {
-//						help.value = wot_util.getstring("help_2");
+//						help.value = wot_util.getstring("reputationlevels_2");
 //					} else if (testimony >= 0) {
-//						help.value = wot_util.getstring("help_1");
+//						help.value = wot_util.getstring("reputationlevels_1");
 //					} else {
 //						help.value = "";
 //					}

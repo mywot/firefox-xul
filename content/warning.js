@@ -155,36 +155,6 @@ var wot_warning =
             "</div>";
 
         return wot_warning;
-
-//			"<div class='wot-desc'>{DESC}</div>" +
-//			"<div class='wot-openscorecard-wrap'>" +
-//			"<span id='wotinfobutton' class='wot-openscorecard wot-link'>{INFO}</span>" +
-//			"</div>" +
-//			"<div id='wot-ws-ratings'>";
-//
-//		for(var c=0; c < WOT_APPLICATIONS; c++) {
-//
-//			if(!wot_prefs["show_application_" + c]) continue;
-//
-//			var S_COMPNAME = "RATINGDESC" + c,
-//				S_RATING = "RATING" + c,
-//				S_RATING_EXPL = "RATINGEXPL" + c;
-//
-//			wot_warning += "" +
-//				"<div class='wot-component'>" +
-//				"<div class='wot-comp-name'>{" + S_COMPNAME + "}</div>" +
-//				"<div class='wot-comp-level' r='{" + S_RATING + "}'>{" + S_RATING_EXPL + "}</div>" +
-//				"<div class='wot-comp-icon' r='{" + S_RATING + "}'></div>" +
-//				"</div>";
-//		}
-//
-//		wot_warning +=
-//			"</div>" +
-//				"<div class='wot-rateit-wrap'>" +
-//				"<span>{RATETEXT}</span>" +
-//				"</div>" +
-//				"<div class='wot-buttons'>";
-
 	},
 
 	load_delayed: function(blocked)
@@ -486,11 +456,13 @@ var wot_warning =
 				}
 
 
-				var r_level = wot_util.get_level(WOT_REPUTATIONLEVELS, r).level;
+				var rep_l = wot_util.get_level(WOT_REPUTATIONLEVELS, r),
+                    r_level = rep_l.level,
+                    r_name = rep_l.name;
 
 				if (r_level >= 0) {
-					replaces.push([ "RATING" + i, "r" + r_level ]);
-					replaces.push([ "RATINGEXPL" + i, wot_util.getstring("help_" + r_level) ]);
+					replaces.push([ "RATING" + i, r_name ]);
+					replaces.push([ "RATINGEXPL" + i, wot_util.getstring("reputationlevels_" + r_name) ]);
                     replaces.push([ "CONFIDENCE" + i, wot_util.get_level(WOT_CONFIDENCELEVELS, c).name ]);
 
 				} else if (x) {
