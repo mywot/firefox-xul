@@ -6,16 +6,6 @@
 <!ENTITY wotRefresh.accesskey		"R">
 <!ENTITY wotContent.label			"WOT">
 <!ENTITY wotContent.accesskey		"W">
-<!ENTITY wotTestify5.label			"Excellent">
-<!ENTITY wotTestify5.accesskey		"E">
-<!ENTITY wotTestify4.label			"Good">
-<!ENTITY wotTestify4.accesskey		"G">
-<!ENTITY wotTestify3.label			"Unsatisfactory">
-<!ENTITY wotTestify3.accesskey		"U">
-<!ENTITY wotTestify2.label			"Poor">
-<!ENTITY wotTestify2.accesskey		"P">
-<!ENTITY wotTestify1.label			"Very poor">
-<!ENTITY wotTestify1.accesskey		"V">
 <!ENTITY wotPreferences.label		"Settings…">
 <!ENTITY wotPreferences.accesskey	"S">
 <!ENTITY wotMy.label				"My WOT…">
@@ -26,14 +16,3 @@
 <!ENTITY wotLinkScorecard.accesskey	"s">
 <!-- Rating window -->
 <!ENTITY wotRating.title			"Initializing WOT…">
-<!ENTITY wotRating.wot				"WOT rating">
-<!ENTITY wotRating.my				"My rating">
-<!ENTITY wotRating.app0				"Trustworthiness">
-<!ENTITY wotRating.app4				"Child safety">
-<!ENTITY wotRating.scorecard		"View scorecard for rating details">
-<!ENTITY wotRating.comment			"Add your comment">
-<!ENTITY wotRating.guide			"Guide">
-<!ENTITY wotRating.prefs			"Settings">
-<!ENTITY wotRating.link				"www.mywot.com">
-<!ENTITY wotRating.partner			"In partnership with">
-<!ENTITY wotRating.update			"New version available - click to update">

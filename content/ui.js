@@ -69,7 +69,7 @@ var wot_status = {
 			var excluded = wot_cache.get(wot_core.hostname, "excluded_0");
 
 			/* Set status and description */
-			var status, description, testimonies = false;
+			var rep_l, rep, r_level, description, testimonies = false;
 
 			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
 				if (wot_cache.get(wot_core.hostname, "testimony_" + i) >= 0) {
@@ -79,18 +79,20 @@ var wot_status = {
 			}
 
 			if (excluded) {
-				status = "excluded";
+				r_level = "0";  // should be "excluded" maybe?
 				description = "";
 			} else {
-                status = wot_util.get_level(WOT_REPUTATIONLEVELS, reputation).level;
-				description = wot_util.getstring("description_rating_" + status);
+                rep_l = wot_util.get_level(WOT_REPUTATIONLEVELS, reputation);
+                r_level = rep_l.level;
+                rep = rep_l.name;
+				description = wot_util.getstring("reputationlevels_" + rep);
 			}
 
 			if (testimonies) {
-				status += "-testimony";
+				r_level += "-testimony";
 			}
 
-			this.set(status, description);
+			this.set(r_level, description);
 
 			var type = wot_warning.isdangerous(wot_core.hostname, true);
 			var content = getBrowser().selectedBrowser.contentDocument;

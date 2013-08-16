@@ -56,11 +56,6 @@
         <command id="wot-command-refresh" oncommand="wot_commands.refresh();"/>
         <command id="wot-command-preferences" oncommand="wot_commands.preferences();"/>
         <command id="wot-command-checkupdates" oncommand="wot_commands.checkupdates();"/>
-        <command id="wot-command-testify-5" oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_5);"/>
-        <command id="wot-command-testify-4" oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_4);"/>
-        <command id="wot-command-testify-3" oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_3);"/>
-        <command id="wot-command-testify-2" oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_2);"/>
-        <command id="wot-command-testify-1" oncommand="wot_commands.quicktestify(WOT_TESTIMONY_QUICK_1);"/>
         <command id="wot-command-my" oncommand="wot_commands.my();"/>
         <command id="wot-command-openlinkscorecard" oncommand="wot_commands.open_scorecard_link();"/>
     </commandset>
@@ -129,32 +124,6 @@
                 <menuitem label="&wotPreferences.label;"
                           accesskey="&wotPreferences.accesskey;"
                           command="wot-command-preferences"/>
-                <menuseparator/>
-                <menuitem label="&wotTestify5.label;"
-                          accesskey="&wotTestify5.accesskey;"
-                          type="radio"
-                          name="wot-tools-quicktestify"
-                          command="wot-command-testify-5"/>
-                <menuitem label="&wotTestify4.label;"
-                          accesskey="&wotTestify4.accesskey;"
-                          type="radio"
-                          name="wot-tools-quicktestify"
-                          command="wot-command-testify-4"/>
-                <menuitem label="&wotTestify3.label;"
-                          accesskey="&wotTestify3.accesskey;"
-                          type="radio"
-                          name="wot-tools-quicktestify"
-                          command="wot-command-testify-3"/>
-                <menuitem label="&wotTestify2.label;"
-                          accesskey="&wotTestify2.accesskey;"
-                          type="radio"
-                          name="wot-tools-quicktestify"
-                          command="wot-command-testify-2"/>
-                <menuitem label="&wotTestify1.label;"
-                          accesskey="&wotTestify1.accesskey;"
-                          type="radio"
-                          name="wot-tools-quicktestify"
-                          command="wot-command-testify-1"/>
                 <menuseparator/>
                 <menuitem label="&wotEnabled.label;"
                           accesskey="&wotEnabled.accesskey;"

@@ -413,27 +413,25 @@ var wot_warning =
             var is_blacklisted = blacklists && blacklists.length > 0;
 
             // preprocess link "Rate the site"
-            var rate_site = wot_util.getstring("warning_rate").replace("<a>", "<a id='wotrate-link' class='wot-link'>"),
+            var rate_site = wot_util.getstring("warnings_ratesite").replace("<a>", "<a id='wotrate-link' class='wot-link'>"),
                 wt_text = wot_util.getstring("wt_warning_text") || "";
 
 			var replaces = [
                 /* Static strings */
-                [ "INFO", is_blacklisted ? wot_util.getstring("bl_information") : wot_util.getstring("warning_info")  ],
+                [ "INFO", is_blacklisted ? wot_util.getstring("bl_information") : wot_util.getstring("warnings_information")  ],
                 [ "BL_OR_REP", is_blacklisted ? "blacklist": "reputation" ],
-                [ "RATINGDESC0", wot_util.getstring("rating_0") ],
-                [ "RATINGDESC1", wot_util.getstring("rating_1") ],
-                [ "RATINGDESC2", wot_util.getstring("rating_2") ],
-                [ "RATINGDESC4", wot_util.getstring("rating_4") ],
-                [ "GOTOSITE", wot_util.getstring("warning_goto") ],
-                [ "WARNING", this.is_blocked ? wot_util.getstring("warning_blocked") : wot_util.getstring("warning_warning") ],
+                [ "RATINGDESC0", wot_util.getstring("components_0") ],
+                [ "RATINGDESC4", wot_util.getstring("components_4") ],
+                [ "GOTOSITE", wot_util.getstring("warnings_goto") ],
+                [ "WARNING", this.is_blocked ? wot_util.getstring("warnings_blocked") : wot_util.getstring("warnings_warning") ],
                 [ "RATETEXT", rate_site ],
                 [ "WT_CONTENT", this.processhtml(wt_text, [ "WT_LEARNMORE", wot_util.getstring("wt_learnmore_link") ])],
-                [ "REASONTITLE", wot_util.getstring("warning_reasontitle") ],
-                [ "NOREASONTITLE", wot_util.getstring("warning_noreasontitle") ],
+                [ "REASONTITLE", wot_util.getstring("warnings_reasontitle") ],
+                [ "NOREASONTITLE", wot_util.getstring("warnings_noreasontitle") ],
 
 				/* Dynamic strings */
                 [ "TITLE",      (wot_shared.decodehostname(normalized_target) || "").replace(/[<>&="']/g, "") ],
-				[ "LEAVESITE",  wot_util.getstring("warning_" + wot_warning.exit_mode) ],
+				[ "LEAVESITE",  wot_util.getstring("warnings_" + wot_warning.exit_mode) ],
                 [ "ACCESSIBLE", accessible ]
 			];
 
@@ -493,20 +491,17 @@ var wot_warning =
                 }
 
                 if (reason == WOT_REASON_RATING) {
-                    notification = wot_util.getstring("warning_message_normal");
+                    notification = wot_util.getstring("warnings_message_reputation");
                     replaces.push([ "CLASS", warnclass ]);
-//                    replaces.push([ "DESCCLASS", "wotlongdescription" ]);
-                    replaces.push([ "DESC", wot_util.getstring("warning_desc_normal") ]);
+                    replaces.push([ "DESC", wot_util.getstring("warnings_reputation") ]);
                 } else if (reason == WOT_REASON_TESTIMONY) {
-                    notification = wot_util.getstring("warning_message_userrated");
+                    notification = wot_util.getstring("warnings_message_rating");
                     replaces.push([ "CLASS", "wotnoratings" ]);
-//                    replaces.push([ "DESCCLASS", "wotlongdescription" ]);
-                    replaces.push([ "DESC", wot_util.getstring("warning_desc_userrated") ]);
+                    replaces.push([ "DESC", wot_util.getstring("warnings_rating") ]);
                 } else {
-                    notification = wot_util.getstring("warning_message_unknown");
+                    notification = wot_util.getstring("warnings_unknown");
                     replaces.push([ "CLASS", warnclass ]);
-//                    replaces.push([ "DESCCLASS", "" ]);
-                    replaces.push([ "DESC", wot_util.getstring("warning_desc_unknown") ]);
+                    replaces.push([ "DESC", wot_util.getstring("warnings_unknown") ]);
                 }
             }
 

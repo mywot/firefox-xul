@@ -472,7 +472,7 @@ var wot_api_register =
 
 			if (wot_browser.isoffline()) {
 				wot_status.set("offline",
-					wot_util.getstring("message_offline"));
+					wot_util.getstring("messages_offline"));
 				this.timeout = window.setTimeout(wot_api_register.send,
 					WOT_INTERVAL_REGISTER_OFFLINE);
 				return;
@@ -562,7 +562,7 @@ var wot_api_register =
 	{
 		try {
 			wot_status.set("error",
-				wot_util.getstring("message_error_register"));
+				wot_util.getstring("messages_error_register"));
 
 			wot_api_register.timeout =
 				window.setTimeout(wot_api_register.send,

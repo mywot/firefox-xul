@@ -589,7 +589,7 @@ var wot_core =
 
 			if (!wot_util.isenabled()) {
 				wot_status.set("disabled",
-					wot_util.getstring("message_disabled"));
+					wot_util.getstring("messages_disabled"));
 				return;
 			}
 

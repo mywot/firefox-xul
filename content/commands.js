@@ -117,35 +117,6 @@ var wot_commands =
 			document.getElementById("wot-" + what + "-refresh").
 				setAttribute("disabled", !wot_util.isenabled() || !cached);
 
-			/* Quick testimonies */
-			var i, quicks = [];
-
-			for (i = 0; i < 5; ++i) {
-				quicks[i] =	document.getElementById("wot-" + what +
-								"-testify-" + (i + 1));
-			}
-
-			for (i = 0; i < quicks.length; ++i) {
-				quicks[i].setAttribute("disabled",
-					!wot_prefs.enabled || !cached);
-				quicks[i].setAttribute("checked", false);
-			}
-
-			if (wot_util.isenabled() && cached) {
-				var t = wot_cache.get(wot_core.hostname, "testimony_0");
-
-				if (t >= WOT_MIN_REPUTATION_5) {
-					quicks[4].setAttribute("checked", true);
-				} else if (t >= WOT_MIN_REPUTATION_4) {
-					quicks[3].setAttribute("checked", true);
-				} else if (t >= WOT_MIN_REPUTATION_3) {
-					quicks[2].setAttribute("checked", true);
-				} else if (t >= WOT_MIN_REPUTATION_2) {
-					quicks[1].setAttribute("checked", true);
-				} else if (t >= 0) {
-					quicks[0].setAttribute("checked", true);
-				}
-			}
 		} catch (e) {
 			dump("wot_commands.update: failed with " + e + "\n");
 		}
@@ -204,20 +175,20 @@ var wot_commands =
 		}
 	},
 
-	quicktestify: function(value)
-	{
-		try {
-			if (wot_cache.isok(wot_core.hostname)) {
-                wot_cache.set(wot_core.hostname, "testimony_0",
-                    Number(value));
-                wot_cache.set(wot_core.hostname, "pending", true);
-                wot_core.pending[wot_core.hostname] = true;
-                wot_core.update();
-            }
-		} catch (e) {
-			dump("wot_commands.quicktestify: failed with " + e + "\n");
-		}
-	},
+//	quicktestify: function(value)
+//	{
+//		try {
+//			if (wot_cache.isok(wot_core.hostname)) {
+//                wot_cache.set(wot_core.hostname, "testimony_0",
+//                    Number(value));
+//                wot_cache.set(wot_core.hostname, "pending", true);
+//                wot_core.pending[wot_core.hostname] = true;
+//                wot_core.update();
+//            }
+//		} catch (e) {
+//			dump("wot_commands.quicktestify: failed with " + e + "\n");
+//		}
+//	},
 
 	open_scorecard_link: function()
 	{
