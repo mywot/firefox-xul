@@ -308,6 +308,39 @@ var wot_cache =
 		}
 	},
 
+    set_captcha: function (captcha_required) {
+        wot_hashtable.set("captcha_required", !!captcha_required);
+    },
+
+    get_captcha: function () {
+        return !!wot_hashtable.get("captcha_required");
+    },
+
+    get_comment: function (name) {
+        var json_data = this.get(name, "comment"),
+            data = {};
+        if (json_data) {
+            data = JSON.parse(json_data);
+        }
+        return data;
+    },
+
+    set_comment: function (name, comment_data) {
+        this.set(name, "comment", JSON.stringify(comment_data));
+    },
+
+    update_comment: function (name, data) {
+        var comment_data = this.get_comment(name);
+        for (var key in data) {
+            comment_data[key] = data[key];
+        }
+        this.set_comment(name, comment_data);
+    },
+
+    remove_comment: function (name) {
+        this.remove(name, "comment");
+    },
+
 	add_target: function(nonce, target, islink)
 	{
 		try {

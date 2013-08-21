@@ -26,6 +26,7 @@ var wot_rw = {
     CHAN_ELEM_ID: "wot-comm-channel",
     CHAN_EVENT_ID: "wotrw",
     IGNORED_PREFS: ["ratingwindow_shown"],
+    LEVELS: ["registered"], // list of possible levels to test
 
     get_rw_window: function () {
         var rw_frame = document.getElementById(this.FRAME_ID);
@@ -123,19 +124,11 @@ var wot_rw = {
         }
     },
 
-    update: function () {
-        // Updates content of Rating Window. RW must be already initialized (locales, categories info, etc).
-        wdump("RW.update()");
+    get_cached: function () {
 
-        var rw = this.get_rw_window(),
-            rw_doc = this.get_rw_document(),
-            rw_wot = this.get_rw_wot(),
-            data = {},
-            target = wot_core.hostname;
+        var target = wot_core.hostname,
+            data = {};
 
-        wdump("Target: " + target);
-
-        if (!rw || !rw_doc || !rw_wot) return;
 
         if (target && wot_cache.isok(target)) {
             var normalized_target = wot_cache.get(target, "normalized") || target;
@@ -147,7 +140,8 @@ var wot_rw = {
                 updated: wot_cache.get(target, "time"),
                 cached: {
                     status: wot_cache.get(target, "status"),
-                    value: {}
+                    value: {},
+                    comment: wot_cache.get_comment(target)
                 }
             };
 
@@ -183,6 +177,24 @@ var wot_rw = {
             };
         }
 
+        return data;
+    },
+
+    update: function () {
+        // Updates content of Rating Window. RW must be already initialized (locales, categories info, etc).
+        wdump("RW.update()");
+
+        var rw = this.get_rw_window(),
+            rw_doc = this.get_rw_document(),
+            rw_wot = this.get_rw_wot(),
+            target = wot_core.hostname;
+
+        wdump("\tTarget: " + target);
+
+        if (!rw || !rw_doc || !rw_wot) return;
+
+        var data = wot_rw.get_cached();
+
         wot_rw.push_preferences(rw, wot_rw.get_preferences());  // update preferences every time before showing RW
 
         wot_rw.update_messages();
@@ -195,9 +207,29 @@ var wot_rw = {
             ];
         }
 
-        wdump("data: " + JSON.stringify(data));
+        // iterate through known user levels to find current one and provide it to rating window
+        for (var l, i=0; i < wot_rw.LEVELS.length; i++) {
+            l = wot_rw.LEVELS[i];
+            if (wot_crypto.islevel(l) && rw.wot_bg) {
+                rw.wot_bg.wot.core._level = l;  // set the level into rating window
+                break;
+            }
+        }
+
+        wdump("\tdata: " + JSON.stringify(data));
 
         rw_wot.ratingwindow.update(target, JSON.stringify(data));
+    },
+
+    update_ratingwindow_comment: function () {
+
+        var target = wot_core.hostname,
+            cached = wot_rw.get_cached(),
+            rw = wot_rw.get_rw_window(),
+            rw_wot = wot_rw.get_rw_wot(),
+            local_comment = {}; //TODO: wot.keeper.get_comment(target); // get locally stored comment if exists
+
+        rw_wot.ratingwindow.update_comment(cached.cached, local_comment, wot_cache.get_captcha());
     },
 
     get_preferences: function () {
@@ -289,7 +321,7 @@ var wot_rw = {
                     break;
 
                 case "update_ratingwindow_comment":
-                    // TODO: implement
+                    wot_rw.update_ratingwindow_comment();
                     break;
 
                 case "unseenmessage":
@@ -313,6 +345,18 @@ var wot_rw = {
 
                 case "submit":
                     wot_rw.on_submit(data);
+                    break;
+
+                case "get_comment":
+                    wot_api_comments.get(data.target);
+                    break;
+
+                case "submit_comment":
+                    wot_api_comments.submit(data.target, data.user_comment, data.user_comment_id, data.votes);
+                    break;
+
+                case "remove_comment":
+                    wot_api_comments.remove(data.target);
                     break;
             }
 
@@ -348,25 +392,21 @@ var wot_rw = {
             var locale_strings = wot_util.get_all_strings();
             rw.chrome.i18n.loadMessages(JSON.stringify(locale_strings));    // using JSON to push data to sandboxed content
 
-            // TODO: provide preferences to RW
-            wdump(JSON.stringify(this.get_preferences()));
-
             var prefs = this.get_preferences();
             this.push_preferences(rw, prefs);
+            wdump(JSON.stringify(prefs));
 
             // setup categories data in the RW
             rw_wot.categories = wot_categories.categories;
             rw_wot.grouping = wot_categories.grouping;
             rw_wot.cgroups = wot_categories.cgroups;
 
-            // TODO: provide "level" (decrypted) value
-
             rw_wot.ratingwindow.onload();   // this runs only once in FF
 
             this.is_inited = true;
 
         } catch (e) {
-
+            wdump("Failed with wot_rw.initialize()" + e);
         }
     }
 

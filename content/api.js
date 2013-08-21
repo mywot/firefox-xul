@@ -237,23 +237,18 @@ var wot_api_query =
 
 					if (request.status == 200) {
 						wot_cache.add_query(
-							request.responseXML.getElementsByTagName(
-								WOT_SERVICE_XML_QUERY),
-							request.responseXML.getElementsByTagName(
-								WOT_SERVICE_XML_QUERY_TARGET),
+							request.responseXML.getElementsByTagName(WOT_SERVICE_XML_QUERY),
+							request.responseXML.getElementsByTagName(WOT_SERVICE_XML_QUERY_TARGET),
 							false);
 
 						wot_api_query.parse_messages(
-							request.responseXML.getElementsByTagName(
-									WOT_SERVICE_XML_QUERY_MSG));
+							request.responseXML.getElementsByTagName(WOT_SERVICE_XML_QUERY_MSG));
 
 						wot_api_query.parse_users(
-							request.responseXML.getElementsByTagName(
-									WOT_SERVICE_XML_QUERY_USER));
+							request.responseXML.getElementsByTagName(WOT_SERVICE_XML_QUERY_USER));
 
 						wot_api_query.parse_status(
-							request.responseXML.getElementsByTagName(
-									WOT_SERVICE_XML_QUERY_STATUS));
+							request.responseXML.getElementsByTagName(WOT_SERVICE_XML_QUERY_STATUS));
 					}
 
 					wot_cache.set(hostname, "inprogress", false);
@@ -375,6 +370,7 @@ var wot_api_query =
                 user_item = {},
                 a = null,
                 user_props = {
+                    // so far we don't need most of fields any more that is why they are commented out
 //                icon:       WOT_SERVICE_XML_QUERY_USER_ICON,
 //                bar:        WOT_SERVICE_XML_QUERY_USER_BAR,
 //                "length":   WOT_SERVICE_XML_QUERY_USER_LENGTH,
@@ -471,20 +467,15 @@ var wot_api_register =
 			}
 
 			if (wot_browser.isoffline()) {
-				wot_status.set("offline",
-					wot_util.getstring("messages_offline"));
-				this.timeout = window.setTimeout(wot_api_register.send,
-					WOT_INTERVAL_REGISTER_OFFLINE);
+				wot_status.set("offline", wot_util.getstring("messages_offline"));
+				this.timeout = window.setTimeout(wot_api_register.send, WOT_INTERVAL_REGISTER_OFFLINE);
 				return;
 			}
 
-			wot_status.set("notready",
-				wot_util.getstring("messages_notready"));
+			wot_status.set("notready", wot_util.getstring("messages_notready"));
 
-			if (!this.geteid() ||
-					wot_hashtable.get(WOT_REGISTER_RUNNING)) {
-				this.timeout = window.setTimeout(wot_api_register.send,
-					WOT_INTERVAL_REGISTER_ERROR);
+			if (!this.geteid() || wot_hashtable.get(WOT_REGISTER_RUNNING)) {
+				this.timeout = window.setTimeout(wot_api_register.send, WOT_INTERVAL_REGISTER_ERROR);
 				return;
 			}
 
@@ -627,8 +618,7 @@ var wot_api_reload =
 			}
 
 			var reload = null;
-			var tags = event.target.responseXML.getElementsByTagName(
-							WOT_SERVICE_XML_RELOAD);
+			var tags = event.target.responseXML.getElementsByTagName(WOT_SERVICE_XML_RELOAD);
 
 			if (tags) {
 				reload = tags.item(0);
@@ -639,10 +629,8 @@ var wot_api_reload =
 				return;
 			}
 
-			var id  = reload.attributes.getNamedItem(
-							WOT_SERVICE_XML_RELOAD_ID);
-			var key = reload.attributes.getNamedItem(
-							WOT_SERVICE_XML_RELOAD_KEY);
+			var id  = reload.attributes.getNamedItem(WOT_SERVICE_XML_RELOAD_ID);
+			var key = reload.attributes.getNamedItem(WOT_SERVICE_XML_RELOAD_KEY);
 
 			if (!id || !id.value || !key || !key.value ||
 				id.value.length  != WOT_LENGTH_WITNESS_ID ||
@@ -751,8 +739,7 @@ var wot_api_submit =
 			{
 				try {
 					if (request.status == 200) {
-						var submit = request.responseXML.getElementsByTagName(
-										WOT_SERVICE_XML_SUBMIT);
+						var submit = request.responseXML.getElementsByTagName(WOT_SERVICE_XML_SUBMIT);
 
 						if (submit && submit.length > 0) {
 							wot_pending.clear(pref);
@@ -1132,4 +1119,403 @@ var wot_pending =
 			dump("wot_pending.submit: failed with " + e);
 		}
 	}
+};
+
+var wot_api_comments = {
+//    server: "beta.mywot.com",
+    server: "dev.mywot.com",
+    version: "1",   // Comments API version
+    PENDING_COMMENT_SID: "pending_comment:",
+    PENDING_REMOVAL_SID: "pending_removal:",
+    MAX_TRIES: 10,  // maximum amount of tries to send a comment or remove a comment
+    retrytimeout: {
+        submit: 30 * 1000,
+        remove: 20 * 1000
+    },
+    nonces: {},     // to know connection between nonce and target
+
+    serialize: function (obj) {
+        var str = [];
+        for(var p in obj){
+            if (obj.hasOwnProperty(p)) {
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            }
+        }
+        return str.join("&");
+    },
+
+    call: function (apiname, options, params, on_error, on_success) {
+        try {
+            var _this = wot_api_comments,
+                nonce = wot_crypto.nonce(),
+                original_target = params.target;
+
+            params = params || {};
+            var post_params = {};
+
+            params.id = wot_prefs.witness_id;
+            params.nonce = nonce;
+            params.version = WOT_PLATFORM + "-" +WOT_VERSION;
+
+            options = options || { type: "GET" };
+
+            if (options.encryption) {
+                params.target = wot_crypto.encrypt(params.target, nonce);
+            }
+
+            var components = [];
+
+            for (var i in params) {
+                if (params[i] != null) {
+                    var param_name = i,
+                        param_value = params[i];
+
+                    // Use a hash instead of the real value in the authenticated query
+                    if (options.hash && options.hash == i) {
+                        param_name = "SHA1";
+                        param_value = wot_hash.bintohex(wot_hash.sha1str(unescape( encodeURIComponent( params[i] )))); //wot_crypto.bintohex(wot_crypto.sha1.sha1str(unescape( encodeURIComponent( params[i] ))));
+                    }
+
+                    components.push(param_name + "=" + encodeURIComponent(param_value));
+                }
+            }
+
+            var query_string = components.join("&"),
+                path = "/api/" + _this.version + "/addon/comment/" + apiname,
+                full_path = path + "?" + query_string;
+
+            if (options.authentication) {
+                var auth = wot_crypto.authenticate(full_path);
+
+                if (!auth || !components.length) {
+                    return false;
+                }
+                full_path += "&auth=" + auth;
+            }
+
+            if (options.type == "POST") {
+                post_params.query = full_path;
+
+                if (options.hash) {
+                    post_params[options.hash] = params[options.hash];   // submit the real value of the parameter that is authenticated as the hash
+                }
+            }
+
+            // the add-on does NOT have permissions for httpS://www.mywot.com so we use http and own encryption
+            var type = options.type ? options.type : "GET";
+            var url = "http://" + this.server + (type == "POST" ? path : full_path);
+
+            _this.nonces[nonce] = original_target;    // remember the link between nonce and target
+
+            var request = new XMLHttpRequest();
+            request.open(type, url);
+
+            new wot_cookie_remover(request);
+
+            request.onload = function (event) {
+                if (!event || !event.target || event.target.status != 200 ||
+                    !event.target.responseText) {
+                    wdump("api.comments.call.error: url = " + url + ", status = " + event.target.status);
+
+                    if (typeof(on_error) == "function") {
+                        on_error(request, event.target.status, {});
+                    }
+                    return;
+                }
+
+                wdump("api.comments.call.success: url = " + url + ", status = " + event.target.status);
+
+                var data = JSON.parse(event.target.responseText);
+
+                if (typeof(on_success) == "function") {
+                    on_success(data, event.target.status, nonce);
+                }
+
+            };
+
+            var prepared_post_params = null;
+
+            if (type == "POST") {
+                prepared_post_params = _this.serialize(post_params);
+                request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                request.setRequestHeader("Content-length", prepared_post_params.length);
+                request.setRequestHeader("Connection", "close");
+            }
+
+            request.send(prepared_post_params);
+            return true;
+
+        } catch (e) {
+            wdump("wot_api_comments.call(): failed with " + e);
+        }
+
+        return false;
+
+    },
+
+    get: function(target) {
+        var _this = wot_api_comments;
+        wdump("wot.api.comments.get(target) " + target);
+
+        _this.call("get",
+            {
+                encryption: true,
+                authentication: true
+            },
+            {
+                target: target
+            },
+            null,   // TODO: handle network errors
+            function (data) {
+                _this.on_get_comment_response(data);
+            }
+        );
+    },
+
+    submit: function (target, comment, comment_id, votes) {
+
+        var _this = wot_api_comments,
+            pref_pending_name = _this.PENDING_COMMENT_SID + target;
+
+        // try to restore pending submission first
+        var state_json = wot_prefs.getChar(pref_pending_name);
+        var state = state_json ? JSON.parse(state_json) : {
+            target: target,
+            comment_data: {},
+            tries: 0
+        };
+
+        // if params are given, it means we are on normal way of sending data (not on retrying)
+        if (comment && votes) {
+            state.comment_data.comment = comment;
+            state.comment_data.cid = comment_id || 0;
+            state.comment_data.categories = votes;
+            state.tries = 0;
+        }
+
+        if (++state.tries > _this.MAX_TRIES) {
+            wdump("FAIL: api.comments.submit: failed " + target + " (max tries)");
+            wot_prefs.clear(pref_pending_name);
+            return;
+        }
+
+        wot_prefs.setChar(pref_pending_name, JSON.stringify(state));    // remember the submission
+
+        state.comment_data['target'] = target;
+
+        _this.call("submit",
+            {
+                encryption: true,
+                authentication: true,
+                type: "POST",
+                hash: "comment" // this field must be hashed and the hash must be authenticated
+            },
+            state.comment_data,
+            function (request) { // handle network errors
+                if (request.status != 403) {
+                    wot_api_comments.retry("submit", [ target ]);
+                } else {
+                    wdump("api.comment.submit: failed " + target + " (403)");
+                    wot_prefs.clear(wot_api_comments.PENDING_COMMENT_SID + target);
+                }
+            },
+            wot_api_comments.on_submit_comment_response
+        );
+
+        // set the local cache to the comment value
+        wot_cache.set_comment(target, {
+            comment: comment,
+            wcid: comment_id,
+            status: WOT_QUERY_RETRY,    // the sign of unverified submission // TODO: replace to BUSY constant
+            timestamp: Date.now()
+        });
+    },
+
+    remove: function (target) {
+//            console.log("wot.api.comments.remove(target)", target);
+
+        var _this =  wot_api_comments,
+            pref_pending_name = _this.PENDING_REMOVAL_SID + target;
+
+        // try to restore pending submission first
+        var state_json = wot_prefs.getChar(pref_pending_name);
+        var state = state_json ? JSON.parse(state_json) : {
+            target: target,
+            tries: 0
+        };
+
+        if (++state.tries > _this.MAX_TRIES) {
+            wdump("api.comments.submit: failed " + target + " (max tries)");
+            wot_prefs.clear(pref_pending_name);
+            return;
+        }
+
+        wot_prefs.setChar(pref_pending_name, JSON.stringify(state));    // remember the submission
+
+        _this.call("remove",
+            {
+                encryption: true,
+                authentication: true,
+                type: "POST"
+            },
+            {
+                target: target
+            },
+            function (request) {   // handle network errors
+                if (request.status != 403) {
+                    wot_api_comments.retry("remove", [ target ]);
+                } else {
+                    wdump("api.comment.remove: failed " + target + " (403)");
+                    wot_prefs.clear(wot_api_comments.PENDING_REMOVAL_SID + target);
+                }
+            },
+            wot_api_comments.on_remove_comment_response
+        );
+    },
+
+    retry: function(apiname, params, customtimeout)
+    {
+        var timeout = customtimeout || wot_api_comments.retrytimeout[apiname];
+
+        if (timeout) {
+            window.setTimeout(function() {
+                wot_api_comments[apiname].apply(wot_api_comments, params || []);
+            }, timeout);
+        }
+    },
+
+    processpending: function()
+    {
+//        wot.prefs.each(function(name, value) {
+//            if (/^pending_comment\:/.test(name)) {
+//                wot.api.comments.submit(name.replace(/^pending_comment\:/, ""));
+//            } else if (/^pending_removal\:/.test(name)) {
+//                wot.api.comments.remove(name.replace(/^pending_removal\:/, ""));
+//            }
+//            return false;
+//        });
+    },
+
+    pull_nonce: function (nonce) {
+        wdump("wot.api.comments._pull_once(nonce) " + nonce);
+
+        var _this = wot_api_comments,
+            target = null;
+
+        if (_this.nonces[nonce]) {
+            target = _this.nonces[nonce];
+            delete _this.nonces[nonce];
+        }
+
+        return target;
+    },
+
+    is_error: function (error) {
+        wdump("wot_api_comments.is_error(error)" + error);
+
+        var error_code = 0,
+            error_debug = "it is raining outside :(";
+
+        if (error instanceof Array && error.length > 1) {
+            error_code = error[0];
+            error_debug = error[1];
+        } else {
+            error_code = (error !== undefined ? error : 0);
+        }
+
+        if (error_code && error_code != WOT_COMMENTS.error_codes.COMMENT_NOT_FOUND) {
+            wdump("Error is returned:" + error_code + " / " + error_debug + " / " + error);
+        }
+
+        return error_code;  // if not zero, than it is error
+    },
+
+    on_get_comment_response: function (data) {
+        wdump("wot_api_comments.on_get_comment_response(data)" + JSON.stringify(data));
+        // check whether error occured or data arrived
+        var _this = wot_api_comments,
+            nonce = data.nonce, // to recover target from response
+            target = _this.pull_nonce(nonce),
+            error_code = _this.is_error(data.error);
+
+        switch (error_code) {
+            case WOT_COMMENTS.error_codes.SUCCESS:
+                wot_cache.set_comment(target, data); // TODO: implement
+                break;
+            case WOT_COMMENTS.error_codes.COMMENT_NOT_FOUND:
+                wot_cache.remove_comment(target);   // remove the comment if it is cached
+                break;
+            default:
+                wot_cache.set_comment(target, { status: WOT_QUERY_ERROR, error_code: error_code });
+        }
+
+        wot_cache.set_captcha(!!data.captcha);
+
+        wot_rw.update_ratingwindow_comment();
+    },
+
+    on_submit_comment_response: function (data) {
+        /* Handler for "Submit" responses. On success it updates the local cache  */
+
+        wdump("wot_api_comments.on_submit_comment_response(data) " + data);
+        var _this = wot_api_comments,
+            nonce = data.nonce, // to recover target from response
+            target = _this.pull_nonce(nonce),
+            error_code = _this.is_error(data.error);
+
+        switch (error_code) {
+            case WOT_COMMENTS.error_codes.SUCCESS:
+//                wot.keeper.remove_by_name(target);  // delete the locally saved comment only on successful submit
+                wot_cache.update_comment(target, { status: WOT_QUERY_OK, error_code: error_code });
+                wot_prefs.clear(_this.PENDING_COMMENT_SID + target); // don't try to send again
+                break;
+
+            // for these errors we should try again, because there is non-zero possibility of quantum glitches around
+            case WOT_COMMENTS.error_codes.AUTHENTICATION_FAILED:
+            case WOT_COMMENTS.error_codes.AUTHENTICATION_REP_SERVER_ERROR:
+            case WOT_COMMENTS.error_codes.COMMENT_SAVE_FAILED:
+                wot_cache.update_comment(target, { status: WOT_QUERY_ERROR, error_code: error_code });
+                _this.retry("submit", [ target ]);   // yeah, try it again, ddos own server ;)
+                break;
+
+            default:
+                wot_cache.update_comment(target, { status: WOT_QUERY_ERROR, error_code: error_code });
+                wot_prefs.clear(_this.PENDING_COMMENT_SID + target);
+        }
+
+        wot_cache.set_captcha(!!data.captcha);
+
+        wot_rw.update_ratingwindow_comment(); // to update status "the website is commented by the user"
+    },
+
+    on_remove_comment_response: function (data) {
+        wdump("wot.api.comments.on_remove_comment_response(data) " + data);
+
+        var _this = wot_api_comments,
+            nonce = data.nonce, // to recover target from response
+            target = _this.pull_nonce(nonce),
+            error_code = _this.is_error(data.error);
+
+        switch (error_code) {
+            case WOT_COMMENTS.error_codes.SUCCESS:
+                wot_cache.remove_comment(target);
+//                wot.keeper.remove_comment(target);
+                wot_prefs.clear(_this.PENDING_REMOVAL_SID + target);
+                break;
+
+            // some errors require retry due to singularity of the Universe
+            case WOT_COMMENTS.error_codes.AUTHENTICATION_FAILED:
+            case WOT_COMMENTS.error_codes.AUTHENTICATION_REP_SERVER_ERROR:
+            case WOT_COMMENTS.error_codes.COMMENT_REMOVAL_FAILED:
+                wot_cache.update_comment(target, { status: WOT_QUERY_ERROR, error_code: error_code });
+                _this.retry("remove", [ target ]);
+                break;
+
+            default:
+                wot_cache.update_comment(target, { status: WOT_QUERY_ERROR, error_code: error_code });
+                wot_prefs.clear(_this.PENDING_REMOVAL_SID + target);
+        }
+
+        wot_rw.update_ratingwindow_comment(); // to update status "the website is commented by the user"
+    }
 };

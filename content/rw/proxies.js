@@ -116,15 +116,20 @@ var wot_bg = {    // background page object
             comments: {
 
                 get: function (target) {
-
+                    wot_bg.wot.core.moz_send("get_comment", { target: target });
                 },
 
                 submit: function (target, user_comment, user_comment_id, votes) {
-
+                    wot_bg.wot.core.moz_send("submit_comment", {
+                        target: target,
+                        user_comment: user_comment,
+                        user_comment_id: user_comment_id,
+                        votes: votes
+                    });
                 },
 
                 remove: function (target) {
-
+                    wot_bg.wot.core.moz_send("remove_comment", { target: target });
                 }
 
             }
@@ -135,6 +140,7 @@ var wot_bg = {    // background page object
             cacheratingstate: function (target, state, votes) {
                 // Detects whether testimonies where changed.
                 // This function doesn't store anything in the Cache as against Chrome implementation.
+                // TODO: it should store new state/votes so when finish state is called again it doesn't send ratings second time
 
                 var changed = false,
                     obj = wot.ratingwindow.getcached();

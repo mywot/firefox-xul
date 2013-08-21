@@ -539,10 +539,15 @@ $.extend(wot, { ratingwindow: {
 
     update: function(target, data)
     {
-        var _rw = wot.ratingwindow;
+
         try {
+            var _rw = wot.ratingwindow;
+            var bg = chrome.extension.getBackgroundPage();
+
             data = JSON.parse(data);    // for safety
             _rw.current = data || {};
+            _rw.is_registered = bg.wot.core.is_level("registered"); // update the state on every window update
+
             _rw.updatecontents();
             _rw.update_categories();
 
@@ -550,7 +555,6 @@ $.extend(wot, { ratingwindow: {
                 // ask server if there is my comment for the website
                 _rw.comments.get_comment(data.target);
             } else {
-                var bg = chrome.extension.getBackgroundPage();
                 bg.wot.core.update_ratingwindow_comment(); // don't allow unregistered addons to comment
             }
 
@@ -563,7 +567,6 @@ $.extend(wot, { ratingwindow: {
     },
 
     update_comment: function (cached, local_comment, captcha_required) {
-        wot.log("update_comment()", cached);
 
         var _rw = wot.ratingwindow,
             _comments = wot.ratingwindow.comments,
@@ -581,12 +584,11 @@ $.extend(wot, { ratingwindow: {
 
         var error_code = data.error_code || 0;
 
-//        _comments.allow_commenting = ([
-//            wot.comments.error_codes.AUTHENTICATION_FAILED,
-//            wot.comments.error_codes.COMMENT_NOT_ALLOWED,
-//            wot.comments.error_codes.IS_BANNED
-//        ].indexOf(error_code) < 0); // if none of these codes are found
-        _comments.allow_commenting = false; // FIXME: remove this temporary line when commenting feature is ready
+        _comments.allow_commenting = ([
+            wot.comments.error_codes.AUTHENTICATION_FAILED,
+            wot.comments.error_codes.COMMENT_NOT_ALLOWED,
+            wot.comments.error_codes.IS_BANNED
+        ].indexOf(error_code) < 0); // if none of these codes are found
 
 
         _comments.is_banned = (error_code == wot.comments.error_codes.IS_BANNED);
@@ -625,6 +627,8 @@ $.extend(wot, { ratingwindow: {
             $("#rated-votes").removeClass("commented");
             _comments.posted_comment = {};
         }
+
+        bg.console.log("Registered? " + _rw.is_registered);
 
         // change appearance of commenting area regarding to permissions
         if (!_rw.is_registered) {
@@ -907,8 +911,6 @@ $.extend(wot, { ratingwindow: {
         var first_opening = !_rw.prefs.get(wot.engage_settings.invite_to_rw.pref_name);
 
         wot.init_categories(_rw.prefs);
-
-        _rw.is_registered = bg.wot.core.is_level("registered");
 
         /* accessibility */
         // TODO: use only 1 "global" style on the most top element to specify accessible mode for all children elements
@@ -1957,7 +1959,7 @@ $.extend(wot, { ratingwindow: {
 
     /* Start of Comments API and Comments UI code */
     comments: {
-        allow_commenting: false,    // FIXME: set true again when commenting feature will be ready
+        allow_commenting: true,
         is_banned: false,
         captcha_required: false,
         MIN_LIMIT: 30,
@@ -2030,7 +2032,6 @@ $.extend(wot, { ratingwindow: {
             }
 
             $_button.toggle(!_this.is_banned);  // don't show this button to banned users
-            $_button.hide(); // FIXME: remove this when Commenting feature is ready
 
         },
 
@@ -2064,6 +2065,6 @@ $.extend(wot, { ratingwindow: {
 
 }});
 
-$(document).ready(function() {
-//    wot.ratingwindow.onload();
-});
+//$(document).ready(function() {
+////    wot.ratingwindow.onload();
+//});

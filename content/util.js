@@ -953,10 +953,29 @@ var wot_crypto =
 
 			return (l == h);
 		} catch (e) {
-			dump("wot_crypto.islevel: failed with " + e + "\n");
+			wdump("wot_crypto.islevel: failed with " + e);
 		}
 		return false;
 	},
+
+    encrypt: function(data, nonce)
+    {
+        try {
+            if (data && nonce) {
+                var key = wot_prefs.witness_key;
+
+                if (key) {
+                    return btoa(wot_hash.bintostr(wot_arc4.crypt(
+                        wot_arc4.create(wot_hash.hmac_sha1hex(key, nonce)),
+                        wot_hash.strtobin(data))));
+                }
+            }
+        } catch (e) {
+            wdump("crypto.encrypt: failed with " + e);
+        }
+
+        return null;
+    },
 
     decrypt: function(data, nonce, index)
     {

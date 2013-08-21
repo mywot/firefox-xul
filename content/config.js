@@ -62,15 +62,6 @@ const WOT_CONFIDENCELEVELS = [
         { level: "5", name: "c5", min: WOT_MIN_CONFIDENCE_5 }
     ];
 
-/* Testimony values and rounding */
-const WOT_TESTIMONY_QUICK_5 = WOT_MIN_REPUTATION_5;
-const WOT_TESTIMONY_QUICK_4 = WOT_MIN_REPUTATION_4;
-const WOT_TESTIMONY_QUICK_3 = WOT_MIN_REPUTATION_3;
-const WOT_TESTIMONY_QUICK_2 = WOT_MIN_REPUTATION_2;
-const WOT_TESTIMONY_QUICK_1 = 0;
-const WOT_TESTIMONY_ROUND = 1; /* Testimony steps */
-const WOT_MIN_COMMENT_DIFF = 35;
-
 // reference: http://www.mywot.com/wiki/Activity_scores
 const WOT_ACTIVITYSCORE_LEVELS = [
         { name: "rookie", min: 0 },
@@ -375,6 +366,39 @@ const WOT_URL_POPUPDONUTS =  "popup-donuts";
 const WOT_URL_MENUMY =       "menu-my";
 const WOT_URL_BTN =          "button";
 const WOT_URL_CTX =          "contextmenu";
+
+const WOT_COMMENTS = {
+    error_codes: {
+        "0": "SUCCESS",
+        "1": "NO_ACTION_DEFINED",
+        "2": "IS_BANNED",
+        "3": "AUTHENTICATION_FAILED",
+        "4": "NO_TARGET",
+        "5": "COMMENT_NOT_FOUND",
+        "6": "COMMENT_REMOVAL_FAILED",
+        "7": "COMMENT_NOT_ALLOWED",
+        "8": "NO_COMMENTID",
+        "9": "NO_CATEGORIES_SPECIFIED",
+        "10": "NO_COMMENT_SPECIFIED",
+        "11": "AUTHENTICATION_INVALID_QUERY_PARAMETERS",
+        "12": "AUTHENTICATION_REP_SERVER_ERROR",
+        "13": "NO_QUERY_SPECIFIED",
+        "14": "QUERY_STRING_MISSING",
+        "15": "COMMENT_HAS_BEEN_ALTERED",
+        "16": "COMMENT_TOO_SHORT",
+        "17": "COMMENT_TOO_LONG",
+        "18": "COMMENT_SAVE_FAILED",
+        SUCCESS: 0,
+        NO_ACTION_DEFINED: 1,
+        IS_BANNED: 2,
+        AUTHENTICATION_FAILED: 3,
+        COMMENT_NOT_FOUND: 5,
+        COMMENT_REMOVAL_FAILED: 6,
+        COMMENT_NOT_ALLOWED: 7,
+        AUTHENTICATION_REP_SERVER_ERROR: 12,
+        COMMENT_SAVE_FAILED: 18
+    }
+};
 
 var wot_modules = [];
 
