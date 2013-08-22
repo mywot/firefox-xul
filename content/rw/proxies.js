@@ -95,11 +95,17 @@ var wot_bg = {    // background page object
 
         keeper: {
             remove_comment: function (target) {
-                // TODO: implement
+                wot_bg.wot.core.moz_send("keeper.remove_comment", { target: target });
             },
 
             save_comment: function (target, user_comment, user_comment_id, votes, keeper_status) {
-
+                wot_bg.wot.core.moz_send("keeper.save_comment", {
+                    target: target,
+                    user_comment: user_comment,
+                    user_comment_id: user_comment_id,
+                    votes: votes,
+                    keeper_status: keeper_status
+                });
             }
         },
 

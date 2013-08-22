@@ -1121,6 +1121,76 @@ var wot_pending =
 	}
 };
 
+var wot_keeper = {
+
+    STATUSES: {
+        LOCAL: 1,       // indicates permanent storing of data locally
+        SUBMITTING: 2   // indicates the saving is temporary until submition is reported succesful
+    },
+
+    /* Comment-specific methods to work with Keeper */
+
+    get_comment: function (target) {
+        // returns comment data stored locally for the specified target. Comment data is {body, timestamp, votes, wcid}
+        var data = wot_keeper.get_by_name(target, "comment");
+        if (data) {
+            return data;
+        } else {
+            return {};
+        }
+    },
+
+    save_comment: function (target, comment_body, wcid, votes, status) {
+//        console.log("keeper.save_comment()");
+
+        var data = {
+            timestamp: Date.now(),
+            target: target,
+            comment: comment_body,
+            wcid: wcid,
+            votes: votes,    // votes as object to be able to restore them to UI
+            status: status || wot_keeper.STATUSES.LOCAL
+        };
+
+        wot_keeper.store_by_name(target, "comment", JSON.stringify(data));
+    },
+
+    remove_comment: function (target) {
+//        console.log("keeper.save_comment()");
+        wot_keeper.remove_by_name(target, "comment");
+    },
+
+    /* Generic methods to work with Keeper */
+
+    get_by_name: function (target, name) {
+        // generic method to get data from local by target and name
+//        console.log("keeper.get_by_name()", target, name);
+
+        try {
+            var json = wot_prefs.getChar(wot_keeper._fullname(target, name)) || null;
+            return json ? JSON.parse(json) : null;
+        } catch (e) {
+            wdump("wot_keeper.get_by_name() Failed with " + e);
+        }
+        return null;
+    },
+
+    store_by_name: function (target, name, data) {
+//        console.log("keeper.store_by_name()", target, name, data);
+        wot_prefs.setChar(wot_keeper._fullname(target, name), data);
+    },
+
+    remove_by_name: function (target, name) {
+        wdump("keeper.remove_by_name()" + target + " " + name);
+        wot_prefs.clear(wot_keeper._fullname(target, name));
+    },
+
+    _fullname: function (target, name) {
+        return "keeper." + name + "." + target;
+    }
+
+};
+
 var wot_api_comments = {
 //    server: "beta.mywot.com",
     server: "dev.mywot.com",
@@ -1474,7 +1544,7 @@ var wot_api_comments = {
 
         switch (error_code) {
             case WOT_COMMENTS.error_codes.SUCCESS:
-//                wot.keeper.remove_by_name(target);  // delete the locally saved comment only on successful submit
+                wot_keeper.remove_comment(target);  // delete the locally saved comment only on successful submit
                 wot_cache.update_comment(target, { status: WOT_QUERY_OK, error_code: error_code });
                 wot_prefs.clear(_this.PENDING_COMMENT_SID + target); // don't try to send again
                 break;
@@ -1508,7 +1578,7 @@ var wot_api_comments = {
         switch (error_code) {
             case WOT_COMMENTS.error_codes.SUCCESS:
                 wot_cache.remove_comment(target);
-//                wot.keeper.remove_comment(target);
+                wot_keeper.remove_comment(target);
                 wot_prefs.clear(_this.PENDING_REMOVAL_SID + target);
                 break;
 

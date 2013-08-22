@@ -227,7 +227,7 @@ var wot_rw = {
             cached = wot_rw.get_cached(),
             rw = wot_rw.get_rw_window(),
             rw_wot = wot_rw.get_rw_wot(),
-            local_comment = {}; //TODO: wot.keeper.get_comment(target); // get locally stored comment if exists
+            local_comment = wot_keeper.get_comment(target); // get locally stored comment if exists
 
         rw_wot.ratingwindow.update_comment(cached.cached, local_comment, wot_cache.get_captcha());
     },
@@ -357,6 +357,14 @@ var wot_rw = {
 
                 case "remove_comment":
                     wot_api_comments.remove(data.target);
+                    break;
+
+                case "keeper.remove_comment":
+                    wot_keeper.remove_comment(data.target);
+                    break;
+
+                case "keeper.save_comment":
+                    wot_keeper.save_comment(data.target, data.user_comment, data.user_comment_id, data.votes, data.keeper_status);
                     break;
             }
 
