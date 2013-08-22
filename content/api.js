@@ -1328,19 +1328,24 @@ var wot_api_comments = {
         var _this = wot_api_comments;
         wdump("wot_api_comments.get(target) " + target);
 
-        _this.call("get",
-            {
-                encryption: true,
-                authentication: true
-            },
-            {
-                target: target
-            },
-            null,   // TODO: handle network errors
-            function (data) {
-                _this.on_get_comment_response(data);
-            }
-        );
+        if (target) {
+            _this.call("get",
+                {
+                    encryption: true,
+                    authentication: true
+                },
+                {
+                    target: target
+                },
+                null,   // TODO: handle network errors
+                function (data) {
+                    _this.on_get_comment_response(data);
+                }
+            );
+        } else {
+            // if target is null, erase the comment info from rating window
+            _this.on_get_comment_response({});
+        }
     },
 
     submit: function (target, comment, comment_id, votes) {
@@ -1513,9 +1518,9 @@ var wot_api_comments = {
         wdump("wot_api_comments.on_get_comment_response(data)" + JSON.stringify(data));
         // check whether error occured or data arrived
         var _this = wot_api_comments,
-            nonce = data.nonce, // to recover target from response
+            nonce = data ? data.nonce : null, // to recover target from response
             target = _this.pull_nonce(nonce),
-            error_code = _this.is_error(data.error);
+            error_code = target ? _this.is_error(data.error) : WOT_COMMENTS.error_codes.COMMENT_NOT_FOUND;
 
         switch (error_code) {
             case WOT_COMMENTS.error_codes.SUCCESS:

@@ -85,7 +85,7 @@ $.extend(wot, { ratingwindow: {
         }
 
         /* remember previous state */
-        _this.state = $.extend(_this.state, state);
+        _this.state = $.extend(state, _this.state);
     },
 
     setstate: function (component, t) {
