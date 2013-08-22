@@ -381,7 +381,7 @@ $.extend(wot, { ratingwindow: {
             rw_title = "";
 
         /* update current rating state */
-        _this.updatestate(_this.current.target, cached);
+//        _this.updatestate(_this.current.target, cached);
         var normalized_target = cached.value.normalized ? cached.value.normalized : _this.current.target;
 
         var $_hostname = $("#hostname-text"),
@@ -545,6 +545,9 @@ $.extend(wot, { ratingwindow: {
             var bg = chrome.extension.getBackgroundPage();
 
             data = JSON.parse(data);    // for safety
+
+            _rw.updatestate(data.target, data.cached);
+
             _rw.current = data || {};
             _rw.is_registered = bg.wot.core.is_level("registered"); // update the state on every window update
 

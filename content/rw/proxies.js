@@ -156,12 +156,25 @@ var wot_bg = {    // background page object
                         obj.value[item.name] = obj.value[item.name] || {};
 
                         if (obj.value[item.name].t != state[item.name].t) {
-//                            obj.value[item.name].t  = state[item.name].t;
+                            obj.value[item.name].t  = state[item.name].t;
                             changed = true;
                             return false;   // exit the cycle
                         }
                     }
                 });
+
+                if (!wot.utils.isEmptyObject(votes)) {
+                    for (var cid in votes) {
+                        if (!obj.value.cats[cid]) {
+                            obj.value.cats[cid] = {
+                                id: cid,
+                                c: 0    // since it wasn't in the cache, then it is not identified (?)
+                            }
+                        }
+                        obj.value.cats[cid].v = votes[cid];
+                    }
+                    changed = true;
+                }
 
                 return changed;
 
