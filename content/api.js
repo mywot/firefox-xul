@@ -1125,8 +1125,8 @@ var wot_api_comments = {
 //    server: "beta.mywot.com",
     server: "dev.mywot.com",
     version: "1",   // Comments API version
-    PENDING_COMMENT_SID: "pending_comment:",
-    PENDING_REMOVAL_SID: "pending_removal:",
+    PENDING_COMMENT_SID: "pending_comment.",
+    PENDING_REMOVAL_SID: "pending_removal.",
     MAX_TRIES: 10,  // maximum amount of tries to send a comment or remove a comment
     retrytimeout: {
         submit: 30 * 1000,
@@ -1135,6 +1135,7 @@ var wot_api_comments = {
     nonces: {},     // to know connection between nonce and target
 
     serialize: function (obj) {
+        // prepare data to be sent using xmlhttprequest via POST
         var str = [];
         for(var p in obj){
             if (obj.hasOwnProperty(p)) {
@@ -1255,7 +1256,7 @@ var wot_api_comments = {
 
     get: function(target) {
         var _this = wot_api_comments;
-        wdump("wot.api.comments.get(target) " + target);
+        wdump("wot_api_comments.get(target) " + target);
 
         _this.call("get",
             {
@@ -1332,7 +1333,6 @@ var wot_api_comments = {
     },
 
     remove: function (target) {
-//            console.log("wot.api.comments.remove(target)", target);
 
         var _this =  wot_api_comments,
             pref_pending_name = _this.PENDING_REMOVAL_SID + target;
@@ -1386,18 +1386,27 @@ var wot_api_comments = {
 
     processpending: function()
     {
-//        wot.prefs.each(function(name, value) {
-//            if (/^pending_comment\:/.test(name)) {
-//                wot.api.comments.submit(name.replace(/^pending_comment\:/, ""));
-//            } else if (/^pending_removal\:/.test(name)) {
-//                wot.api.comments.remove(name.replace(/^pending_removal\:/, ""));
-//            }
-//            return false;
-//        });
+        wdump("wot_api_comments.processpending()");
+
+        var branches = {};
+        branches[this.PENDING_COMMENT_SID] = wot_api_comments.submit;
+        branches[this.PENDING_REMOVAL_SID] = wot_api_comments.remove;
+
+        for (var b in branches) {
+            try {
+                var comments_pending_branch = wot_prefs.ps.getBranch(WOT_PREF + b);
+                var comments_pending = comments_pending_branch.getChildList("", {});
+                for (var i = 0; i < comments_pending.length; i++) {
+                    branches[b].apply(wot_api_comments, [comments_pending[i]]); // call the proper function and provide it a target hostname
+                }
+            } catch (e) {
+                wdump("wot_api_comments.processpending() / ["+b+"] failed with " + e);
+            }
+        }
     },
 
     pull_nonce: function (nonce) {
-        wdump("wot.api.comments._pull_once(nonce) " + nonce);
+        wdump("wot_api_comments._pull_once(nonce) " + nonce);
 
         var _this = wot_api_comments,
             target = null;
@@ -1489,7 +1498,7 @@ var wot_api_comments = {
     },
 
     on_remove_comment_response: function (data) {
-        wdump("wot.api.comments.on_remove_comment_response(data) " + data);
+        wdump("wot_api_comments.on_remove_comment_response(data) " + data);
 
         var _this = wot_api_comments,
             nonce = data.nonce, // to recover target from response

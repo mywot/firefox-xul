@@ -622,8 +622,9 @@ var wot_core =
 				return;
 			}
 
-			/* Submit any pending testimonies */
+			/* Submit any pending testimonies, comments and comments' removals */
 			wot_pending.submit();
+            wot_api_comments.processpending();
 
 			/* Check for updates (force update if no categories are loaded yet) */
             var forced_update = wot_util.isEmpty(wot_categories.categories) ||
