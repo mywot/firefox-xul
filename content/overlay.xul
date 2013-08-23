@@ -62,7 +62,7 @@
 
     <popupset id="mainPopupSet">
         <!-- Testimony window -->
-        <panel id="wot-popup" position="topcenter"
+        <panel id="wot-popup" position="bottomcenter bottomcenter"
                    onpopupshowing="wot_rw.on_rw_open(event);"
                    onpopuphiding="wot_rw.on_hide_popup();" noautofocus="false" level="parent">
 
