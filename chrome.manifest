@@ -4,5 +4,6 @@ resource    wot-base-dir content/
 overlay	chrome://browser/content/browser.xul	chrome://wot/content/overlay.xul
 overlay	chrome://navigator/content/navigatorOverlay.xul	chrome://wot/content/overlay.xul
 locale	wot	en-US	locale/en-US/
+locale	wot	ru-RU	locale/ru-RU/
 skin	wot	classic/1.0	skin/
 style	chrome://global/content/customizeToolbar.xul	chrome://wot/skin/toolbar.css
