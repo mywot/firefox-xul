@@ -34,10 +34,10 @@ var wot_surveys = {
 	pwidth:             392,
 	px:                 10,
 	py:                 10,
-	script_base:        "resource://wot-base-dir/injections/",
-	scripts:            [ "jquery.js", "jquery-ui-1.9.2.custom.js",
-						  "wot_proxy.js", "ga_configure.js",
-						 "surveys.widgets.js", "ga_init.js"],
+	script_base:        "resource://wot-base-dir/",
+	scripts:            [ "libs/jquery.js", "libs/jquery-ui-1.9.2.custom.js",
+						  "injections/wot_proxy.js", "injections/ga_configure.js",
+						 "injections/surveys.widgets.js", "injections/ga_init.js"],
 
 	global_calm_period:   3 * 24 * 3600, // Time in seconds after asking a question before we can ask next question
 	site_calm_period:     10 * 24 * 3600, // delay between asking for the particular website if user hasn't given the feedback yet
@@ -45,7 +45,7 @@ var wot_surveys = {
 	newuser_period:       14 * 24 * 3600, // Don't ask new users (<14 days)
 
 	always_ask:         ['api.mywot.com', 'fb.mywot.com'],
-	always_ask_passwd:  "#surveymewot", // this string must be present to show survey by force
+	always_ask_passwd:  "#surveymewot", // this string must be present to show survey in forced way
 	reset_passwd:       "#wotresetsurveysettings", // this string must be present to reset timers and optout
 
 	FLAGS: {
