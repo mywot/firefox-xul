@@ -19,11 +19,11 @@
 */
 
 var wot = {
-	version: 20130718,
+	version: 20130823,
 	platform: "firefox",
     locale: "en",           // cached value of the locale
     lang: "en-US",          // cached value of the lang
-	debug: true,            // when changing this, don't forget to switch ga_id value also!
+	debug: false,            // when changing this, don't forget to switch ga_id value also!
 	default_component: 0,
 	enable_surveys: true,   // Feedback loop engine
 
