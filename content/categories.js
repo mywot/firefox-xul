@@ -90,7 +90,7 @@ var wot_categories = {
 
                 res_grouping.push(gs_obj);
             }
-            wot_prefs.setChar(this.PREF_GROUPINGS + ".all", JSON.stringify(res_grouping));
+            wot_prefs.setChar(this.PREF_GROUPINGS + ".all", JSON.stringify(res_grouping), true);
         }
 
         // remove all categories from prefs
@@ -111,7 +111,7 @@ var wot_categories = {
 
 //            this.categories[cat_obj.id] = cat_obj;
 
-            wot_prefs.setChar(this.PREF_CATEGORY + "." + cat_obj.name, JSON.stringify(cat_obj));
+            wot_prefs.setChar(this.PREF_CATEGORY + "." + cat_obj.name, JSON.stringify(cat_obj), true); // using utf8
         }
 
         this.init_categories();
@@ -132,7 +132,7 @@ var wot_categories = {
             for (var i = 0; i < children.length; i++) {
                 try {
                     var cat_id = children[i];
-                    var cat_json = wot_prefs.getChar(this.PREF_CATEGORY + "." + cat_id, "{}");
+                    var cat_json = wot_prefs.getChar(this.PREF_CATEGORY + "." + cat_id, "{}", true); // using utf8
                     var cat = JSON.parse(cat_json);
                     if (!wot_util.isEmpty(cat)) this.categories[cat_id] = cat;
                 } catch (e) {
@@ -143,7 +143,7 @@ var wot_categories = {
                 }
             }
 
-            var groupings_json = wot_prefs.getChar(this.PREF_GROUPINGS + ".all", "{}");
+            var groupings_json = wot_prefs.getChar(this.PREF_GROUPINGS + ".all", "{}", true); //using utf8
             this.grouping = JSON.parse(groupings_json);
 
             this.inited = true;

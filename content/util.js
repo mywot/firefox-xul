@@ -114,6 +114,14 @@ var wot_util =
         return obj;
     },
 
+    encode_utf8: function (s) {
+        return unescape(encodeURIComponent(s));
+    },
+
+    decode_utf8: function (s) {
+        return decodeURIComponent(escape(s));
+    },
+
 	time_sincefirstrun: function()
 	{
 		try {

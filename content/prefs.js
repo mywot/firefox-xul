@@ -170,12 +170,13 @@ var wot_prefs =
 		return false;
 	},
 
-	getChar: function(name, default_value)
+	getChar: function(name, default_value, safe_utf8)
 	{
 		try {
-			if (this.pref.getPrefType(WOT_PREF +
-					name) == this.pref.PREF_STRING) {
-				return this.pref.getCharPref(WOT_PREF + name);
+			if (this.pref.getPrefType(WOT_PREF + name) == this.pref.PREF_STRING) {
+				var res = this.pref.getCharPref(WOT_PREF + name);
+
+                return safe_utf8 ? wot_util.decode_utf8(res) : res; // decode from utf8
 			}
 		} catch (e) {
 			dump("wot_prefs.getChar(" + name + "): failed with " + e + "\n");
@@ -183,9 +184,10 @@ var wot_prefs =
 		return default_value;
 	},
 
-	setChar: function(name, value)
+	setChar: function(name, value, safe_utf8)
 	{
 		try {
+            value = safe_utf8 ? wot_util.encode_utf8(value) : value; // endode to utf8 if needed
 			this.pref.setCharPref(WOT_PREF + name, value);
 			return true;
 		} catch (e) {
