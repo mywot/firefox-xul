@@ -1412,7 +1412,7 @@ var wot_api_comments = {
             pref_pending_name = _this.PENDING_REMOVAL_SID + target;
 
         // try to restore pending submission first
-        var state_json = wot_prefs.getChar(pref_pending_name);
+        var state_json = wot_prefs.getChar(pref_pending_name, null);
         var state = state_json ? JSON.parse(state_json) : {
             target: target,
             tries: 0

@@ -260,14 +260,14 @@ const wot_prefs_bool = [
 	[ "my_cookies",					true  ],
 	[ "prefetch",					false ],
 	[ "private_disable",			false ],
+	[ "search_ignore_0",			false ],
 	[ "search_ignore_4",			true  ],
 	[ "search_scripts",				true  ],
 	[ "show_application_0",			true  ],
-	[ "show_application_1",			false  ],
-	[ "show_application_2",			false  ],
+	[ "show_application_1",			false ],
+	[ "show_application_2",			false ],
 	[ "show_application_3",			false ],
 	[ "show_application_4",			true  ],
-//	[ "show_application_5",			false ],
 	[ "show_search_popup",			true  ],
 	[ "use_search_level",			false ],
 	[ "ninja_donuts",   			false ],
@@ -276,11 +276,11 @@ const wot_prefs_bool = [
 	[ "warning_unknown_2",			false ],
 	[ "warning_unknown_3",			false ],
 	[ "warning_unknown_4",			false ],
-//	[ "warning_unknown_5",			false ],
 	[ "feedback_enabled",			true  ],
 	[ "feedback_optedout",			false ],
 	[ "show_fulllist",			    false ],
-	[ "super_showtestimonies",	    false ] // show my rating on the search popup at bottom corners of the popup
+	[ "super_showtestimonies",	    false ], // show my rating on the search popup at bottom corners of the popup
+    [ "settingsui_parental",        false ]  // this is should not be considered by the add-on. Only to render prefs on the settings page
 ];
 
 const wot_prefs_char = [
@@ -294,10 +294,12 @@ const wot_prefs_char = [
 	[ "partner",					""	],
 	[ "status_level",				""	],
 	[ "update_checked",				"0"	],
-	[ "warning_opacity",			""	],
+	[ "warning_opacity",			"0.7" ],
 	[ "witness_id",					""	],
 	[ "witness_key",				""	],
-	[ "feedback_lasttimeasked",  	""	]
+	[ "feedback_lasttimeasked",  	""	],
+	[ "settingsui_warnlevel",  	    "normal" ], // this is should not be considered by the add-on. Only to render prefs on the settings page
+	[ "settingsui_searchlevel",  	"normal" ]
 ];
 
 const wot_prefs_int = [
@@ -314,13 +316,11 @@ const wot_prefs_int = [
 	[ "warning_level_2",			WOT_DEFAULT_WARNING_LEVEL ],
 	[ "warning_level_3",			WOT_DEFAULT_WARNING_LEVEL ],
 	[ "warning_level_4",			0 ],
-//	[ "warning_level_5",			WOT_DEFAULT_WARNING_LEVEL ],
 	[ "warning_type_0",				WOT_WARNING_DOM ],
 	[ "warning_type_1",				WOT_WARNING_DOM ],
 	[ "warning_type_2",				WOT_WARNING_DOM ],
 	[ "warning_type_3",				WOT_WARNING_NONE ],
 	[ "warning_type_4",				WOT_WARNING_NONE ]
-//	[ "warning_type_5",				WOT_WARNING_NONE ]
 ];
 
 /* Search rules */

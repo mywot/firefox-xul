@@ -205,31 +205,23 @@ var wot_settings =
 		}
 	},
 
-	loadinputs: function(content)
-	{
+	loadinputs: function(content) {
 		try {
 			var inputs = content.getElementsByTagName("input");
 
 			for (var i = 0; i < inputs.length; ++i) {
-				var preftype = inputs[i].getAttribute("wotpref");
+				var preftype = inputs[i].getAttribute("wotpref"),
+                    id, value, type;
 
-				if (!preftype) {
-					continue;
-				}
-				
-				var id = inputs[i].getAttribute("id");
+				if (!preftype) continue;
 
-				if (!id || this.disallowed[id]) {
-					continue;
-				}
-			
-				var type = inputs[i].getAttribute("type");
+				id = inputs[i].getAttribute("id");
+				if (!id || this.disallowed[id]) continue;
 
-				if (!type) {
-					continue;
-				}
-				
-				var value = null;
+				type = inputs[i].getAttribute("type");
+				if (!type) continue;
+
+				value = null;
 
 				if (preftype == "bool") {
 					value = wot_prefs.getBool(id, null);
@@ -238,49 +230,37 @@ var wot_settings =
 				} else if (preftype == "string") {
 					value = wot_prefs.getChar(id, null);
 				} else {
-					dump("wot_settings.loadinputs: invalid preftype " +
-						preftype + "\n");
+					wdump("wot_settings.loadinputs: invalid preftype " + preftype);
 					continue;
 				}
 
-				if (value == null) {
-					continue;
-				}
+				if (value == null) continue;
 
-				if ((type == "checkbox" || type == "radio") &&
-						preftype == "bool") {
+				if ((type == "checkbox" || type == "radio") && preftype == "bool") {
 					inputs[i].checked = value;
 				} else {
 					inputs[i].setAttribute("value", value.toString());
 				}
 			}
 			return true;
+
 		} catch (e) {
 			dump("wot_settings.loadinputs: failed with " + e + "\n");
 		}
 		return false;
 	},
 
-	loadsearch: function(content)
-	{
+	loadsearch: function(content) {
 		try {
-			var search = content.getElementById("wotsearch");
+			var search = content.getElementById("search-services");
 
-			if (!search) {
-				return true;
-			}
+			if (!search) return true;
 
-			var preftype = search.getAttribute("wotpref");
+			var rules = [],
+			j = 0,
+            i = 0;
 
-			if (!preftype || preftype != "input") {
-				return false;
-			}
-
-			var rules = [];
-
-			var j = 0;
-
-			for (var i in wot_search.rules) {
+			for (i in wot_search.rules) {
 				if (!wot_search.rules[i].display ||
 					!wot_search.rules[i].display.length) {
 					continue;
@@ -289,55 +269,31 @@ var wot_settings =
 			}
 			rules.sort();
 
+            var search_rules = [];
+
 			for (j = 0; j < rules.length; ++j) {
-				for (var i in wot_search.rules) {
-					if (wot_search.rules[i].display != rules[j]) {
+				for (i in wot_search.rules) {
+                    var item = wot_search.rules[i];
+					if (item.display != rules[j]) {
 						continue;
 					}
 				
-					var id = WOT_SEARCH + "." + wot_search.rules[i].rule +
-								"." + WOT_SEARCH_ENABLED;
+					var id = WOT_SEARCH + "-" + item.rule;
 
-					var input = content.createElement("input");
-
-					if (!input) {
-						break;
-					}
-
-					input.setAttribute("id", id);
-					input.setAttribute("type", "checkbox");
-					input.setAttribute("wotpref", "bool");
-					input.checked = wot_search.rules[i].enabled;
-
-					var label = content.createElement("label");
-
-					if (!label) {
-						break;
-					}
-
-					label.setAttribute("for", id);
-
-					var text = content.createTextNode(wot_search.rules[i].display);
-
-					if (!text) {
-						break;
-					}
-				
-					var br = content.createElement("br");
-
-					if (!br) {
-						break;
-					}
-				
-					label.appendChild(text);
-					search.appendChild(input);
-					search.appendChild(label);
-					search.appendChild(br);
+                    search_rules.push({
+                        id: id,
+                        display: item.display,
+                        name: item.rule,
+                        state: item.enabled
+                    });
 				}
 			}
+
+//            wdump(JSON.stringify(search_rules));
+            wot_settings.addscript(content, "build_search_rules('"+JSON.stringify(search_rules)+"')");
 			return true;
 		} catch (e) {
-			dump("wot_settings.loadsearch: failed with " + e + "\n");
+			wdump("wot_settings.loadsearch: failed with " + e);
 		}
 		return false;
 	}
