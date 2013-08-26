@@ -110,8 +110,8 @@ var wot_popup =
 
             var replaces = [
                 { from: "ID", to: this.postfix },
-                { from: "POPUPTEXT0", to: wot_util.getstring("components__short_0") },
-                { from: "POPUPTEXT4", to: wot_util.getstring("components__short_4") },
+                { from: "POPUPTEXT0", to: wot_util.getstring("components_0") },
+                { from: "POPUPTEXT4", to: wot_util.getstring("components_4") },
                 { from: "POPUPHEADERTEXT", to: wot_util.getstring("popup_headertext") },
                 { from: "POPUPNOCAT", to: wot_util.getstring("popup_nocattext") }
             ];
