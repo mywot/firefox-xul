@@ -1,3 +1,23 @@
+/*
+	popup.css
+	Copyright © 2009 - 2013  WOT Services Oy <info@mywot.com>
+
+	This file is part of WOT.
+
+	WOT is free software: you can redistribute it and/or modify it
+	under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	WOT is distributed in the hope that it will be useful, but WITHOUT
+	ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+	or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
+	License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with WOT. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 .wot-popup-layer {
     border: 1px solid #e4e4e4 !important;
     font-family: Arial, sans-serif;
@@ -34,24 +54,11 @@
     border-bottom: 1px solid #D9D9D9;
 }
 
-.wot-header {
-    color: #454545;
-    display: block;
-    font-size: 12px;
-    font-weight: normal;
-    line-height: 14px;
-    margin: 0;
-    overflow: hidden;
-    padding: 0 0 7px 0;
-    text-align: left;
-    white-space: nowrap;
-}
-
 #wot-hostname {
     text-align: center;
     white-space: nowrap;
     text-overflow: ellipsis;
-    padding: 6px 0px;
+    padding: 6px 0;
     overflow: hidden;
     font-weight: bold;
     color: #454545;
@@ -71,8 +78,22 @@
     padding: 0 15px;
 }
 
+.wot-header {
+    color: #454545;
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 14px;
+    margin: 0;
+    overflow: hidden;
+    padding: 0 0 7px 0;
+    text-align: left;
+    white-space: nowrap;
+}
+
 .wot-rep {
-    background: url("chrome://wot/skin/b/donuts_150.png") left top no-repeat;
+    background-image: url("chrome://wot/skin/b/donuts_150.png");
+    background-repeat: no-repeat;
     background-position: 0 -165px;
     background-size: 35px 198px;
     height: 33px;
@@ -81,6 +102,10 @@
     margin-top: 7px;
     padding: 0;
     float: left;
+}
+
+.wot-popup-layer-accessible .wot-rep {
+    background-image: url("chrome://wot/skin/b/accessible/donuts_150.png");
 }
 
 .wot-rep[reputation="r1"] {
@@ -135,7 +160,7 @@
     background-position: 0 -210px;
 }
 
-.rating-legend-wrapper {
+.wot-popup-layer .rating-legend-wrapper {
     /*position: absolute;*/
     background: url("chrome://wot/skin/b/bubl_speech_c_150.png")  top left repeat-x;
     background-size: 1px 24px;
@@ -147,7 +172,7 @@
     display: none; /* don't show bubble speeches for now until we have their new styles */
 }
 
-.rating-legend-wrapper:before {
+.wot-popup-layer .rating-legend-wrapper:before {
     position: absolute;
     content: "";
     height: 24px;
@@ -157,7 +182,7 @@
     background-size: 17px 24px;
 }
 
-.rating-legend-wrapper:after {
+.wot-popup-layer .rating-legend-wrapper:after {
     position: absolute;
     content: "";
     height: 24px;
@@ -168,12 +193,12 @@
     top: 0px;
 }
 
-.rating-legend {
+.wot-popup-layer .rating-legend {
     position: relative;
     height: 24px;
     min-width: 48px;
-    margin: -2px 0 0em;
-    padding: 7px 4px 0 0px;
+    margin: -2px 0 0;
+    padding: 7px 4px 0 0;
     color: #454545;
     font-size: 12px;
     text-align: center;
@@ -221,31 +246,55 @@
     content: "";
     position: absolute;
     margin-left: -1.65em;
-    margin-top: 0px;
+    margin-top: 0;
 }
 
 .c-neutral.cat-item:before {
     background-color: #707070;
-    background: -webkit-radial-gradient(center, ellipse cover, #9e9c9c 0%,#707070 100%); /* Chrome10+,Safari5.1+ */
+    background: -moz-radial-gradient(center, ellipse cover, #9e9c9c 0%,#707070 100%); /* Chrome10+,Safari5.1+ */
     border-color: #7d7d7d;
+}
+
+.wot-popup-layer-accessible .c-neutral.cat-item:before {
+    background-color: #707070;
+    background: -moz-radial-gradient(center, ellipse cover, #9B9898 0%, #7E7E7E 100%);
+    border-color: #707070;
 }
 
 .c-questionable.cat-item:before {
     background-color: #ffd100;
-    background: -webkit-radial-gradient(center, ellipse cover, #f8df68 0%,#f6cd0e 100%); /* Chrome10+,Safari5.1+ */
+    background: -moz-radial-gradient(center, ellipse cover, #f8df68 0%,#f6cd0e 100%); /* Chrome10+,Safari5.1+ */
     border-color: #f6cd0e;
+}
+
+.wot-popup-layer-accessible .c-questionable.cat-item:before {
+    background-color: #F6CD0E;
+    background: -moz-radial-gradient(center, ellipse cover, #FEE68A 0%, #F5CC33 100%);
+    border-color: #F6CD0E;
 }
 
 .c-negative.cat-item:before {
     background-color: #f66d3f;
-    background: -webkit-radial-gradient(center, ellipse cover, #fca080 0%,#f77448 100%); /* Chrome10+,Safari5.1+ */
+    background: -moz-radial-gradient(center, ellipse cover, #fca080 0%,#f77448 100%); /* Chrome10+,Safari5.1+ */
     border-color: #f66d3f;
+}
+
+.wot-popup-layer-accessible .c-negative.cat-item:before {
+    background-color: #1F1F1F;
+    background: -moz-radial-gradient(center, ellipse cover,#939393 0%, #1F1F1F 100%);
+    border-color: #1F1F1F;
 }
 
 .c-positive.cat-item:before {
     background-color: #68c800;
-    background: -webkit-radial-gradient(center, ellipse cover, #83d561 0%,#6dc14a 100%); /* Chrome10+,Safari5.1+ */
+    background: -moz-radial-gradient(center, ellipse cover, #83d561 0%,#6dc14a 100%); /* Chrome10+,Safari5.1+ */
     border-color: #6dc14a;
+}
+
+.wot-popup-layer-accessible .c-positive.cat-item:before {
+    background-color: #B8B8B8;
+    background: -moz-radial-gradient(center, ellipse cover, #FDFDFD 0%, #F7F7F7 100%);
+    border-color: #B8B8B8;
 }
 
 /* reset styles */

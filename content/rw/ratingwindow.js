@@ -593,7 +593,6 @@ $.extend(wot, { ratingwindow: {
             wot.comments.error_codes.IS_BANNED
         ].indexOf(error_code) < 0); // if none of these codes are found
 
-
         _comments.is_banned = (error_code == wot.comments.error_codes.IS_BANNED);
 
         // If there is a locally stored comment, use it if it's newer than server-stored one
@@ -630,8 +629,6 @@ $.extend(wot, { ratingwindow: {
             $("#rated-votes").removeClass("commented");
             _comments.posted_comment = {};
         }
-
-        bg.console.log("Registered? " + _rw.is_registered);
 
         // change appearance of commenting area regarding to permissions
         if (!_rw.is_registered) {
@@ -715,10 +712,9 @@ $.extend(wot, { ratingwindow: {
             { selector: "#wot-rating-header-my",    text: wot.i18n("ratingwindow", "myrating") },
             { selector: "#wot-scorecard-visit",     text: wot.i18n("ratingwindow", "viewscorecard") },
             { selector: "#wot-scorecard-comment",   text: wot.i18n("ratingwindow", "addcomment") },
-            { selector: "#wot-partner-text",        text: wot.i18n("ratingwindow", "inpartnership") },
+//            { selector: "#wot-partner-text",        text: wot.i18n("ratingwindow", "inpartnership") },
             { selector: ".wt-rw-header-text",       html: wot.i18n("wt", "rw_text_hdr") },
             { selector: ".wt-rw-body",              html: wot.i18n("wt", "rw_text") },
-            { selector: "#wt-rw-btn-ok",            text: wot.i18n("wt", "rw_ok") },
             { selector: ".btn-delete_label",        text: wot.i18n("buttons", "delete") },
             { selector: "#btn-delete",              title: wot.i18n("buttons", "delete_title") },
             { selector: "#btn-cancel",              text: wot.i18n("buttons", "cancel") },
@@ -916,19 +912,7 @@ $.extend(wot, { ratingwindow: {
         wot.init_categories(_rw.prefs);
 
         /* accessibility */
-        // TODO: use only 1 "global" style on the most top element to specify accessible mode for all children elements
-        $("#wot-header-logo, " +
-            "#wot-header-close, " +
-            ".wot-header-link, " +
-            "#hostname-text, " +
-            ".wot-rating-reputation, " +
-            ".wot-rating-slider, " +
-            ".wot-rating-helplink, " +
-            "#wot-scorecard-content, " +
-            ".wot-scorecard-text, " +
-            ".wot-user-text, " +
-            "#wot-message-text")
-            .toggleClass("accessible", bg.wot.prefs.get("accessible"));
+        $("#wot-ratingwindow").toggleClass("accessible", bg.wot.prefs.get("accessible"));
 
         _rw.localize();
 
@@ -1378,9 +1362,7 @@ $.extend(wot, { ratingwindow: {
 
             activate: function () {
                 if (!wot.ratingwindow.modes._activate("rated")) return false;
-                wot_bg.console.log("Rated");
                 wot.ratingwindow.update_uservoted();
-                wot_bg.console.log("update_uservoted");
                 return true;
             }
         },
@@ -2035,7 +2017,6 @@ $.extend(wot, { ratingwindow: {
             }
 
             $_button.toggle(!_this.is_banned);  // don't show this button to banned users
-
         },
 
         set_comment: function (text) {
@@ -2067,7 +2048,3 @@ $.extend(wot, { ratingwindow: {
     }
 
 }});
-
-//$(document).ready(function() {
-////    wot.ratingwindow.onload();
-//});

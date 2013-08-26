@@ -68,7 +68,6 @@
 
             <iframe id="wot-rwframe" src="chrome://wot/content/rw/ratingwindow.html" type="content-primary"
                     transparent="false" width="100%" height="414px"/>
-
         </panel>
 
         <!-- Indicator tooltip -->

@@ -18,40 +18,13 @@
 	along with WOT. If not, see <http://www.gnu.org/licenses/>.
 */
 
-/*
-const WOT_POPUP_HTML =
-	"<div id=\"wot-logo\"></div>" +
-	"<div id=\"wot-popup-ratings-ID\" class=\"wot-popup-ratings\">" +
-		"<div id=\"wot-r0-stack-ID\" class=\"wot-stack\">" +
-			"<div id=\"wot-r0-header-ID\" class=\"wot-header\">WOT_POPUP_TEXT_0</div>" +
-			"<div id=\"wot-r0-rep-ID\" class=\"wot-rep\"></div>" +
-			"<div id=\"wot-r0-cnf-ID\" class=\"wot-cnf\"></div>" +
-		"</div>" +
-		"<div id=\"wot-r1-stack-ID\" class=\"wot-stack\">" +
-			"<div id=\"wot-r1-header-ID\" class=\"wot-header\">WOT_POPUP_TEXT_1</div>" +
-			"<div id=\"wot-r1-rep-ID\" class=\"wot-rep\"></div>" +
-			"<div id=\"wot-r1-cnf-ID\" class=\"wot-cnf\"></div>" +
-		"</div>" +
-		"<div id=\"wot-r2-stack-ID\" class=\"wot-stack\">" +
-			"<div id=\"wot-r2-header-ID\" class=\"wot-header\">WOT_POPUP_TEXT_2</div>" +
-			"<div id=\"wot-r2-rep-ID\" class=\"wot-rep\"></div>" +
-			"<div id=\"wot-r2-cnf-ID\" class=\"wot-cnf\"></div>" +
-		"</div>" +
-		"<div id=\"wot-r4-stack-ID\" class=\"wot-stack\">" +
-			"<div id=\"wot-r4-header-ID\" class=\"wot-header\">WOT_POPUP_TEXT_4</div>" +
-			"<div id=\"wot-r4-rep-ID\" class=\"wot-rep\"></div>" +
-			"<div id=\"wot-r4-cnf-ID\" class=\"wot-cnf\"></div>" +
-		"</div>" +
-	"</div>";
-*/
-
 const WOT_POPUP_HTML =
     '<div id="wot-logo">{POPUPHEADERTEXT}</div>' +
         '<div id="wot-ratings{ID}" class="wot-ratings">' +
         '<div id="wot-hostname"></div>' +
         '<div id="wot-r0-stack{ID}" class="wot-stack wot-stack-left">' +
         '<div id="wot-r0-header{ID}" class="wot-header">{POPUPTEXT0}</div>' +
-        '<div id="wot-r0-rep{ID}" class="wot-rep {ACCESSIBLE}"></div>' +
+        '<div id="wot-r0-rep{ID}" class="wot-rep"></div>' +
         '<div id="wot-r0-cnf{ID}" class="wot-cnf"></div>' +
         '<div class="rating-legend-wrapper">' +
             '<div class="rating-legend">{REPTEXT0}</div>' +
@@ -60,7 +33,7 @@ const WOT_POPUP_HTML =
         '</div>' +
         '<div id="wot-r4-stack{ID}" class="wot-stack wot-stack-right">' +
         '<div id="wot-r4-header{ID}" class="wot-header">{POPUPTEXT4}</div>' +
-        '<div id="wot-r4-rep{ID}" class="wot-rep {ACCESSIBLE}"></div>' +
+        '<div id="wot-r4-rep{ID}" class="wot-rep"></div>' +
         '<div id="wot-r4-cnf{ID}" class="wot-cnf"></div>' +
         '<div class="rating-legend-wrapper">' +
             '<div class="rating-legend">{REPTEXT4}</div>' +
@@ -139,7 +112,6 @@ var wot_popup =
                 { from: "ID", to: this.postfix },
                 { from: "POPUPTEXT0", to: wot_util.getstring("components__short_0") },
                 { from: "POPUPTEXT4", to: wot_util.getstring("components__short_4") },
-                { from: "ACCESSIBLE", to: wot_prefs.accessible ? "accessible" : "" },
                 { from: "POPUPHEADERTEXT", to: wot_util.getstring("popup_headertext") },
                 { from: "POPUPNOCAT", to: wot_util.getstring("popup_nocattext") }
             ];
@@ -165,8 +137,10 @@ var wot_popup =
             if (elem.isContentEditable) return false;
 
             var layer = content.createElement("div");
+            var accessible_cls = wot_prefs.accessible ? " wot-popup-layer-accessible" : "";
+
 			layer.setAttribute("id", this.id);
-			layer.setAttribute("class", "wot-popup-layer");
+			layer.setAttribute("class", "wot-popup-layer" + accessible_cls);
 			layer.setAttribute("style", "visibility: hidden;");
 			layer.innerHTML = this.layer;
 
