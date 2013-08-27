@@ -548,7 +548,7 @@ var wot_core =
 
 	update: function()
 	{
-        wdump("core.update()");
+//        wdump("core.update()");
 		try {
 			wot_core.hostname = null;
 

@@ -181,7 +181,7 @@ var wot_categories = {
         var cats_json = wot_cache.get(target, "cats"),
             cats = (cats_json && cats_json.length > 0) ? JSON.parse(cats_json) : {};
 
-        wdump("target_categories:: " + JSON.stringify(cats));
+//        wdump("target_categories:: " + JSON.stringify(cats));
         return cats;
     },
 
@@ -192,7 +192,7 @@ var wot_categories = {
         var bl_json = wot_cache.get(target, "blacklists"),
             bls = (bl_json && bl_json.length > 0) ? JSON.parse(bl_json) : [];
 
-        wdump("target_blacklists:: " + JSON.stringify(bls));
+//        wdump("target_blacklists:: " + JSON.stringify(bls));
         return bls;
 
     },

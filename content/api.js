@@ -953,7 +953,7 @@ var wot_pending =
 			var pref_name = Date.now();
 
 			if (wot_prefs.setChar("pending." + pref_name, JSON.stringify(obj))) {
-                wdump("Stored in prefs: " + JSON.stringify(obj));
+//                wdump("Stored in prefs: " + JSON.stringify(obj));
 				return true;
 			}
 
@@ -1181,7 +1181,7 @@ var wot_keeper = {
     },
 
     remove_by_name: function (target, name) {
-        wdump("keeper.remove_by_name()" + target + " " + name);
+//        wdump("keeper.remove_by_name()" + target + " " + name);
         wot_prefs.clear(wot_keeper._fullname(target, name));
     },
 
@@ -1325,7 +1325,7 @@ var wot_api_comments = {
 
     get: function(target) {
         var _this = wot_api_comments;
-        wdump("wot_api_comments.get(target) " + target);
+//        wdump("wot_api_comments.get(target) " + target);
 
         if (target) {
             _this.call("get",
@@ -1460,8 +1460,6 @@ var wot_api_comments = {
 
     processpending: function()
     {
-        wdump("wot_api_comments.processpending()");
-
         var branches = {};
         branches[this.PENDING_COMMENT_SID] = wot_api_comments.submit;
         branches[this.PENDING_REMOVAL_SID] = wot_api_comments.remove;
@@ -1480,7 +1478,7 @@ var wot_api_comments = {
     },
 
     pull_nonce: function (nonce) {
-        wdump("wot_api_comments._pull_once(nonce) " + nonce);
+//        wdump("wot_api_comments._pull_once(nonce) " + nonce);
 
         var _this = wot_api_comments,
             target = null;
