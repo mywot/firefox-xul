@@ -63,6 +63,7 @@ var wot_my_session =
 				mgr.remove(WOT_MY_COOKIE_DOMAIN, "reload", "/", false);
 				mgr.remove(WOT_MY_COOKIE_DOMAIN, "accessible", "/", false);
 				mgr.remove(WOT_MY_COOKIE_DOMAIN, "partner", "/", false);
+				mgr.remove(WOT_MY_COOKIE_DOMAIN, "version", "/", false);
 			}
 		} catch (e) {
 			dump("wot_my_session.clear: failed with " + e + "\n");
@@ -165,6 +166,7 @@ var wot_my_session =
 			/* Always set these cookies */
 			this.setcookie("accessible", wot_prefs.accessible);
 			this.setcookie("partner", wot_partner.getpartner() || "");
+			this.setcookie("version", WOT_VERSION);
 
 			/* If it has been WOT_MY_SESSION_LENGTH seconds since the
 				session was last updated, force an update */
