@@ -339,9 +339,9 @@
 
 .wot-popup-layer .c2.cat-item:before,
 .wot-popup-layer .c3.cat-item:before {
-    width: 8px;
-    height: 8px;
-    margin-left: -21px;
+    width: 7px;
+    height: 7px;
+    margin-left: -19px;
     margin-top: 1px;
 }
 
@@ -354,9 +354,10 @@
 
 .wot-popup-layer .c4.cat-item:before,
 .wot-popup-layer .c5.cat-item:before {
-    width: 10px;
-    height: 10px;
-    margin-left: -22px;
+    width: 8px;
+    height: 8px;
+    margin-left: -20px;
+    margin-top: 2px;
 }
 
 /* small hints about user's ratings on the popup */

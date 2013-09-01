@@ -432,9 +432,9 @@
 
 .c2.cat-item:before,
 .c3.cat-item:before {
-    width: 8px !important;
-    height: 8px !important;
-    margin-left: -21px !important;
+    width: 7px !important;
+    height: 7px !important;
+    margin-left: -19px !important;
     margin-top: 2px !important;
 }
 
@@ -447,9 +447,9 @@
 
 .c4.cat-item:before,
 .c5.cat-item:before {
-    width: 10px !important;
-    height: 10px !important;
-    margin-left: -22px !important;
+    width: 8px !important;
+    height: 8px !important;
+    margin-left: -20px !important;
 }
 
 .wot-openscorecard-wrap {
