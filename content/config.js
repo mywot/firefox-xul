@@ -19,7 +19,7 @@
 */
 
 const WOT_PLATFORM = "firefox";
-const WOT_VERSION  = "20130823";
+const WOT_VERSION  = "20130827";
 
 /*
  * Constants
@@ -320,7 +320,8 @@ const wot_prefs_int = [
 	[ "warning_type_1",				WOT_WARNING_DOM ],
 	[ "warning_type_2",				WOT_WARNING_DOM ],
 	[ "warning_type_3",				WOT_WARNING_NONE ],
-	[ "warning_type_4",				WOT_WARNING_NONE ]
+	[ "warning_type_4",				WOT_WARNING_NONE ],
+	[ "settingsui_warntype",		WOT_WARNING_DOM ] // just for UI, other value is WOT_WARNING_BLOCK
 ];
 
 /* Search rules */

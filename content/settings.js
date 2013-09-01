@@ -120,70 +120,59 @@ var wot_settings =
 			var inputs = content.getElementsByTagName("input");
 
 			for (var i = 0; i < inputs.length; ++i) {
-				var preftype = inputs[i].getAttribute("wotpref");
+                try {
+                    var preftype = inputs[i].getAttribute("wotpref"),
+                        id = inputs[i].getAttribute("id"),
+                        type = inputs[i].getAttribute("type");
 
-				if (!preftype) {
-					continue;
-				}
-				
-				var id = inputs[i].getAttribute("id");
+                    if (!preftype || !id || !type) continue;
 
-				if (!id) {
-					continue;
-				}
+                    if ((type == "checkbox" || type == "radio") &&
+                            preftype == "bool") {
+                        if (!wot_prefs.setBool(id, inputs[i].checked)) {
+                            wdump("wot_settings.onsave: setBool failed for " + id);
+                        }
+                    } else {
+                        var value = inputs[i].getAttribute("value");
 
-				var type = inputs[i].getAttribute("type");
+                        if (!value) {
+                            if (preftype == "string") {
+                                value = "";
+                            } else {
+                                wdump("wot_settings.onsave: no value for " + id);
+                                continue;
+                            }
+                        }
 
-				if (!type) {
-					continue;
-				}
-
-				if ((type == "checkbox" || type == "radio") &&
-						preftype == "bool") {
-					if (!wot_prefs.setBool(id, inputs[i].checked)) {
-						dump("wot_settings.onsave: setBool failed for " +
-							id + "\n");
-					}
-				} else {
-					var value = inputs[i].getAttribute("value");
-
-					if (!value) {
-						if (preftype == "string") {
-							value = "";
-						} else {
-							dump("wot_settings.onsave: no value for " + id + "\n");
-							continue;
-						}
-					}
-
-					if (preftype == "bool") {
-						if (!wot_prefs.setBool(id, (value == "true"))) {
-							dump("wot_settings.onsave: setBool failed for " +
-								id + "\n");
-						}
-					} else if (preftype == "int") {
-						if (!wot_prefs.setInt(id, Number(value))) {
-							dump("wot_settings.onsave: setInt failed for " +
-								id + " and value " + value + "\n");
-						}
-					} else if (preftype == "string") {
-						if (!wot_prefs.setChar(id, value)) {
-							dump("wot_settings.onsave: setChar failed for " +
-								id + "\n");
-						}
-					}
-				}
+                        if (preftype == "bool") {
+                            if (!wot_prefs.setBool(id, (value == "true" || value == "1"))) {
+                                wdump("wot_settings.onsave: setBool failed for " + id);
+                            }
+                        } else if (preftype == "int") {
+                            if (!wot_prefs.setInt(id, Number(value))) {
+                                wdump("wot_settings.onsave: setInt failed for " + id + " and value " + value);
+                            }
+                        } else if (preftype == "string") {
+                            if (!wot_prefs.setChar(id, value)) {
+                                wdump("wot_settings.onsave: setChar failed for " + id);
+                            }
+                        }
+                    }
+                } catch (e) {
+                    wdump("wot_settings.onsave(): failed for " + id + " with " + e);
+                }
 			}
 			wot_prefs.flush();
 			wot_settings.addscript(content, "wotsettings_saved();");
 			return;
 		} catch (e) {
-			dump("wot_settings.onsave: failed with " + e + "\n");
+			wdump("wot_settings.onsave: failed with " + e);
 		}
+
 		try {
 			wot_settings.addscript(content, "wotsettings_failed();");
 		} catch (e) {
-			dump("wot_settings.onsave: failed with " + e + "\n");
+			wdump("wot_settings.onsave: failed with " + e);
 		}
 	},
 	
@@ -278,13 +267,13 @@ var wot_settings =
 						continue;
 					}
 				
-					var id = WOT_SEARCH + "-" + item.rule;
+					var id = WOT_SEARCH + "." + item.rule + ".enabled";
 
                     search_rules.push({
                         id: id,
                         display: item.display,
                         name: item.rule,
-                        state: item.enabled
+                        state: item.enabled === undefined ? true : item.enabled
                     });
 				}
 			}
