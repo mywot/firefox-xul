@@ -186,7 +186,7 @@ var wot_rw = {
 
     update: function () {
         // Updates content of Rating Window. RW must be already initialized (locales, categories info, etc).
-        wdump("RW.update()");
+//        wdump("RW.update()");
 
         if (!this.is_visible) return;
 
@@ -195,7 +195,7 @@ var wot_rw = {
             rw_wot = this.get_rw_wot(),
             target = wot_core.hostname;
 
-        wdump("\tTarget: " + target);
+//        wdump("\tTarget: " + target);
 
         if (!rw || !rw_doc || !rw_wot) return;
 
@@ -222,7 +222,7 @@ var wot_rw = {
             }
         }
 
-        wdump("\tdata: " + JSON.stringify(data));
+//        wdump("\tdata: " + JSON.stringify(data));
 
         rw_wot.ratingwindow.update(target, JSON.stringify(data));
     },
@@ -255,7 +255,7 @@ var wot_rw = {
             wdump("ERROR: wot_rw.get_preferences() raised an exception: " + e);
         }
 
-        wdump("prefs: " + JSON.stringify(prefs));
+//        wdump("prefs: " + JSON.stringify(prefs));
 
         return prefs;
     },
@@ -270,7 +270,7 @@ var wot_rw = {
     },
 
     on_submit: function (data) {
-        wdump("RW: on_submit() " + JSON.stringify(data));
+//        wdump("RW: on_submit() " + JSON.stringify(data));
 
         if (!data || !data.params) {
             wdump("on_submit() received empty data to submit.");
@@ -313,7 +313,7 @@ var wot_rw = {
             var details = event.detail;
             if (!details) return false;
 
-            wdump("on_ratingwindow_event() " + JSON.stringify(details));
+//            wdump("on_ratingwindow_event() " + JSON.stringify(details));
 
             var message_id = details.message_id,
                 data = details.data;
@@ -411,7 +411,7 @@ var wot_rw = {
 
             var prefs = this.get_preferences();
             this.push_preferences(rw, prefs);
-            wdump(JSON.stringify(prefs));
+//            wdump(JSON.stringify(prefs));
 
             // setup categories data in the RW
             rw_wot.categories = wot_categories.categories;

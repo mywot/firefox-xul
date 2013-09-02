@@ -729,7 +729,7 @@ var wot_api_submit =
 			if (!request) return;
 
             var url = wot_core.wot_service_url() + wot_crypto.authenticate_query(qs);
-            wdump("API Submit: " + url);
+//            wdump("API Submit: " + url);
 
 			request.open("GET", url);
 
@@ -1038,7 +1038,7 @@ var wot_pending =
 //                }
 //            }
 
-			wdump("wot_pending.parse: " + pref + ": " + rv.target);
+//			wdump("wot_pending.parse: " + pref + ": " + rv.target);
 			return rv;
 
 		} catch (e) {
@@ -1096,7 +1096,7 @@ var wot_pending =
 
 				if (!parsed) continue;
 
-                wdump("API Submits Parsed: " + JSON.stringify(parsed));
+//                wdump("API Submits Parsed: " + JSON.stringify(parsed));
 
                 wot_api_submit.send(pref, parsed.target, parsed.testimonies, parsed.votes);
 
@@ -1293,7 +1293,7 @@ var wot_api_comments = {
                     return;
                 }
 
-                wdump("api.comments.call.success: url = " + url + ", status = " + event.target.status);
+//                wdump("api.comments.call.success: url = " + url + ", status = " + event.target.status);
 
                 var data = JSON.parse(event.target.responseText);
 
@@ -1492,7 +1492,7 @@ var wot_api_comments = {
     },
 
     is_error: function (error) {
-        wdump("wot_api_comments.is_error(error)" + error);
+//        wdump("wot_api_comments.is_error(error)" + error);
 
         var error_code = 0,
             error_debug = "it is raining outside :(";
@@ -1512,7 +1512,7 @@ var wot_api_comments = {
     },
 
     on_get_comment_response: function (data) {
-        wdump("wot_api_comments.on_get_comment_response(data)" + JSON.stringify(data));
+//        wdump("wot_api_comments.on_get_comment_response(data)" + JSON.stringify(data));
         // check whether error occured or data arrived
         var _this = wot_api_comments,
             nonce = data ? data.nonce : null, // to recover target from response
@@ -1538,7 +1538,7 @@ var wot_api_comments = {
     on_submit_comment_response: function (data) {
         /* Handler for "Submit" responses. On success it updates the local cache  */
 
-        wdump("wot_api_comments.on_submit_comment_response(data) " + data);
+//        wdump("wot_api_comments.on_submit_comment_response(data) " + data);
         var _this = wot_api_comments,
             nonce = data.nonce, // to recover target from response
             target = _this.pull_nonce(nonce),
@@ -1570,7 +1570,7 @@ var wot_api_comments = {
     },
 
     on_remove_comment_response: function (data) {
-        wdump("wot_api_comments.on_remove_comment_response(data) " + data);
+//        wdump("wot_api_comments.on_remove_comment_response(data) " + data);
 
         var _this = wot_api_comments,
             nonce = data.nonce, // to recover target from response
