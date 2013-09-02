@@ -137,7 +137,7 @@ var wot_warning =
 
                 "</div>"+
                 "<div class='wot-openscorecard-wrap'>" +
-                    "<span id='wotinfobutton' class='wot-openscorecard wot-link'>{INFO}</span>" +
+                    "<span class='wot-openscorecard'>{INFO}</span>" +
                 "</div>" +
                 "<div id='wot-warn-ratings'></div>" +
                 "<div class='wot-rateit-wrap'>" +
@@ -416,9 +416,15 @@ var wot_warning =
             var rate_site = wot_util.getstring("warnings_ratesite").replace("<a>", "<a id='wotrate-link' class='wot-link'>"),
                 wt_text = wot_util.getstring("wt_warning_text") || "";
 
+            var info_link = is_blacklisted ? wot_util.getstring("bl_information") : wot_util.getstring("warnings_information");
+            if (info_link.indexOf("<a>") < 0) {
+                info_link = "<a>" + info_link + "</a>";
+            }
+            info_link = info_link.replace("<a>", "<a id='wotinfobutton' class='wot-link'>");
+
 			var replaces = [
                 /* Static strings */
-                [ "INFO", is_blacklisted ? wot_util.getstring("bl_information") : wot_util.getstring("warnings_information")  ],
+                [ "INFO", info_link  ],
                 [ "BL_OR_REP", is_blacklisted ? "blacklist": "reputation" ],
                 [ "RATINGDESC0", wot_util.getstring("components_0") ],
                 [ "RATINGDESC4", wot_util.getstring("components_4") ],
