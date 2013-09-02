@@ -279,6 +279,7 @@ const wot_prefs_bool = [
 	[ "feedback_enabled",			true  ],
 	[ "feedback_optedout",			false ],
 	[ "show_fulllist",			    false ],
+	[ "wt_rw_ok",			        false ],
 	[ "super_showtestimonies",	    false ], // show my rating on the search popup at bottom corners of the popup
     [ "settingsui_parental",        false ]  // this is should not be considered by the add-on. Only to render prefs on the settings page
 ];
@@ -298,6 +299,7 @@ const wot_prefs_char = [
 	[ "witness_id",					""	],
 	[ "witness_key",				""	],
 	[ "feedback_lasttimeasked",  	""	],
+    [ "wt_rw_shown_dt",			    "" ],    // timestamp when RW WelcomeTip was shown last time
 	[ "settingsui_warnlevel",  	    "normal" ], // this is should not be considered by the add-on. Only to render prefs on the settings page
 	[ "settingsui_searchlevel",  	"normal" ]
 ];
@@ -308,6 +310,7 @@ const wot_prefs_int = [
 	[ "popup_show_delay",			200 ],
 	[ "ratingwindow_shown",			0 ],
 	[ "activity_score",			    0 ],
+	[ "wt_rw_shown",			    0 ],    // How many times RW WT was shown
 	[ "search_level",				WOT_MIN_REPUTATION_4 ],
 	[ "search_type",				WOT_SEARCH_TYPE_OPTIMIZED ],
 	[ "update_interval",			WOT_INTERVAL_UPDATE_CHECK ],

@@ -23,7 +23,7 @@ var wot_rw = {
     RW_URL: "chrome://wot/content/rw/ratingwindow.html",
     FRAME_ID: "wot-rwframe",
     is_inited: false,
-    CHAN_ELEM_ID: "wot-comm-channel",
+    CHAN_ELEM_ID: "wot-ratingwindow",
     CHAN_EVENT_ID: "wotrw",
     IGNORED_PREFS: ["ratingwindow_shown"],
     LEVELS: ["registered"], // list of possible levels to test
@@ -239,7 +239,10 @@ var wot_rw = {
                 accessible:         wot_prefs.accessible,
                 show_fulllist:      wot_prefs.show_fulllist,
                 ratingwindow_shown: wot_prefs.ratingwindow_shown,   // this has special processing
-                activity_score:     wot_prefs.activity_score
+                activity_score:     wot_prefs.activity_score,
+                wt_rw_ok:           wot_prefs.wt_rw_ok,
+                wt_rw_shown:        wot_prefs.wt_rw_shown,
+                wt_rw_shown_dt:     wot_prefs.wt_rw_shown_dt
             };
 
         } catch (e) {
@@ -387,7 +390,7 @@ var wot_rw = {
         if (chan) {
             chan.addEventListener(event_id, this.on_ratingwindow_event);
         } else {
-            wdump("Can't find 'wot-comm-channel' element in RatingWindow DOM. Very bad!");
+            wdump("Can't find 'wot-ratingwindow' element in RatingWindow DOM. Very bad!");
         }
 
         return true;

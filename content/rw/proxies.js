@@ -40,6 +40,7 @@ var wot_bg = {    // background page object
 
             load_prefs: function (json_data) {
                 wot_bg.wot.prefs._prefs = JSON.parse(json_data);
+                wot_bg.wot.wt.load_settings(); // update WelcomeTips settings from preferences
             }
         },
 
@@ -48,6 +49,10 @@ var wot_bg = {    // background page object
             _level: "", // TODO: implement getting current user "level",
             _moz_element_id: null,
             _moz_event_id: null,
+            badge: {
+                text: "",
+                type: null
+            },
 
             usermessage: {},
 
@@ -65,6 +70,10 @@ var wot_bg = {    // background page object
 
             unseenmessage: function () {
                 wot_bg.wot.core.moz_send("unseenmessage", null);
+            },
+
+            open_mywot: function(page, context) {
+                wot.ratingwindow.navigate(page, context);
             },
 
             moz_set_usermessage: function (json_data) {
@@ -186,7 +195,37 @@ var wot_bg = {    // background page object
             }
         },
 
-        ga: {}  // this object is replaced on every chrome.extension.getBackgroundPage() call
+        ga: {},  // this object is replaced on every chrome.extension.getBackgroundPage() call
+
+        wt: {   // Welcome Tips proxy wrapper
+
+            settings: {
+                rw_ok: false,
+                rw_shown: 0,
+                rw_shown_dt: null
+            },
+
+            save_setting: function(name) {
+                var bg = chrome.extension.getBackgroundPage(),
+                    _this = wot_bg.wot.wt;
+
+                if (_this.settings[name] !== undefined) {
+                    bg.wot.prefs.set("wt_"+name, _this.settings[name]);
+                }
+            },
+
+            load_settings: function () {
+                var _this = wot_bg.wot.wt;
+                for (var name in _this.settings) {
+                    if (_this.settings.hasOwnProperty(name)) {
+                        var val = wot_bg.wot.prefs.get("wt_" + name);
+                        if (val !== undefined) {
+                            _this.settings[name] = wot_bg.wot.prefs.get("wt_" + name);
+                        }
+                    }
+                }
+            }
+        }
     },
 
     console: {

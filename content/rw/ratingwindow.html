@@ -33,7 +33,7 @@
 
     <style type="text/css">
         @import "chrome://wot/skin/ratingwindow.css";
-        /*@import "skin/include/welcometips.css";*/
+        @import "chrome://wot/skin/welcometips.css";
     </style>
 </head>
 <body>
@@ -83,7 +83,6 @@
                         </div>
                         <div id="wot-rating-0-delete" class="rating-delete">
                             <div id="wot-rating-0-deleteicon" class="rating-delete-icon"></div>
-                                    <!--<div id="wot-rating-0-deletelabel" class="rating-deletelabel"></div>-->
                         </div>
                         </div>
                     </div>
@@ -107,7 +106,6 @@
                         </div>
                         <div id="wot-rating-4-delete" class="rating-delete">
                             <div id="wot-rating-4-deleteicon" class="rating-delete-icon"></div>
-                                    <!--<div id="wot-rating-4-deletelabel" class="rating-deletelabel"></div>-->
                         </div>
                     </div>
                 </div>
@@ -171,16 +169,16 @@
             </div>
 
             <!-- Welcome Tip area -->
-            <div id="wot-welcometip">
-                <!--<div class="wt-rw-header">-->
-                    <!--<span class="wt-rw-header-text">Share your experiences!</span>-->
-                    <!--<div class="wt-rw-close"></div>-->
-                <!--</div>-->
-                <!--<div class="wt-rw-body">-->
-                    <!--<p>WOT shows website reputations based on experiences from millions of users.</p>-->
-                    <!--<p>Leave your own rating by clicking the colored bars to indicate what you think of the site. Your rating helps other users surf safer.</p>-->
-                    <!--<p class="wot-c"><a id='wt-learnmore-link'>Learn more</a> about WOT.</p>-->
-                <!--</div>-->
+            <div id="wot-welcometip" class="rtip-sticker">
+                <div class="wt-rw-header">
+                    <span class="wt-rw-header-text">Share your experiences!</span>
+                    <div class="wt-rw-close"></div>
+                </div>
+                <div class="wt-rw-body">
+                    <p>WOT shows website reputations based on experiences from millions of users.</p>
+                    <p>Leave your own rating by clicking the colored bars to indicate what you think of the site. Your rating helps other users surf safer.</p>
+                    <p class="wot-c"><a id='wt-learnmore-link'>Learn more</a> about WOT.</p>
+                </div>
             </div>
 
             <!-- Rate mode: categories selector area -->
@@ -272,9 +270,6 @@
 
     </div>
 
-</div>
-<div id="wot-comm-channel" style="display: none;">
-    <!-- this Node is used to communicate with background code of the add-on -->
 </div>
 
 <script type="text/javascript" src="chrome://wot/content/injections/ga_init.js"></script>
