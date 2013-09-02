@@ -1026,11 +1026,11 @@ $.extend(wot, { ratingwindow: {
         _rw.rate_control.init(); // init handlers of rating controls
         bg.wot.core.update(true);     // this starts main data initialization (e.g. before it, there is no "cached" data)
 
-        var wt =     bg.wot.wt,
+        var wt = bg.wot.wt,
             locale = wot.i18n("locale");
 
         // Welcome Tip button "close"
-        $(".wt-rw-close").click(function (e){
+        $(".wt-rw-close").bind("click", function (e){
             wot.ratingwindow.reveal_ratingwindow();
             wot.ratingwindow.count_window_opened();
 
@@ -1042,7 +1042,7 @@ $.extend(wot, { ratingwindow: {
         });
 
         // Welcome Tip "learn more" link handler
-        $("#wt-learnmore-link").click(function (){
+        $("#wt-learnmore-link").bind("click", function (){
             var time_before_click = Math.round(wot.time_since(wot.ratingwindow.opened_time));
             wot.ga.fire_event(wot.ga.categories.WT, wot.ga.actions.WT_RW_LEARN, String(time_before_click));
             bg.wot.core.open_mywot(wot.urls.tour_rw, wot.urls.contexts.wt_rw_lm); // FIXME
