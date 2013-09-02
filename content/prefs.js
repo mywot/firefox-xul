@@ -187,9 +187,11 @@ var wot_prefs =
 	setChar: function(name, value, safe_utf8)
 	{
 		try {
-            value = safe_utf8 ? wot_util.encode_utf8(value) : value; // endode to utf8 if needed
-			this.pref.setCharPref(WOT_PREF + name, value);
-			return true;
+            if (this.pref) {
+                value = safe_utf8 ? wot_util.encode_utf8(value) : value; // endode to utf8 if needed
+                this.pref.setCharPref(WOT_PREF + name, value);
+                return true;
+            }
 		} catch (e) {
 			dump("wot_prefs.setChar(" + name + "): failed with " + e + "\n");
 		}

@@ -1039,7 +1039,7 @@ var wot_idn =
 	isidn: function(str)
 	{
 		try {
-			return this.handle.isACE(str);
+			return this.handle ? this.handle.isACE(str) : null;
 		} catch (e) {
 			dump("wot_idn.isidn: failed with " + e + "\n");
 		}
@@ -1049,7 +1049,7 @@ var wot_idn =
 	utftoidn: function(utf)
 	{
 		try {
-			return this.handle.convertUTF8toACE(utf);
+			return this.handle ? this.handle.convertUTF8toACE(utf) : null;
 		} catch (e) {
 			dump("wot_idn.utftoidn: failed with " + e + "\n");
 		}
@@ -1059,7 +1059,7 @@ var wot_idn =
 	idntoutf: function(idn)
 	{
 		try {
-			return this.handle.convertACEtoUTF8(idn);
+			return this.handle ? this.handle.convertACEtoUTF8(idn) : null;
 		} catch (e) {
 			dump("wot_idn.idntoutf: failed with " + e + "\n");
 		}
@@ -1068,8 +1068,6 @@ var wot_idn =
 };
 
 wot_modules.push({ name: "wot_idn", obj: wot_idn });
-
-const WOT_STYLESHEET = "chrome://wot/skin/wot.css";
 
 var wot_css =
 {
