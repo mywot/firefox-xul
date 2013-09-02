@@ -544,6 +544,9 @@ $.extend(wot, { ratingwindow: {
             var _rw = wot.ratingwindow;
             var bg = chrome.extension.getBackgroundPage();
 
+            /* accessibility. Moved to update() because onload() is called only once */
+            $("#wot-ratingwindow").toggleClass("accessible", bg.wot.prefs.get("accessible"));
+
             data = JSON.parse(data);    // for safety
 
             _rw.updatestate(data.target, data.cached);
@@ -914,9 +917,6 @@ $.extend(wot, { ratingwindow: {
         var first_opening = !_rw.prefs.get(wot.engage_settings.invite_to_rw.pref_name);
 
         wot.init_categories(_rw.prefs);
-
-        /* accessibility */
-        $("#wot-ratingwindow").toggleClass("accessible", bg.wot.prefs.get("accessible"));
 
         _rw.localize();
 
