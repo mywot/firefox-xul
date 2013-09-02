@@ -20,9 +20,12 @@
 
 // The purpose of this file is to handle objects and methods that exist in Chrome browser but doesn't in Firefox
 
-var wot_bg = {    // background page object
+var wot_bg = {
+    wot: {}
+};    // background page object
 
-    wot: {
+$.extend(wot_bg.wot, wot, {
+
         prefs: { // preferences
 
             _prefs: {},
@@ -226,9 +229,9 @@ var wot_bg = {    // background page object
                 }
             }
         }
-    },
+    });
 
-    console: {
+    wot_bg.console = {
 
         log: function(args) {
             if (window.console && window.console.log) {
@@ -248,14 +251,15 @@ var wot_bg = {    // background page object
             }
             wot_bg.wot.core.moz_send("log", { args: arguments });
         }
-    }
-
-};
+    };
 
 // IN order to allow RatingWindow to close itself we redefine the global method (what a nasty life!).
 window.close = function() {
     wot_bg.wot.core.moz_send("close", null);
 };
+
+// Magic trick to supply wot.prefs with actual code
+$.extend(wot, { prefs: wot_bg.wot.prefs });
 
 var chrome = {
     extension: {

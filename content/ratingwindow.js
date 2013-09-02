@@ -23,6 +23,7 @@ var wot_rw = {
     RW_URL: "chrome://wot/content/rw/ratingwindow.html",
     FRAME_ID: "wot-rwframe",
     is_inited: false,
+    is_visible: false,
     CHAN_ELEM_ID: "wot-ratingwindow",
     CHAN_EVENT_ID: "wotrw",
     IGNORED_PREFS: ["ratingwindow_shown"],
@@ -65,6 +66,7 @@ var wot_rw = {
     /* Called when the popup window is hidden */
     on_hide_popup: function()
     {
+        this.is_visible = false;
         try {
             wot_rw.unseenmessage();
 
@@ -85,6 +87,8 @@ var wot_rw = {
             rw_wot = this.get_rw_wot();
 
         if (!rw || !rw_doc || !rw_wot) return;
+
+        this.is_visible = true;
 
         if (!this.is_inited) {
             this.initialize(rw, rw_doc, rw_wot);
@@ -183,6 +187,8 @@ var wot_rw = {
     update: function () {
         // Updates content of Rating Window. RW must be already initialized (locales, categories info, etc).
         wdump("RW.update()");
+
+        if (!this.is_visible) return;
 
         var rw = this.get_rw_window(),
             rw_doc = this.get_rw_document(),
