@@ -23,18 +23,18 @@ var wot_my_session =
 	domcontentloaded: function(e)
 	{
 		try {
+            try {   // Workaround to resolve "TypeError: can't access dead object" at start of the browser
+                if (!e.originalTarget) return;
+            } catch (e) { return; } // do nothing
+
 			var content = e.originalTarget;
 
-			if (!content || !content.location || !content.location.href) {
-				return;
-			}
+			if (!content || !content.location || !content.location.href) return;
 
 			var host = wot_url.gethostname(content.location.href);
 
-			if (!host || !WOT_MY_TRIGGER.test(host)) {
-				return;
-			}
-			
+			if (!host || !WOT_MY_TRIGGER.test(host)) return;
+
 			var clear = content.getElementById("wotsaverating");
 
 			if (clear) {

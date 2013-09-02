@@ -436,6 +436,11 @@ var wot_search =
 
 	domcontentloaded: function(event)
 	{
+
+        try {   // Workaround to resolve "TypeError: can't access dead object" at start of the browser
+            if (!e.originalTarget) return;
+        } catch (e) { return; } // do nothing
+
 		try {
 			wot_search.watch(event.originalTarget);
 		} catch (e) {

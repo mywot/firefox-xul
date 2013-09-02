@@ -326,6 +326,10 @@ var wot_warning =
 				return;
 			}
 
+            try {   // Workaround to resolve "TypeError: can't access dead object" at start of the browser
+                if (!event.originalTarget) { return; }
+            } catch (e) { return; }
+
 			var content = event.originalTarget;
 
             // Don't show warnings in frames
