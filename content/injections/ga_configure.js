@@ -33,7 +33,7 @@ _gaq.push(['_trackPageview']);
 
 $.extend(wot, { ga: {
 
-	disable: false, // general switcher to stop counting stats
+	disable: true, // general switcher to stop counting stats (Disabled For Firefox add-on)
 	_tracker: null,
 
 	categories: {
