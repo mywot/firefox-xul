@@ -412,6 +412,9 @@ var wot_rw = {
             rw_wot.grouping = wot_categories.grouping;
             rw_wot.cgroups = wot_categories.cgroups;
 
+            // init other values
+            rw_wot.firstrunupdate = WOT_FIRSTRUN_CURRENT;
+
             rw_wot.ratingwindow.onload();   // this runs only once in FF
 
             this.is_inited = true;

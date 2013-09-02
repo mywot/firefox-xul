@@ -30,6 +30,7 @@ $.extend(wot, { ratingwindow: {
     is_registered: false,   // whether user has an account on mywot.com
     delete_action: false,   // remembers whether user is deleting rating
     prefs: {},  // shortcut for background preferences
+    UPDATE_ROUND: 3,        // = 3 version when we launched WOT 2.0 in September 2013
 
     get_bg: function () {
         // just a shortcut
