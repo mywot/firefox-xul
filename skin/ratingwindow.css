@@ -22,8 +22,9 @@ body {
     overflow: hidden;
     cursor: default;
     -moz-user-select: none; /* FF specific */
-    width: 580px;
+    width: 576px;
     margin: 0; /* FF specific */
+    padding: 0;
 }
 
 #wot-ratingwindow {
@@ -1485,8 +1486,6 @@ body {
     border: 1px solid #ccc;
     background-color: white;
     color: #319de7;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
     border-radius: 4px;
 }
 
@@ -1494,8 +1493,6 @@ body {
 .category-selector .category[voted="-1"] .cat-vote-right {
     border: 1px solid #c7ddef;
     background: #eaf2fa;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
     border-radius: 4px;
 }
 

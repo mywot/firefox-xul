@@ -403,6 +403,7 @@
     width: 580px;
     height: 422px;
     overflow: hidden;
+    overflow-y: hidden;
     border: 0;
 }
 

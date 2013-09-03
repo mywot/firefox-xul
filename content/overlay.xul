@@ -64,10 +64,10 @@
         <!-- Testimony window -->
         <panel id="wot-popup" position="bottomcenter bottomcenter"
                    onpopupshowing="wot_rw.on_rw_open(event);"
-                   onpopuphiding="wot_rw.on_hide_popup();" noautofocus="false" level="parent">
+                   onpopuphiding="wot_rw.on_hide_popup();" noautofocus="false">
 
             <iframe id="wot-rwframe" src="chrome://wot/content/rw/ratingwindow.html" type="content-primary"
-                    transparent="false" width="100%" height="414px"/>
+                    width="576px" height="422px"/>
         </panel>
 
         <!-- Indicator tooltip -->
