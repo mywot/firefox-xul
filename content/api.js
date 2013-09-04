@@ -1167,7 +1167,7 @@ var wot_keeper = {
 //        console.log("keeper.get_by_name()", target, name);
 
         try {
-            var json = wot_prefs.getChar(wot_keeper._fullname(target, name)) || null;
+            var json = wot_prefs.getChar(wot_keeper._fullname(target, name), true) || null;
             return json ? JSON.parse(json) : null;
         } catch (e) {
             wdump("wot_keeper.get_by_name() Failed with " + e);
@@ -1177,7 +1177,7 @@ var wot_keeper = {
 
     store_by_name: function (target, name, data) {
 //        console.log("keeper.store_by_name()", target, name, data);
-        wot_prefs.setChar(wot_keeper._fullname(target, name), data);
+        wot_prefs.setChar(wot_keeper._fullname(target, name), data, true);
     },
 
     remove_by_name: function (target, name) {
