@@ -19,7 +19,7 @@
 */
 
 const WOT_PLATFORM = "firefox";
-const WOT_VERSION  = "20130902";
+const WOT_VERSION  = "20130904";
 
 /*
  * Constants
@@ -406,7 +406,7 @@ const WOT_COMMENTS = {
 
 var wot_modules = [];
 
-// Dirty hack. This function should be moved to other place
+// This function should be moved to other place
 function wdump (str) {
     dump(str + "\n");
 }

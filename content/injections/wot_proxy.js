@@ -24,7 +24,7 @@
 * */
 
 var wot = {
-	version: "20130902",    // TODO: init this value from the add-on core code
+	version: "20130904",    // TODO: init this value from the add-on core code
 	platform: "firefox",
 	debug: false,           // when changing this, don't forget to switch ga_id value also!
 	default_component: 0,
