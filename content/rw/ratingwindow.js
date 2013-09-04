@@ -376,8 +376,8 @@ $.extend(wot, { ratingwindow: {
 
     updatecontents: function()
     {
-        var bg = chrome.extension.getBackgroundPage();
-        var _this = wot.ratingwindow,
+        var bg = chrome.extension.getBackgroundPage(),
+            _this = wot.ratingwindow,
             cached = _this.getcached(),
             visible_hostname = "",
             rw_title = "";
@@ -1126,11 +1126,12 @@ $.extend(wot, { ratingwindow: {
             var a = item.name;
             var t = (cached.value[a] && cached.value[a].t !== undefined) ? cached.value[a].t : -1;
             if (_rw.state[a]) {
-                _rw.state[a].name = a;  // stupid hack
                 _rw.state[a].t = t;
+                _rw.state[a].name = a;
             } else {
-                _rw.state[a] = { name: a, t: t };
+                _rw.state[a] = { t: t, name: a };
             }
+
             _rw.rate_control.updateratings(_rw.state[a]);  // restore user's testimonies visually
         });
 
