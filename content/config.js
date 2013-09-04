@@ -80,7 +80,6 @@ const WOT_AS_LEVELS = {
     };
 
 /* Applications */
-const WOT_APPLICATIONS = 5;
 const WOT_COMPONENTS = [0, 4];
 
 /* Search */

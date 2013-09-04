@@ -260,20 +260,20 @@ var wot_cache =
 			this.set(name, "blacklists", "");
 			this.set(name, "votes", "");
 
-			// FIXME: don't create redundant apps. Use only 0 and 4
-            for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-				this.set(name, "reputation_" + i, -1);
-				this.set(name, "confidence_" + i, -1);
+            for (var i = 0, a = 0; a < WOT_COMPONENTS.length; ++i) {
+                a = WOT_COMPONENTS[i];
+				this.set(name, "reputation_" + a, -1);
+				this.set(name, "confidence_" + a, -1);
 
 				if (!pending) {
-					this.set(name, "testimony_" + i, -1);
+					this.set(name, "testimony_" + a, -1);
 				}
 				
-				this.set(name, "inherited_" + i, 0);
-				this.set(name, "lowered_" + i, 0);
+				this.set(name, "inherited_" + a, 0);
+				this.set(name, "lowered_" + a, 0);
 			}
 		} catch (e) {
-			dump("wot_cache.create: failed with " + e + "\n");
+			wdump("wot_cache.create: failed with " + e);
 		}
 	},
 
@@ -295,16 +295,16 @@ var wot_cache =
 			this.remove(name, "blacklists");
 			this.remove(name, "votes");
 
-			// FIXME: use WOT_COMPONTENTS here
-            for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-				this.remove(name, "reputation_" + i);
-				this.remove(name, "confidence_" + i);
-				this.remove(name, "testimony_" + i);
-				this.remove(name, "inherited_" + i);
-				this.remove(name, "lowered_" + i);
+            for (var i = 0, a = 0; i < WOT_COMPONENTS.length; ++i) {
+                a = WOT_COMPONENTS[i];
+				this.remove(name, "reputation_" + a);
+				this.remove(name, "confidence_" + a);
+				this.remove(name, "testimony_" + a);
+				this.remove(name, "inherited_" + a);
+				this.remove(name, "lowered_" + a);
 			}
 		} catch (e) {
-			dump("wot_cache.destroy: failed with " + e + "\n");
+			wdump("wot_cache.destroy: failed with " + e);
 		}
 	},
 
@@ -525,6 +525,7 @@ var wot_cache =
 
 	add_question: function (hostname, target_node)
 	{
+        if (!target_node) return;
         try {
             var doc = target_node.ownerDocument;
             var id_node       = doc.getElementsByTagName(WOT_SERVICE_XML_QUERY_QUESTION_ID).item(0),
@@ -572,7 +573,7 @@ var wot_cache =
                 }
             }
         } catch(e) {
-            wdump("Failed to extract Question data from XML");
+            wdump("Failed to extract Question data from XML " + e);
         }
 	},
 

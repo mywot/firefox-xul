@@ -193,8 +193,9 @@ var wot_warning =
 		// decides whether we must block page or just warn
 		var blocking = false;
 		try {
-			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-				if (wot_prefs["warning_type_" + i] == WOT_WARNING_BLOCK) {
+			for (var i = 0, a = 0; i < WOT_COMPONENTS.length; ++i) {
+                a = WOT_COMPONENTS[i];
+				if (wot_prefs["warning_type_" + a] == WOT_WARNING_BLOCK) {
 					blocking = true;
 					break;
 				}
@@ -260,8 +261,9 @@ var wot_warning =
 				return result;
 			}
 
-			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-				var type = wot_warning.getwarningtype(hostname, i, false);
+			for (var i = 0, a = 0; i < WOT_COMPONENTS.length; ++i) {
+                a = WOT_COMPONENTS[i];
+				var type = wot_warning.getwarningtype(hostname, a, false);
 
 				if (type > result) {
 					result = type;
@@ -286,37 +288,6 @@ var wot_warning =
 			dump("wot_warning.isdangerous: failed with " + e + "\n");
 		}
 		return result;
-	},
-
-	dontwarn: function(url)
-	{
-		try {
-			var hostname = wot_url.gethostname(url);
-
-			if (!hostname || !wot_cache.isok(hostname)) {
-				return;
-			}
-
-			var testified = false;
-
-			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-				var type = wot_warning.getwarningtype(hostname, i, false);
-
-				if (type != WOT_WARNING_NONE) {
-					wot_cache.set(hostname, "testimony_" + i,
-						(WOT_MIN_REPUTATION_4 + WOT_MIN_REPUTATION_5) / 2);
-					wot_cache.set(hostname, "pending", true);
-					wot_core.pending[hostname] = true;
-					testified = true;
-				}
-			}
-
-			if (testified) {
-				wot_core.update();
-			}
-		} catch (e) {
-			dump("wot_warning.dontwarn: failed with " + e + "\n");
-		}
 	},
 
 	domcontentloaded: function(event)

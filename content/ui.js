@@ -71,8 +71,9 @@ var wot_status = {
 			/* Set status and description */
 			var rep_l, rep, r_level, description, testimonies = false;
 
-			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-				if (wot_cache.get(wot_core.hostname, "testimony_" + i) >= 0) {
+			for (var i = 0, a = 0; i < WOT_COMPONENTS.length; ++i) {
+                a = WOT_COMPONENTS[i];
+				if (wot_cache.get(wot_core.hostname, "testimony_" + a) >= 0) {
 					testimonies = true;
 					break;
 				}

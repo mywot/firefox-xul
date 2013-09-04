@@ -352,13 +352,14 @@ var wot_core =
 
 			var blocked = "target=" + encodeURIComponent(hostname);
 
-			for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-				if (!wot_prefs["show_application_" + i]) {
+			for (var i = 0, a = 0; i < WOT_COMPONENTS.length; ++i) {
+                a = WOT_COMPONENTS[i];
+				if (!wot_prefs["show_application_" + a]) {
 					continue;
 				}
 
 				var param = "";
-				var reason = wot_warning.getwarningtype(hostname, i, true);
+				var reason = wot_warning.getwarningtype(hostname, a, true);
 
 				if (reason == WOT_REASON_TESTIMONY) {
 					param += "y";
@@ -366,8 +367,8 @@ var wot_core =
 					param += "r";
 				}
 
-				var r = wot_cache.get(hostname, "reputation_" + i),
-                    x = wot_cache.get(hostname, "excluded_" + i);
+				var r = wot_cache.get(hostname, "reputation_" + a),
+                    x = wot_cache.get(hostname, "excluded_" + a);
 
                 r = x ? -2 : r; // if excluded, then set level to -2
 
@@ -377,7 +378,7 @@ var wot_core =
 					param += "a";
 				}
 
-				blocked += "&" + i + "=" + param;
+				blocked += "&" + a + "=" + param;
 			}
 
 			blocked = "?" + encodeURIComponent(btoa(blocked)) + "#" +

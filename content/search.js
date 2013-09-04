@@ -993,15 +993,16 @@ var wot_search =
 						target: target
 					};
 
-					for (var i = 0; i < WOT_APPLICATIONS; ++i) {
-						rv["reputation_" + i] =
-							wot_cache.get(target, "reputation_" + i);
-						rv["confidence_" + i] =
-							wot_cache.get(target, "confidence_" + i);
-						rv["testimony_"  + i] =
-							wot_cache.get(target, "testimony_"  + i);
-						rv["excluded_"  + i] =
-							wot_cache.get(target, "excluded_"  + i);
+					for (var i = 0, a = 0; i < WOT_COMPONENTS.length; ++i) {
+                        a = WOT_COMPONENTS[i];
+						rv["reputation_" + a] =
+							wot_cache.get(target, "reputation_" + a);
+						rv["confidence_" + a] =
+							wot_cache.get(target, "confidence_" + a);
+						rv["testimony_"  + a] =
+							wot_cache.get(target, "testimony_"  + a);
+						rv["excluded_"  + a] =
+							wot_cache.get(target, "excluded_"  + a);
 					}
 
 					return rv;
@@ -1187,36 +1188,13 @@ var wot_search =
 
 			var r = wot_cache.get(name, "reputation_0");
 
-            // TODO: respect "Parental control" setting and take the worst reputation between 0 and 4 in this case
-
-            // TODO: remove below since we don't have this type of logic in settings any more
-//			if (wot_prefs.search_type == WOT_SEARCH_TYPE_OPTIMIZED) {
-//				for (var i = 1; i < WOT_APPLICATIONS; ++i) {
-//					if (wot_prefs["search_ignore_" + i]) {
-//						continue;
-//					}
-//
-//					if (wot_warning.getwarningtype(name, i, false) !=
-//							WOT_WARNING_NONE) {
-//						var a = wot_cache.get(name, "reputation_" + i);
-//						if (r > a) {
-//							r = a;
-//						}
-//					}
-//				}
-//			} else if (wot_prefs.search_type == WOT_SEARCH_TYPE_WORST) {
-//				for (var i = 1; i < WOT_APPLICATIONS; ++i) {
-//					if (!wot_prefs["show_application_" + i] ||
-//							wot_prefs["search_ignore_" + i]) {
-//						continue;
-//					}
-//
-//					var a = wot_cache.get(name, "reputation_" + i);
-//					if (a >= 0 && a < r) {
-//						r = a;
-//					}
-//				}
-//			}
+            // respect "Parental control" setting and use the worst reputation between app0 and app4
+            if (wot_prefs.warning_level_4 > 0) {
+                var r_app4 = wot_cache.get(name, "reputation_4");
+                if (r_app4 >= 0 && r_app4 < r) {
+                    r = r_app4;
+                }
+			}
 
 			return r;
 		} catch (e) {
