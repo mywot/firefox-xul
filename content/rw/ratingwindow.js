@@ -644,6 +644,9 @@ $.extend(wot, { ratingwindow: {
 
             } else if (_rw.comments.is_banned) {
                 // this is considered below
+            } else {
+                // normal mode
+                _rw.comments.show_normal_hint();
             }
         }
 
@@ -2022,6 +2025,13 @@ $.extend(wot, { ratingwindow: {
 
         focus: function () {
             $("#user-comment").focus();
+        },
+
+        show_normal_hint: function () {
+            $("#comment-register").hide();
+            $("#comment-captcha").hide();
+            $("#comment-side-hint").show();
+            $("#user-comment").removeClass("warning").attr("disabled", null);
         },
 
         show_register_invitation: function () {

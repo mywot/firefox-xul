@@ -654,6 +654,7 @@ var wot_api_reload =
 				var name = wot_cache.get_name_from_element(cache.getNext());
 				if (name) {
 					wot_cache.set(name, "status", WOT_QUERY_RETRY);
+                    wot_cache.remove(name, "exists");   // to tell that cache doesn't exist for the target
 				}
 			}
 
