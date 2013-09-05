@@ -19,7 +19,7 @@
 */
 
 const WOT_PLATFORM = "firefox";
-const WOT_VERSION  = "20130904";
+const WOT_VERSION  = "20130905";
 
 /*
  * Constants
