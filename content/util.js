@@ -329,6 +329,7 @@ var wot_url =
 	getprefurl: function(tab, secure, base, context)
 	{
 		try {
+            var has_base = !!base;
 			base = base || WOT_PREF_PATH;
 
 			var path = base + wot_util.getstring("lang") +
@@ -341,12 +342,11 @@ var wot_url =
 					url += "/" + tab;
 				}
 
-				url = this.getwoturl(url, context);
+				url = this.getwoturl(url, context, has_base);
 
 				if (secure || wot_core.force_https) {
 					url = url.replace(/^http\:/, "https:");
 				}
-
 
 				return url;
 			}

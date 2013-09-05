@@ -73,8 +73,10 @@ var wot_firstrun =
 					wot_prefs.setChar("firstrun_time", past_date);
 				}
 
-				this.opentab(WOT_FIRSTRUN_CURRENT,
-					wot_url.getprefurl(partner, false, WOT_UPDATE_PATH));
+                var update_url = [ WOT_MY_URL.replace(/^(.+)\/$/,"$1"), WOT_UPDATE_PATH,
+                                  wot_util.getstring("lang"), WOT_PLATFORM, WOT_VERSION ].join("/");
+                this.opentab(WOT_FIRSTRUN_CURRENT, update_url);
+
 			} else {
 				// the add-on is launched first time
 				// remember the date/time of the first launch

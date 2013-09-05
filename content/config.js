@@ -221,10 +221,10 @@ const WOT_BLOCK_BLOCKED = "chrome://wot/locale/blocked.html";
  */
 
 const WOT_PREF_PATH = "settings/";
-const WOT_PREF_FORWARD_TAB_MATCH = 7;
+const WOT_PREF_FORWARD_TAB_MATCH = 8;
 const WOT_PREF_FORWARD_TAB_BASE = 1;
-const WOT_PREF_FORWARD = /^(http(s)?\:\/\/(.+\.)?mywot\.com)\/([^\/]{2}(-[^\/]+)?\/)?(settings|update)(\/([^\/]+))?\/?(\?.+)?$/;
-const WOT_PREF_TRIGGER = /^(http(s)?\:\/\/(.+\.)?mywot\.com)\/([^\/]{2}(-[^\/]+)?\/)?(settings|update)\/.+/;
+const WOT_PREF_FORWARD = /^(http(s)?\:\/\/(.+\.)?mywot\.com)\/([^\/]{2}(-[^\/]+)?\/)?(settings)(\/([^\/]+))?\/?(\?.+)?$/;
+const WOT_PREF_TRIGGER = /^(http(s)?\:\/\/(.+\.)?mywot\.com)\/([^\/]{2}(-[^\/]+)?\/)?(settings)\/.+/;
 
 
 const WOT_PREF = "weboftrust.";
@@ -246,7 +246,7 @@ const WOT_SEARCH_TYPE_APP0		= 2;
 /* First run */
 const WOT_FIRSTRUN_WELCOME = 1;
 const WOT_FIRSTRUN_CURRENT = 3;
-const WOT_UPDATE_PATH = "update/";
+const WOT_UPDATE_PATH = "update";
 
 
 /* Preferences and defaults */

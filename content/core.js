@@ -579,9 +579,9 @@ var wot_core =
 
 				if (match) {
 					var section = match[WOT_PREF_FORWARD_TAB_MATCH];
-                    var base = (match[WOT_PREF_FORWARD_TAB_BASE] + "/settings") || WOT_PREF_PATH;
+                    var base = (match[WOT_PREF_FORWARD_TAB_BASE] + "/settings/") || WOT_PREF_PATH;
 
-                        getBrowser().loadURIWithFlags(wot_url.getprefurl(section, base),
+                        getBrowser().loadURIWithFlags(wot_url.getprefurl(section, false, base),
 						Components.interfaces.nsIWebNavigation
 							.LOAD_FLAGS_BYPASS_HISTORY, null, null);
 				}
