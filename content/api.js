@@ -1141,7 +1141,6 @@ var wot_keeper = {
     },
 
     save_comment: function (target, comment_body, wcid, votes, status) {
-//        console.log("keeper.save_comment()");
 
         var data = {
             timestamp: Date.now(),
@@ -1156,7 +1155,6 @@ var wot_keeper = {
     },
 
     remove_comment: function (target) {
-//        console.log("keeper.save_comment()");
         wot_keeper.remove_by_name(target, "comment");
     },
 

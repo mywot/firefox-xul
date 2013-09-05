@@ -127,8 +127,8 @@ $.extend(wot_bg.wot, wot, {
 
         api: {
 
-            submit: function (target, params) {
-                wot_bg.wot.core.moz_send("submit", { target: target, params: params });
+            submit: function (target, params, update_rw) {
+                wot_bg.wot.core.moz_send("submit", { target: target, params: params, update_rw: update_rw });
             },
 
             comments: {

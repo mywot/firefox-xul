@@ -304,7 +304,8 @@ var wot_rw = {
 
             wot_cache.set(target, "pending", true);
             wot_core.pending[target] = true;
-            wot_core.update();
+
+            if (data.update_rw) wot_core.update();  // updating rating window before the comment is also submitted is not a good idea
         }
     },
 

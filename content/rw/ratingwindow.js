@@ -253,7 +253,7 @@ $.extend(wot, { ratingwindow: {
                     params.changed_votes = changed_votes;
                 }
 
-                bgwot.api.submit(target, params);
+                bgwot.api.submit(target, params, false); // don't update RW yet
 
                 // count testimony event
                 // TODO: add either label or number to count voted categories AND/OR whether ratings were deleted
