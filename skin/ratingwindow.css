@@ -187,11 +187,11 @@ body {
 }
 
 #wot-header-close:before {
-    -moz-transform: rotate(45deg);
+    transform: rotate(45deg);
 }
 
 #wot-header-close:after {
-    -moz-transform: rotate(135deg);
+    transform: rotate(135deg);
 }
 
 #wot-title-text {
@@ -376,8 +376,6 @@ body {
 #voted-categories-content .votedcategory {
     width: auto;
     border-radius: 100px;
-    -moz-border-radius: 100px;
-    -webkit-border-radius: 100px;
     border: 1px solid #DEDEDE;
     background-color: #DEDEDE;
     height: 15px;
@@ -409,8 +407,6 @@ body {
     padding: 0 6px 4px 4px;
     float: left;
     border-radius: 100px 0 0 100px;
-    -moz-border-radius: 100px 0 0 100px;
-    -webkit-border-radius: 100px 0 0 100px;
     height: 11px;
     width: 8px;
 }
@@ -1533,11 +1529,11 @@ body {
 }
 
 .category-selector .delete-icon:before {
-    -moz-transform: rotate(45deg);
+    transform: rotate(45deg);
 }
 
 .category-selector .delete-icon:after {
-    -moz-transform: rotate(135deg);
+    transform: rotate(135deg);
 }
 
 
