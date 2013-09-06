@@ -1191,7 +1191,7 @@ var wot_keeper = {
 };
 
 var wot_api_comments = {
-    server: "beta.mywot.com",
+    server: "www.mywot.com",
     version: "1",   // Comments API version
     PENDING_COMMENT_SID: "pending_comment.",
     PENDING_REMOVAL_SID: "pending_removal.",

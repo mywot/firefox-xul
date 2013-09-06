@@ -111,19 +111,18 @@ var wot = {
 	},
 
 	urls: {
-		base:		"http://beta.mywot.com/",
-		scorecard:	"http://beta.mywot.com/scorecard/",
-		settings:	"http://beta.mywot.com/settings",
-		profile:	"http://beta.mywot.com/user",
-        signup:     "https://beta.mywot.com/signup",
-		welcome:	"http://beta.mywot.com/settings/welcome",
-		setcookies:	"http://beta.mywot.com/setcookies.php",
-		setcookies2: "http://www.mywot.com/setcookies.php", // TODO: remove when Beta is finished
-		update:		"http://beta.mywot.com/update",
-		tour_warning:"http://beta.mywot.com/support/tour/warningscreen",
-		tour:       "http://beta.mywot.com/support/tour/",
-		tour_rw:    "http://beta.mywot.com/support/tour/ratingwindow",
-		tour_scorecard: "http://beta.mywot.com/support/tour/scorecard",
+		base:		"http://www.mywot.com/",
+		scorecard:	"http://www.mywot.com/scorecard/",
+		settings:	"http://www.mywot.com/settings",
+		profile:	"http://www.mywot.com/user",
+        signup:     "https://www.mywot.com/signup",
+		welcome:	"http://www.mywot.com/settings/welcome",
+		setcookies:	"http://www.mywot.com/setcookies.php",
+		update:		"http://www.mywot.com/update",
+		tour_warning:"http://www.mywot.com/support/tour/warningscreen",
+		tour:       "http://www.mywot.com/support/tour/",
+		tour_rw:    "http://www.mywot.com/support/tour/ratingwindow",
+		tour_scorecard: "http://www.mywot.com/support/tour/scorecard",
 
 		contexts: {
 			rwlogo:     "rw-logo",

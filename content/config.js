@@ -166,8 +166,7 @@ const WOT_SERVICE_XML_UPDATE_SHARED_LEVEL		= "level";
 const WOT_SERVICE_XML_UPDATE_CATEGORIES			= "categories";
 
 /* My */
-//const WOT_MY_URL = "http://www.mywot.com/";
-const WOT_MY_URL = "http://beta.mywot.com/";
+const WOT_MY_URL = "http://www.mywot.com/";
 const WOT_MY_COOKIE_DOMAIN = ".mywot.com";
 const WOT_MY_TRIGGER = /^(.+\.)?mywot.com$/;
 const WOT_MY_SESSION_LENGTH = 86340 * 1000; /* < 1d */
