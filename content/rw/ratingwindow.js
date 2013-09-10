@@ -58,6 +58,11 @@ $.extend(wot, { ratingwindow: {
         return is_rated;
     },
 
+    resetstate: function () {
+        // resets testimonies state
+        wot.ratingwindow.state = { down: -1 };
+    },
+
     updatestate: function(target, data)
     {
         var _this = wot.ratingwindow;
