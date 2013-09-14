@@ -42,6 +42,7 @@ var wot_my_session =
 					var target = clear.getAttribute("target");
 					if (target && wot_cache.iscached(target)) {
 						wot_cache.set(target, "status", WOT_QUERY_RETRY);
+                        wot_rw.resetstate();    // tell the Rating Window to reset old user testimonies
 					}
 				});
 			}

@@ -184,6 +184,15 @@ var wot_rw = {
         return data;
     },
 
+    resetstate: function () {
+        // This is only needed when user rates a website via scorecard. In order to update the RW because it might have
+        // cached old testimonies already
+        var rw_wot = this.get_rw_wot();
+        if (rw_wot) {
+            rw_wot.ratingwindow.resetstate();
+        }
+    },
+
     update: function () {
         // Updates content of Rating Window. RW must be already initialized (locales, categories info, etc).
 //        wdump("RW.update()");

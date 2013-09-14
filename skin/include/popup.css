@@ -19,14 +19,15 @@
 */
 
 .wot-popup-layer {
+    position: absolute;
+    top: -9999px;
+    z-index: 2147483647;
+    max-width: 395px;
+    margin: 0;
+    padding: 0;
     border: 1px solid #e4e4e4 !important;
     font-family: Arial, sans-serif;
     font-size: 12px;
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    z-index: 2147483647;
-    max-width: 395px;
     cursor: pointer;
     -moz-user-select: none;
     box-shadow: 4px 4px 6px rgba(189, 189, 189, 0.65);
