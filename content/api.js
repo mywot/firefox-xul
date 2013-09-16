@@ -1279,8 +1279,6 @@ var wot_api_comments = {
             var request = new XMLHttpRequest();
             request.open(type, url);
 
-            new wot_cookie_remover(request);
-
             request.onload = function (event) {
                 if (!event || !event.target || event.target.status != 200 ||
                     !event.target.responseText) {
