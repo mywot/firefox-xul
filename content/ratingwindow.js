@@ -140,11 +140,12 @@ var wot_rw = {
             // prepare data for the RW
             data = {
                 target: target,
-                normalized: wot_shared.decodehostname(normalized_target),
                 updated: wot_cache.get(target, "time"),
                 cached: {
                     status: wot_cache.get(target, "status"),
-                    value: {},
+                    value: {
+                        normalized: wot_shared.decodehostname(normalized_target)
+                    },
                     comment: wot_cache.get_comment(target)
                 }
             };
@@ -172,11 +173,12 @@ var wot_rw = {
         } else {
             data = {
                 target: target,
-                normalized: target,
                 updated: null,
                 cached: {
                     status: WOT_QUERY_ERROR,
-                    value: {}
+                    value: {
+                        normalized: target
+                    }
                 }
             };
         }
