@@ -66,7 +66,7 @@
                    onpopupshowing="wot_rw.on_rw_open(event);"
                    onpopuphiding="wot_rw.on_hide_popup();" noautofocus="false">
 
-            <iframe id="wot-rwframe" src="chrome://wot/content/rw/ratingwindow.html" type="content-targetable"
+            <iframe id="wot-rwframe" src="chrome://wot/content/rw/ratingwindow.html" type="content"
                     width="576px" height="422px"/>
         </panel>
 
