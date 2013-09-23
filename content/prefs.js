@@ -210,6 +210,26 @@ var wot_prefs =
 		return false;
 	},
 
+    getJSON: function (name, default_value) {
+        try {
+            var json = this.getChar(name, null, false);
+            return json ? JSON.parse(wot_util.utf8_to_unicode(json)) : default_value;
+        } catch (e) {
+            wdump("wot_prefs.getJSON(" + name + "): failed with " + e);
+            return default_value;
+        }
+    },
+
+    setJSON: function (name, obj) {
+        try {
+            var json = JSON.stringify(obj);
+            return this.setChar(name, wot_util.unicode_to_utf8(json), false);
+        } catch (e) {
+            wdump("wot_prefs.getJSON(" + name + "): failed with " + e);
+            return false;
+        }
+    },
+
 	clear: function(name)
 	{
 		try {

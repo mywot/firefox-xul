@@ -1152,7 +1152,7 @@ var wot_keeper = {
             status: status || wot_keeper.STATUSES.LOCAL
         };
 
-        wot_keeper.store_by_name(target, "comment", JSON.stringify(data));
+        wot_keeper.store_by_name(target, "comment", data);
     },
 
     remove_comment: function (target) {
@@ -1166,17 +1166,16 @@ var wot_keeper = {
 //        console.log("keeper.get_by_name()", target, name);
 
         try {
-            var json = wot_prefs.getChar(wot_keeper._fullname(target, name), true) || null;
-            return json ? JSON.parse(json) : null;
+            return wot_prefs.getJSON(wot_keeper._fullname(target, name)) || null;
         } catch (e) {
             wdump("wot_keeper.get_by_name() Failed with " + e);
         }
         return null;
     },
 
-    store_by_name: function (target, name, data) {
+    store_by_name: function (target, name, obj) {
 //        console.log("keeper.store_by_name()", target, name, data);
-        wot_prefs.setChar(wot_keeper._fullname(target, name), data, true);
+        wot_prefs.setJSON(wot_keeper._fullname(target, name), obj);
     },
 
     remove_by_name: function (target, name) {

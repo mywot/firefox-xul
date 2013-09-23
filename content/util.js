@@ -122,6 +122,25 @@ var wot_util =
         return decodeURIComponent(escape(s));
     },
 
+    utf8_to_unicode: function (str) {
+        if (!str) return null;
+        var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+            .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+        converter.charset = "UTF-8";
+
+        return converter.ConvertToUnicode(str);
+    },
+
+    unicode_to_utf8: function (str) {
+        var converter = Components.classes["@mozilla.org/intl/scriptableunicodeconverter"]
+            .createInstance(Components.interfaces.nsIScriptableUnicodeConverter);
+        converter.charset = "UTF-8";
+
+        var encoded = converter.ConvertFromUnicode(str);
+        return encoded + converter.Finish();
+
+    },
+
 	time_sincefirstrun: function()
 	{
 		try {
