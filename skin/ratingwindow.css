@@ -1682,8 +1682,8 @@ input[type=checkbox].css-checkbox:checked + label.css-label {
     font-size: 14px;
     text-align: right;
     position: absolute;
-    bottom: 55px;
-    right: 50px;
+    bottom: 66px;
+    right: 56px;
     background-color: #FC4B56;
     padding: 3px 10px;
     font-weight: normal;
