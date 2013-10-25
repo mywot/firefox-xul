@@ -1349,12 +1349,11 @@ var wot_api_comments = {
             pref_pending_name = _this.PENDING_COMMENT_SID + target;
 
         // try to restore pending submission first
-        var state_json = wot_prefs.getChar(pref_pending_name);
-        var state = state_json ? JSON.parse(state_json) : {
+        var state = wot_prefs.getJSON(pref_pending_name, {
             target: target,
             comment_data: {},
             tries: 0
-        };
+        });
 
         // if params are given, it means we are on normal way of sending data (not on retrying)
         if (comment && votes) {
@@ -1370,7 +1369,7 @@ var wot_api_comments = {
             return;
         }
 
-        wot_prefs.setChar(pref_pending_name, JSON.stringify(state));    // remember the submission
+        wot_prefs.setJSON(pref_pending_name, state);    // remember the submission
 
         state.comment_data['target'] = target;
 
@@ -1408,11 +1407,10 @@ var wot_api_comments = {
             pref_pending_name = _this.PENDING_REMOVAL_SID + target;
 
         // try to restore pending submission first
-        var state_json = wot_prefs.getChar(pref_pending_name, null);
-        var state = state_json ? JSON.parse(state_json) : {
+        var state = wot_prefs.getJSON(pref_pending_name, {
             target: target,
             tries: 0
-        };
+        });
 
         if (++state.tries > _this.MAX_TRIES) {
             wdump("api.comments.submit: failed " + target + " (max tries)");
@@ -1420,7 +1418,7 @@ var wot_api_comments = {
             return;
         }
 
-        wot_prefs.setChar(pref_pending_name, JSON.stringify(state));    // remember the submission
+        wot_prefs.setJSON(pref_pending_name, state);    // remember the submission
 
         _this.call("remove",
             {
