@@ -62,11 +62,14 @@ $.extend(wot, { ratingwindow: {
 
     updatestate: function(target, data)
     {
-        var _this = wot.ratingwindow;
+        var _this = wot.ratingwindow,
+	        was_target_changed = false;
         /* initialize on target change */
         if (_this.state.target != target) {
-            _this.finishstate(false);
-            _this.state = { target: target, down: -1 };
+	        _this.finishstate(false);
+	        _this.state = { target: target, down: -1 };
+	        _this.comments.set_comment("");  // reset comment field
+	        was_target_changed = true;
         }
 
         var state = {
@@ -89,6 +92,8 @@ $.extend(wot, { ratingwindow: {
 
         /* remember previous state */
         _this.state = $.extend(state, _this.state);
+	    _this.cat_selector.init_voted(data.value.cats); // re-build user votes with new data
+	    return was_target_changed;
     },
 
     setstate: function (component, t) {
@@ -558,7 +563,7 @@ $.extend(wot, { ratingwindow: {
 
             data = JSON.parse(data);    // for safety
 
-            _rw.updatestate(data.target, data.cached);
+	        var target_changed = _rw.updatestate(data.target, data.cached);
 
             _rw.current = data || {};
             _rw.is_registered = bg.wot.core.is_level("registered"); // update the state on every window update
@@ -568,14 +573,17 @@ $.extend(wot, { ratingwindow: {
 
             if (_rw.is_registered) {
                 // ask server if there is my comment for the website
-                _rw.comments.get_comment(data.target);
+	            if (target_changed) {   // no need to reask comment on every "iframe loaded" event
+                    _rw.comments.get_comment(data.target);
+	            }
             } else {
                 bg.wot.core.update_ratingwindow_comment(); // don't allow unregistered addons to comment
             }
 
-            _rw.modes.reset();
-            _rw.cat_selector.init_voted();
-            _rw.modes.auto();
+	        if (target_changed) {
+		        _rw.modes.reset();
+		        _rw.modes.auto();
+	        }
 
 			if (!data.target) {
 				bg.wot.ga.fire_event(wot.ga.categories.RW, wot.ga.actions.RW_NOTARGET);
@@ -1865,12 +1873,18 @@ $.extend(wot, { ratingwindow: {
             _this.update_categories_visibility();
         },
 
-        init_voted: function () {
+        init_voted: function (cats) {
             var _rw = wot.ratingwindow,
-                _this = _rw.cat_selector;
+                _this = _rw.cat_selector,
+	            cached = {},
+	            cats_object = {};
 
-            var cached = _rw.getcached(),
-                cats_object = (cached && cached.value && cached.value.cats) ? cached.value.cats : {};
+	        if (!cats || wot.utils.isEmptyObject(cats)) {
+		        cached = _rw.getcached();
+		        cats_object = (cached && cached.value && cached.value.cats) ? cached.value.cats : {};
+	        } else {
+		        cats_object = cats;
+	        }
 
             _this.votes = wot.select_voted(cats_object);
             _this.markup_voted();
