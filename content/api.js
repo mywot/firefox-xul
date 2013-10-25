@@ -1223,12 +1223,12 @@ var wot_api_comments = {
 
             params.id = wot_prefs.witness_id;
             params.nonce = nonce;
-            params.version = WOT_PLATFORM + "-" +WOT_VERSION;
+            params.version = WOT_PLATFORM + "-" + WOT_VERSION;
 
             options = options || { type: "GET" };
 
             if (options.encryption) {
-                params.target = wot_crypto.encrypt(params.target, nonce);
+                params.target = wot_crypto.encrypt(wot_idn.utftoidn(params.target), nonce);
             }
 
             var components = [];
@@ -1350,9 +1350,9 @@ var wot_api_comments = {
 
         // try to restore pending submission first
         var state = wot_prefs.getJSON(pref_pending_name, {
-            target: target,
-            comment_data: {},
-            tries: 0
+	        target: target,
+	        comment_data: {},
+	        tries: 0
         });
 
         // if params are given, it means we are on normal way of sending data (not on retrying)
