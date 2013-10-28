@@ -202,6 +202,8 @@ $.extend(wot_bg.wot, wot, {
 
         wt: {   // Welcome Tips proxy wrapper
 
+	        activity_score_max: 1500,
+
             settings: {
                 rw_ok: false,
                 rw_shown: 0,

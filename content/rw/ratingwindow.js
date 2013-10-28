@@ -30,7 +30,6 @@ $.extend(wot, { ratingwindow: {
     is_registered: false,   // whether user has an account on mywot.com
     delete_action: false,   // remembers whether user is deleting rating
     prefs: {},  // shortcut for background preferences
-    UPDATE_ROUND: 3,        // = 3 version when we launched WOT 2.0 in September 2013
 
     get_bg: function () {
         // just a shortcut
@@ -91,7 +90,7 @@ $.extend(wot, { ratingwindow: {
         }
 
         /* remember previous state */
-        _this.state = $.extend(state, _this.state);
+	    _this.state = $.extend(state, _this.state);
 	    _this.cat_selector.init_voted(data.value.cats); // re-build user votes with new data
 	    return was_target_changed;
     },
@@ -249,8 +248,7 @@ $.extend(wot, { ratingwindow: {
 
                 wot.components.forEach(function(item) {
                     if (rw.state[item.name]) {
-                        params["testimony_" + item.name] =
-                            rw.state[item.name].t;
+                        params["testimony_" + item.name] = rw.state[item.name].t;
                     }
                 });
 
@@ -781,9 +779,9 @@ $.extend(wot, { ratingwindow: {
 
 	    $_cat_wrapper.addClass(vote == 1 ? "hand-up" : "hand-down");
         $_hand.addClass(vote == 1 ? "hand-up" : "hand-down");
-	    if (vote == 1) {
-		    $_hand.addClass(wot.get_category_css(category.id));
-	    }
+        if (vote == 1) {
+	        $_hand.addClass(wot.get_category_css(category.id));
+        }
         $_hand.attr("title", wot.i18n("ratingwindow", vote == 1 ? "vote_yes" : "vote_no"));
         $_cat_text.attr("title", cat_name);
         $_cat_text.text(cat_name);
@@ -1080,11 +1078,11 @@ $.extend(wot, { ratingwindow: {
             bg.wot.core.open_mywot(wot.urls.tour_rw, wot.urls.contexts.wt_rw_lm); // FIXME
         });
 
-		var tts_wtip =  (first_opening || wot.firstrunupdate == _rw.UPDATE_ROUND) &&
+		var tts_wtip =  first_opening &&
 						!(wt.settings.rw_ok || wt.settings.rw_shown > 0) &&
 						wot.is_defined(["rw_text", "rw_text_hdr"], "wt");
 
-//		tts_wtip = tts_wtip && (wot.get_activity_score() < bg.wot.wt.activity_score_max || wot.firstrunupdate == _rw.UPDATE_ROUND);
+		tts_wtip = tts_wtip && (wot.get_activity_score() < bg.wot.wt.activity_score_max);
 
         if (bg.wot.prefs.get("super_wtips")) tts_wtip = true;  // override by super-setting
 
@@ -1882,12 +1880,12 @@ $.extend(wot, { ratingwindow: {
 	            cached = {},
 	            cats_object = {};
 
-	        if (!cats || wot.utils.isEmptyObject(cats)) {
-		        cached = _rw.getcached();
-		        cats_object = (cached && cached.value && cached.value.cats) ? cached.value.cats : {};
-	        } else {
-		        cats_object = cats;
-	        }
+            if (!cats || wot.utils.isEmptyObject(cats)) {
+	            cached = _rw.getcached();
+	            cats_object = (cached && cached.value && cached.value.cats) ? cached.value.cats : {};
+            } else {
+	            cats_object = cats;
+            }
 
             _this.votes = wot.select_voted(cats_object);
             _this.markup_voted();

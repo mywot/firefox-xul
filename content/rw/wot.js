@@ -114,7 +114,7 @@ var wot = {
 		base:		"http://www.mywot.com/",
 		scorecard:	"http://www.mywot.com/scorecard/",
 		settings:	"http://www.mywot.com/settings",
-		profile:	"http://www.mywot.com/user",
+        profile:	"http://www.mywot.com/user",
         signup:     "https://www.mywot.com/signup",
 		welcome:	"http://www.mywot.com/settings/welcome",
 		setcookies:	"http://www.mywot.com/setcookies.php",
@@ -380,11 +380,9 @@ var wot = {
 			data.message = name + ":" + message;
 			this.log("post: posting " + data.message + "\n");
 			port.postMessage(data);
+		} else {
+			console.warn("Can't find port to send message", name, message, data);
 		}
-	},
-
-	is_allowed_sender: function(sender_id) {
-		return wot.allowed_senders[sender_id] || wot.debug; // allow known senders or any in
 	},
 
 	/* i18n */
@@ -631,6 +629,8 @@ var wot = {
 		if(wot.env.is_mailru) {
 			// set param to label requests
 			wot.partner = "mailru";
+		} else if (wot.env.is_yandex) {
+			wot.partner = "yandex";
 		}
 
 		if(!readonly) wot.prefs.set("partner", wot.partner);
@@ -885,7 +885,7 @@ var wot = {
                 if (!grp.omnipresent && !type) { // skip only omnipresent, and if type is not set
                     var tmin = grp.tmin !== null ? grp.tmin : -1,
                         tmax = grp.tmax !== null ? grp.tmax : -1;
-                    if ((t0 == -1 && grp.dynamic) || (t0 >= tmin && t0 <= tmax)) {
+                    if (t0 == -1 || (t0 >= tmin && t0 <= tmax)) {
                         return grp;
                     }
                 }
