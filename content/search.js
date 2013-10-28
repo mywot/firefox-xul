@@ -412,7 +412,7 @@ var wot_search =
 				this.rules[name][attr] = wot_prefs.getBool(pref, true);
 			}
 		} catch (e) {
-			dump("wot_search.loadrule: failed with " + e + "\n");
+			wdump("wot_search.loadrule: failed with " + e);
 		}
 	},
 
@@ -428,7 +428,7 @@ var wot_search =
 				this.loadrule(children[i]);
 			}
 		} catch (e) {
-			dump("wot_search.sync: failed with " + e + "\n");
+			wdump("wot_search.sync: failed with " + e);
 		}
 	},
 
@@ -436,15 +436,39 @@ var wot_search =
 
 	domcontentloaded: function(event)
 	{
-
         try {   // Workaround to resolve "TypeError: can't access dead object" at start of the browser
-            if (!event.originalTarget) return;
-        } catch (e) { return; } // do nothing
+            if (!event.originalTarget) {
+	            wdump("event.originalTarget is undefined");
+	            return;
+            }
+        } catch (e) {
+	        return; } // do nothing
 
 		try {
+			event.originalTarget.wot_domloaded = Date.now();
 			wot_search.watch(event.originalTarget);
 		} catch (e) {
-			dump("wot_search.domcontentloaded: failed with " + e + "\n");
+			wdump("wot_search.domcontentloaded: failed with " + e);
+		}
+	},
+
+	pageshow: function(event)
+	{
+        try {   // Workaround to resolve "TypeError: can't access dead object" at start of the browser
+            if (!event.originalTarget) {
+	            wdump("event.originalTarget is undefined");
+	            return;
+            }
+        } catch (e) {
+	        return; } // do nothing
+
+		if (event.originalTarget) {
+			var wot_domloaded = event.originalTarget.wot_domloaded || 0;
+			// check when the last domcontentloaded event was raised,
+			// and if it was long ago, force to watch the DOM again (workaround for caching issue #74)
+			if (Date.now() - wot_domloaded > 800) {
+				wot_search.watch(event.originalTarget);
+			}
 		}
 	},
 
@@ -474,7 +498,7 @@ var wot_search =
 				attributes: true, childList: true, subtree: true
 			});
 		} catch (e) {
-			dump("wot_search.watch: failed with " + e + "\n");
+			wdump("wot_search.watch: failed with " + e);
 		}
 	},
 

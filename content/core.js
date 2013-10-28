@@ -133,10 +133,9 @@ var wot_core =
 			this.browser = document.getElementById("appcontent");
 
 			if (this.browser) {
-				this.browser.addEventListener("DOMContentLoaded",
-					wot_core.domcontentloaded, false);
-				this.browser.addEventListener("click",
-					wot_core.click, false);
+				this.browser.addEventListener("DOMContentLoaded", wot_core.domcontentloaded, false);
+				this.browser.addEventListener("pageshow", wot_core.pageshow, false);    // the fix for the issue with Back/Forward buttons
+				this.browser.addEventListener("click", wot_core.click, false);
 			}
 		} catch (e) {
 			dump("wot_core.init: failed with " + e + "\n");
@@ -259,6 +258,21 @@ var wot_core =
 		for (var i in wot_modules) {
 			if (typeof(wot_modules[i].obj.domcontentloaded) == "function") {
 				wot_modules[i].obj.domcontentloaded(event);
+			}
+		}
+	},
+
+	pageshow: function(event, retry)
+	{
+		if (!wot_core.loaded && !retry) {
+			window.setTimeout(function() {
+					wot_core.pageshow(event, true);
+				}, 500);
+		}
+
+		for (var i in wot_modules) {
+			if (typeof(wot_modules[i].obj.pageshow) == "function") {
+				wot_modules[i].obj.pageshow(event);
 			}
 		}
 	},
