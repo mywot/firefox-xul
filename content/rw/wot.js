@@ -19,7 +19,7 @@
 */
 
 var wot = {
-	version: 20131025,
+	version: 20131030,
 	platform: "firefox",
     locale: "en",           // cached value of the locale
     lang: "en-US",          // cached value of the lang
