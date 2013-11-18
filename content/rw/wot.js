@@ -19,7 +19,7 @@
 */
 
 var wot = {
-	version: 20131030,
+	version: 20131118,
 	platform: "firefox",
     locale: "en",           // cached value of the locale
     lang: "en-US",          // cached value of the lang
@@ -403,7 +403,7 @@ var wot = {
 		}
 
 		var result = chrome.i18n.getMessage(msg);
-	   
+
 		if (result == null) {
 			result = this.debug ? "!?" : "";
 		}
