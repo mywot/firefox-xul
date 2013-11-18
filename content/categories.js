@@ -21,6 +21,7 @@
 var wot_categories = {
 
     PREF_CATEGORY: "category",
+    PREF_CONFLICTS: "conflicts",
     PREF_GROUPINGS: "groupings",
     CATEGORY_THRESHOLD: 3,  // confidence level to show a category as identified
     inited: false,
@@ -28,6 +29,8 @@ var wot_categories = {
     categories: {},
     grouping: [],   // Groupings for building category selector in Rating Window. Loaded from API server/update.xml.
     cgroups: {},    // Categories' groups and their mapping to colors and TR/CS.
+	cat_combinations: {},
+	cat_combinations_prio: [],
 
     load_delayed: function () {
         if (this.inited) return;
@@ -109,10 +112,28 @@ var wot_categories = {
             cat_obj.cs = (cat_obj.application == "4");               // set ChildSafety flag
             cat_obj.type = this.cgroups[cat_obj.group].type; // set type of the category based on parent group
 
-//            this.categories[cat_obj.id] = cat_obj;
-
             wot_prefs.setChar(this.PREF_CATEGORY + "." + cat_obj.name, JSON.stringify(cat_obj), true); // using utf8
         }
+
+	    // Iterage through <conflict> tag that describes how categories may conflict with each other.
+	    var conflicts_node = categories_node.getElementsByTagName("conflict"),
+		    conflicts = [];
+	    for (i = 0; i < conflicts_node.length; i++) {
+		    var conflict_node = conflicts_node[i],
+			    conflict_obj = wot_util.copy_attrs(conflict_node),
+		        voted_nodes = conflict_node.getElementsByTagName("voted");
+
+		    conflict_obj.voted = [];
+
+		    for (j = 0; j < voted_nodes.length; j++) {
+			    var voted = wot_util.copy_attrs(voted_nodes[j]);
+			    conflict_obj.voted.push(voted);
+		    }
+
+		    conflicts.push(conflict_obj);
+	    }
+
+	    wot_prefs.setJSON(this.PREF_CONFLICTS, conflicts);      // save parsed results to preferences storage
 
         this.init_categories();
 
@@ -145,6 +166,33 @@ var wot_categories = {
 
             var groupings_json = wot_prefs.getChar(this.PREF_GROUPINGS + ".all", "{}", true); //using utf8
             this.grouping = JSON.parse(groupings_json);
+
+	        // Init proper structure for categories conflicts rules
+	        this.cat_combinations = {};
+	        this.cat_combinations_prio = ["6a"];    // first default value
+
+	        var conflicts = wot_prefs.getJSON(this.PREF_CONFLICTS, []);
+	        for (i = 0; i < conflicts.length; i++) {
+		        var conflict = conflicts[i],
+			        rule = String(conflict.rule).toLowerCase();
+
+		        this.cat_combinations_prio.push(rule);
+
+		        if (conflict.voted && conflict.voted.length) {
+			        for(var j = 0; j < conflict.voted.length; j++) {
+				        var group = conflict.voted[j] && conflict.voted[j].group ? conflict.voted[j].group : "";
+				        var cats = group.split(",");
+				        if (cats.length > 1) {
+					        var cat1 = cats[0], cat2 = cats[1];
+					        if (!this.cat_combinations[cat1]) this.cat_combinations[cat1] = {};
+					        if (!this.cat_combinations[cat2]) this.cat_combinations[cat2] = {};
+
+					        this.cat_combinations[cat1][cat2] = rule;
+					        this.cat_combinations[cat2][cat1] = rule;
+				        }
+			        }
+		        }
+	        }
 
             this.inited = true;
 

@@ -57,6 +57,9 @@ $.extend(wot, { ratingwindow: {
     resetstate: function () {
         // resets testimonies state
         wot.ratingwindow.state = { down: -1 };
+	    wot.ratingwindow.cat_selector.is_illogical = false;
+	    $(".category-description").removeClass("warning");
+	    $("#btn-submit").removeClass("warning highlight");
     },
 
     updatestate: function(target, data)
@@ -92,6 +95,10 @@ $.extend(wot, { ratingwindow: {
         /* remember previous state */
 	    _this.state = $.extend(state, _this.state);
 	    _this.cat_selector.init_voted(data.value.cats); // re-build user votes with new data
+
+	    _this.cat_selector.is_illogical = _this.cat_selector.calc_illogicality();
+	    _this.cat_selector.warn_illogicality(_this.cat_selector.is_illogical);
+
 	    return was_target_changed;
     },
 
@@ -903,7 +910,7 @@ $.extend(wot, { ratingwindow: {
         return passed;
     },
 
-    update_submit_button: function (enable) {
+    update_submit_button: function (enable, warn) {
         var _rw = wot.ratingwindow,
             $_submit = $("#btn-submit"),
             delete_action = false;
@@ -917,6 +924,8 @@ $.extend(wot, { ratingwindow: {
         } else {
             enable = _rw.is_allowed_submit();
             $_submit.toggleClass("disabled", !enable);
+            $_submit.toggleClass("highlight", (enable && !warn));
+            $_submit.toggleClass("warning", !!warn);
 
             // If user wants to delete ratings, change the text of the button and hide "Delete ratings" button
             if (enable && !_rw.is_rated(_rw.state) && !_rw.comments.has_valid_comment()) {
@@ -1350,7 +1359,7 @@ $.extend(wot, { ratingwindow: {
                 }
             });
 
-            _rw.update_submit_button();
+            _rw.update_submit_button(null, wot.ratingwindow.cat_selector.is_illogical);
         }
     },
 
@@ -1409,7 +1418,10 @@ $.extend(wot, { ratingwindow: {
                     _rw.update_catsel_state();  // update the category selector with current state
                 }
 
-                _rw.update_submit_button();
+	            _rw.cat_selector.calc_illogicality();
+	            _rw.cat_selector.warn_illogicality(_rw.cat_selector.is_illogical);
+
+	            _rw.update_submit_button(null, _rw.cat_selector.is_illogical);
                 _rw.comments.update_button("rate", true);
                 _rw.was_in_ratemode = true;
 
@@ -1521,10 +1533,12 @@ $.extend(wot, { ratingwindow: {
     },
 
     cat_selector: {
+	    MAX_UPVOTED_BEFORE_WARN: 3,
         inited: false,
         $_cat_selector: null,
         short_list: true,
         voted: {},
+	    is_illogical: false,
 
         build: function () {
             var _rw = wot.ratingwindow,
@@ -1844,6 +1858,8 @@ $.extend(wot, { ratingwindow: {
                 $_category_title = $(".category-title"),
                 $_cat_description = $(".category-description");
 
+	        if ($_cat_description.hasClass("warning")) return;
+
             var cat_id = $_cat.attr("data-cat"),
                 is_hovered = (e.type == "mouseenter") && (cat_id !== undefined);
 
@@ -1983,8 +1999,81 @@ $.extend(wot, { ratingwindow: {
                 if (_this.votes[cat_id]) delete _this.votes[cat_id];
             }
 
-            wot.ratingwindow.update_submit_button(); // enable/disable "Save" button
-        }
+            var is_illogical = _this.calc_illogicality();
+	        _this.warn_illogicality(is_illogical);  // set or remove warning about wrong categories choice
+
+	        wot.ratingwindow.update_submit_button(null, is_illogical); // enable/disable "Save" button
+        },
+
+	    calc_illogicality: function () {
+		    var _this = wot.ratingwindow.cat_selector,
+		        user_votes = _this.get_user_votes(true),    // get user votes as an object
+			    warns = {},
+			    upvoted = 0;
+
+		    _this.is_illogical = false;
+
+		    for (var cat1 in user_votes) {
+			    if (!user_votes.hasOwnProperty(cat1) || user_votes[cat1] != 1) continue;
+			    upvoted++;
+			    for (var cat2 in user_votes) {
+				    if (!user_votes.hasOwnProperty(cat2) || cat2 == cat1 || user_votes[cat2] != 1) continue;
+				    if (wot.cat_combinations[cat1] && wot.cat_combinations[cat1][cat2]) {
+					    warns[wot.cat_combinations[cat1][cat2]] = true;
+				    }
+			    }
+		    }
+
+		    if (upvoted > _this.MAX_UPVOTED_BEFORE_WARN) {
+			    warns["6a"] = true;
+		    } else {
+			    delete warns["6a"];
+		    }
+
+		    // now take the most important warning according to defined priorities
+		    for (var p = 0; p < wot.cat_combinations_prio.length; p++) {
+			    if (warns[wot.cat_combinations_prio[p]]) {
+				    _this.is_illogical = wot.cat_combinations_prio[p];
+				    break;
+			    }
+		    }
+
+		    return _this.is_illogical;
+	    },
+
+	    warn_illogicality: function (warning) {
+
+		    var warn_text = wot.i18n("ratingwindow", "check_"+String(warning));
+
+		    var _this = wot.ratingwindow.cat_selector,
+			    $_category_title = $(".category-title"),
+			    $_cat_description = $(".category-description"),
+			    previously_warned = $_cat_description.hasClass("warning"),
+			    $_btn_submit = $("#btn-submit");
+
+		    if (warning && !warn_text || !_this.$_cat_selector) {        // do nothing if there is no warning text
+			    $_cat_description.removeClass("warning");
+			    $_btn_submit.removeClass("warning");
+			    return;
+		    }
+
+		    _this.$_cat_selector.closest(".category-selector").toggleClass("warning", !!warning);
+		    $_cat_description.toggleClass("warning",  !!warning);
+		    $_btn_submit.toggleClass("warning",  !!warning);
+
+		    if (warning) {
+			    $_category_title.hide(0, function () {
+				    $_cat_description.text(warn_text);
+				    $_cat_description.show();
+			    });
+		    } else {
+			    if (previously_warned) {
+				    $_cat_description.hide(0, function () {
+					    $_category_title.show();
+				    });
+			    }
+		    }
+	    }
     }, /* end of cat_selector {} */
 
     /* Start of Comments API and Comments UI code */

@@ -387,6 +387,10 @@ var wot_rw = {
                 case "keeper.save_comment":
                     wot_keeper.save_comment(data.target, data.user_comment, data.user_comment_id, data.votes, data.keeper_status);
                     break;
+
+	            case "log":
+		            wdump("LOG: " + JSON.stringify(data));
+		            break;
             }
 
             return true;
@@ -429,6 +433,8 @@ var wot_rw = {
             rw_wot.categories = wot_categories.categories;
             rw_wot.grouping = wot_categories.grouping;
             rw_wot.cgroups = wot_categories.cgroups;
+            rw_wot.cat_combinations = wot_categories.cat_combinations;
+            rw_wot.cat_combinations_prio = wot_categories.cat_combinations_prio;
 
             // init other values
             rw_wot.firstrunupdate = WOT_FIRSTRUN_CURRENT;
