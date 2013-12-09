@@ -26,14 +26,15 @@
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
     <script type="application/x-javascript" src="chrome://wot/content/config.js"/>
-    <script type="application/x-javascript" src="chrome://wot/content/categories.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/cache.js"/>
+    <script type="application/x-javascript" src="chrome://wot/content/categories.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/commands.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/shared.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/util.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/ratingwindow.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/ui.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/prefs.js"/>
+    <script type="application/x-javascript" src="chrome://wot/content/storage.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/my.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/warning.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/surveys.js"/>

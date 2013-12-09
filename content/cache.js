@@ -20,7 +20,7 @@
 
 var wot_hashtable =
 {
-	load_delayed: function()
+	load: function()
 	{
 		try {
 			if (this.bag) {
@@ -268,7 +268,7 @@ var wot_cache =
 				if (!pending) {
 					this.set(name, "testimony_" + a, -1);
 				}
-				
+
 				this.set(name, "inherited_" + a, 0);
 				this.set(name, "lowered_" + a, 0);
 			}

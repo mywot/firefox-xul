@@ -260,9 +260,9 @@ var wot_prefs =
     setSmart: function (name, value) {
         // Looks up through preferences names and call the proper function to set the value of the named preference
         var prefs_sets = [
-            [wot_prefs_char, wot_prefs.setChar],
-            [wot_prefs_int, wot_prefs.setInt ],
-            [wot_prefs_bool, wot_prefs.setBool]
+            [ wot_prefs_char, wot_prefs.setChar ],
+            [ wot_prefs_int, wot_prefs.setInt ],
+            [ wot_prefs_bool, wot_prefs.setBool ]
         ];
 
         for (var s = 0; s < prefs_sets.length; s++) {

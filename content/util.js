@@ -270,7 +270,7 @@ var wot_url =
 			if (!ts) {
 				return true;
 			}
-			
+
 			var domain = name.replace(/^[^\.]*\./, "");
 			var tld = ts.getPublicSuffixFromHost(domain);
 
@@ -1230,9 +1230,10 @@ var wot_file = {
 					var data = NetUtil.readInputStreamToString(inputStream, inputStream.available());
 
 					if (data) {
-						var res = JSON.parse(data);
+						var res = JSON.parse(wot_util.utf8_to_unicode(data));
 						if (res instanceof Object) {
 							callback(res);
+							return;
 						}
 					}
 					callback({});   // whether no data is loaded call it anyway to finish the load process

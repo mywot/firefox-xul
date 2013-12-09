@@ -151,38 +151,42 @@ var wot_core =
 				}
 			}
 
-			window.setTimeout(function() {
-				for (var i in wot_modules) {
-					if (typeof(wot_modules[i].obj.load_delayed) == "function") {
-						wot_modules[i].obj.load_delayed();
+			wot_storage.init(function() {   // continue initialization only after the storage is loaded
+				// schedule delayed load of modules ()
+				window.setTimeout(function() {
+					for (var i in wot_modules) {
+						if (typeof(wot_modules[i].obj.load_delayed) == "function") {
+							wot_modules[i].obj.load_delayed();
+						}
 					}
+
+					wot_prefs.setupdateui();
+					wot_api_register.send();
+					wot_my_session.update(true);
+
+					wot_core.loaded = true;
+					wot_core.update();
+				}, 250);
+
+				try {
+					Components.utils.import("resource://gre/modules/AddonManager.jsm");
+					AddonManager.addAddonListener(wot_core.install_listener);
+				} catch (e) {
+					dump("wot_core.load() setting up uninstall listener failed with " + e + "\n");
 				}
 
-				wot_prefs.setupdateui();
-				wot_api_register.send();
-				wot_my_session.update(true);
+				var browser = getBrowser();
+				this.listener = new wot_listener(browser);
+				browser.addProgressListener(this.listener);
 
-				wot_core.loaded = true;
-				wot_core.update();
-			}, 250);
+				if (browser.tabContainer) {
+					browser.tabContainer.addEventListener("TabOpen",
+						wot_core.tabopen, false);
+					browser.tabContainer.addEventListener("TabSelect",
+						wot_core.tabselect, false);
+				}
+			});
 
-			try {
-				Components.utils.import("resource://gre/modules/AddonManager.jsm");
-				AddonManager.addAddonListener(wot_core.install_listener);
-			} catch (e) {
-				dump("wot_core.load() setting up uninstall listener failed with " + e + "\n");
-			}
-
-			var browser = getBrowser();
-			this.listener = new wot_listener(browser);
-			browser.addProgressListener(this.listener);
-
-			if (browser.tabContainer) {
-				browser.tabContainer.addEventListener("TabOpen",
-					wot_core.tabopen, false);
-				browser.tabContainer.addEventListener("TabSelect",
-					wot_core.tabselect, false);
-			}
 		} catch (e) {
 			dump("wot_core.load: failed with " + e + "\n");
 		}
@@ -336,7 +340,7 @@ var wot_core =
 						}
 					}
 				}
-				
+
 				pl.abort(request);
 			}
 
@@ -410,7 +414,7 @@ var wot_core =
 			if (!wot_util.isenabled() || !pl || !pl.browser || !url) {
 				return;
 			}
-			
+
 			if (!wot_warning.isblocking()) {
 				return;
 			}
@@ -468,7 +472,7 @@ var wot_core =
 				if (!hostname || !wot_cache.iscached(hostname)) {
 					continue;
 				}
-				
+
 				var age = Date.now() - wot_cache.get(hostname, "time");
 
 				if (wot_cache.get(hostname, "status") == WOT_QUERY_ERROR &&
@@ -549,7 +553,7 @@ var wot_core =
 				if (wot_cache.get(name, "inprogress")) {
 					continue;
 				}
-				
+
 				var age = now - wot_cache.get(name, "time");
 
 				if (age > interval) {
@@ -666,7 +670,7 @@ var wot_core =
 				wot_api_query.send(wot_core.hostname);
 				return;
 			}
-			
+
 			var age = Date.now() - wot_cache.get(wot_core.hostname, "time");
 
 			if (wot_cache.get(wot_core.hostname, "inprogress")) {

@@ -75,32 +75,32 @@ var wot_search =
 
 	setint: function(entry, value)
 	{
-		try {
-			if (value != null) {
-				return wot_prefs.setInt(entry, Number(value));
-			} else {
-				wot_prefs.clear(entry);
-			}
-		} catch (e) {
-			dump("wot_search.setint: failed with " + e + "\n");
-		}
-
-		return false;
+		return this.setchar(entry, value, true);
 	},
 
-	setchar: function(entry, value)
+	setchar: function(entry, value, is_number)
 	{
 		try {
-			if (value != null) {
-				return wot_prefs.setChar(entry, value);
+			var sr = wot_storage.get("search", {});
+			if (value !== null && value !== undefined) {
+				sr[entry] = value;
 			} else {
-				wot_prefs.clear(entry);
+				delete sr[entry];
 			}
+			wot_storage.set("search", sr);
+			return true;
 		} catch (e) {
 			dump("wot_search.setchar: failed with " + e + "\n");
 		}
 
 		return false;
+	},
+
+	getrule: function (entry, def_value) {
+		// extend entry name to fully qualified (prepended with "search.")
+		var fullentry = entry.indexOf("search") == 0 ? entry : "search." + entry,
+			val = this._searchrules[fullentry];
+		return val === undefined ? def_value : val;
 	},
 
 	parsecontentrules: function(base, child)
@@ -125,12 +125,15 @@ var wot_search =
 							node.getAttribute(WOT_SEARCH_CONTENT_RE))) {
 						++attr;
 					} else {
-						wot_prefs.deleteBranch(key);
+//						wot_prefs.deleteBranch(key);
+						this.setchar(key + WOT_SEARCH_CONTENT_FLAGS, null);
+						this.setchar(key + WOT_SEARCH_CONTENT_NAME, null);
+						this.setchar(key + WOT_SEARCH_CONTENT_RE, null);
 					}
 				} else if (node.nodeName == WOT_SEARCH_CONTENT_VALUE) {
 					/* Value rule */
 					var key = base + WOT_SEARCH_CONTENT_VALUE + value + ".";
-					
+
 					/* Flags (optional) */
 					this.setchar(key + WOT_SEARCH_CONTENT_FLAGS,
 						node.getAttribute(WOT_SEARCH_CONTENT_FLAGS));
@@ -140,7 +143,9 @@ var wot_search =
 							node.getAttribute(WOT_SEARCH_CONTENT_RE))) {
 						++value;
 					} else {
-						wot_prefs.deleteBranch(key);
+//						wot_prefs.deleteBranch(key);
+						this.setchar(key + WOT_SEARCH_CONTENT_FLAGS, null);
+						this.setchar(key + WOT_SEARCH_CONTENT_RE, null);
 					}
 				}
 
@@ -204,7 +209,9 @@ var wot_search =
 					child.getAttribute(WOT_SEARCH_PRE_MATCH))) {
 				return true;
 			} else {
-				wot_prefs.deleteBranch(entry);
+//				wot_prefs.deleteBranch(entry);
+				this.setchar(entry + WOT_SEARCH_PRE_RE, null);
+				this.setchar(entry + WOT_SEARCH_PRE_MATCH, null);
 			}
 		} catch (e) {
 			dump("wot_search.parseprerule: failed with " + e + "\n");
@@ -287,11 +294,14 @@ var wot_search =
 		try {
 			this.loading = true;
 
+			wot_storage.set("search", {});  // clear stored search rules and start from scratch
+
 			for (var i = 0; i < search.length; ++i) {
 				this.parserule(search[i]);
 			}
-
+			wot_storage.flush(true);
 			this.sync();
+
 		} catch (e) {
 			dump("wot_search.parse: failed with " + e + "\n");
 		}
@@ -325,7 +335,7 @@ var wot_search =
 				node[name][index] =
 					this.loadruletree(node[name][index] || {}, pref, m[4]);
 			} else {
-				node[next] = wot_prefs.getChar(pref, "");
+				node[next] = this.getrule(pref, "");
 			}
 
 			return node;
@@ -344,7 +354,7 @@ var wot_search =
 				condition: "and"
 			};
 
-			this.rules[name][attr].match[index] = 
+			this.rules[name][attr].match[index] =
 				this.loadruletree(this.rules[name][attr].match[index] || {},
 					pref, next);
 		} catch (e) {
@@ -359,9 +369,9 @@ var wot_search =
 			this.rules[name].pre[index] = this.rules[name].pre[index] || {};
 
 			if (attr == WOT_SEARCH_PRE_MATCH) {
-				this.rules[name].pre[index][attr] = wot_prefs.getInt(pref, 0);
+				this.rules[name].pre[index][attr] = this.getrule(pref, 0);
 			} else if (attr == WOT_SEARCH_PRE_RE) {
-				this.rules[name].pre[index][attr] = wot_prefs.getChar(pref, "");
+				this.rules[name].pre[index][attr] = this.getrule(pref, "");
 			}
 		} catch (e) {
 			dump("wot_search.loadprerule: failed with " + e + "\n");
@@ -405,11 +415,11 @@ var wot_search =
 					this.loadruletree(this.rules[name].target || {},
 						pref, next);
 			} else if (this.attrint.indexOf(attr) >= 0) {
-				this.rules[name][attr] = wot_prefs.getInt(pref, 0);
+				this.rules[name][attr] = this.getrule(pref, 0);
 			} else if (this.attrstr.indexOf(attr) >= 0) {
-				this.rules[name][attr] = wot_prefs.getChar(pref, "");
+				this.rules[name][attr] = this.getrule(pref, "");
 			} else {
-				this.rules[name][attr] = wot_prefs.getBool(pref, true);
+				this.rules[name][attr] = this.getrule(pref, true);
 			}
 		} catch (e) {
 			wdump("wot_search.loadrule: failed with " + e);
@@ -420,12 +430,17 @@ var wot_search =
 	{
 		try {
 			this.rules = {};
+			this._searchrules = wot_storage.get("search", {});
 
-			var branch = wot_prefs.ps.getBranch(WOT_PREF + WOT_SEARCH + ".");
-			var children = branch.getChildList("", {});
+			var keyword = "search.",
+				kw_len = keyword.length;
 
-			for (var i = 0; i < children.length; ++i) {
-				this.loadrule(children[i]);
+			for (var i in this._searchrules) {
+				if (!this._searchrules.hasOwnProperty(i)) continue;
+				if (i.indexOf(keyword) == 0) {  // remove prepending "search." keyword
+					i = i.slice(kw_len);
+				}
+				this.loadrule(i);
 			}
 		} catch (e) {
 			wdump("wot_search.sync: failed with " + e);
@@ -685,7 +700,7 @@ var wot_search =
 	{
 		try {
 			var set = [];
-				
+
 			if (match.element == "$frame") {
 				set.push(content.defaultView.frameElement);
 			} else {

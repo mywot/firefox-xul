@@ -81,11 +81,11 @@ var wot_api_link =
 							request.responseXML.getElementsByTagName(
 								WOT_SERVICE_XML_QUERY_TARGET),
 							true);
-			
+
 						var cache = {};
 						var retry = {};
 						var hasretries = false;
-					
+
 						for (var i = 0; i < batch.length; ++i) {
 							var s = wot_cache.get(batch[i], "status");
 
@@ -284,7 +284,7 @@ var wot_api_query =
 			wot_cache.set(hostname, "time", Date.now());
 			wot_cache.set(hostname, "inprogress", false);
 			wot_core.update();
-			
+
 			if (typeof(callback) == "function") {
 				callback();
 			}
@@ -724,7 +724,7 @@ var wot_api_submit =
 			if (!found) return;
 
 			qs += wot_url.getapiparams();
-			   
+
 			var request = new XMLHttpRequest();
 
 			if (!request) return;
@@ -855,7 +855,7 @@ var wot_api_update =
 			}
 
 			wot_prefs.flush();
-			
+
 			/* Build a request */
 			var request = new XMLHttpRequest();
 
@@ -1129,6 +1129,8 @@ var wot_keeper = {
         SUBMITTING: 2   // indicates the saving is temporary until submition is reported succesful
     },
 
+	STORAGE_NAME: "keeper",
+
     /* Comment-specific methods to work with Keeper */
 
     get_comment: function (target) {
@@ -1163,10 +1165,9 @@ var wot_keeper = {
 
     get_by_name: function (target, name) {
         // generic method to get data from local by target and name
-//        console.log("keeper.get_by_name()", target, name);
-
         try {
-            return wot_prefs.getJSON(wot_keeper._fullname(target, name)) || null;
+	        var keeper_data = wot_storage.get(this.STORAGE_NAME, {});
+            return keeper_data[wot_keeper._fullname(target, name)] || null;
         } catch (e) {
             wdump("wot_keeper.get_by_name() Failed with " + e);
         }
@@ -1175,19 +1176,55 @@ var wot_keeper = {
 
     store_by_name: function (target, name, obj) {
 //        console.log("keeper.store_by_name()", target, name, data);
-        wot_prefs.setJSON(wot_keeper._fullname(target, name), obj);
+	    var keeper_data = wot_storage.get(this.STORAGE_NAME, {});
+	    keeper_data[wot_keeper._fullname(target, name)] = obj;
+	    wot_storage.set(this.STORAGE_NAME, keeper_data, true);
     },
 
     remove_by_name: function (target, name) {
-//        wdump("keeper.remove_by_name()" + target + " " + name);
-        wot_prefs.clear(wot_keeper._fullname(target, name));
+	    var keeper_data = wot_storage.get(this.STORAGE_NAME, {});
+	    keeper_data[wot_keeper._fullname(target, name)] = undefined;
+	    wot_storage.set(this.STORAGE_NAME, keeper_data, true);
     },
 
     _fullname: function (target, name) {
-        return "keeper." + name + "." + target;
-    }
+        return name + "." + target;
+    },
+
+	move_from_prefs_to_storage: function () {
+		var branches = {
+			"keeper.": true
+		};
+
+		var keeper_data = wot_storage.get(this.STORAGE_NAME, {});
+
+		for (var b in branches) {
+
+			try {
+				var branch = wot_prefs.ps.getBranch(WOT_PREF + b);
+				var items = branch.getChildList("", {});
+				for (var i = 0; i < items.length; i++) {
+					var subname = items[i];
+					keeper_data[subname] = wot_prefs.getJSON("keeper." + items[i]) || null;
+				}
+
+				wot_storage.set(this.STORAGE_NAME, keeper_data);
+				wot_prefs.deleteBranch(b);
+
+			} catch (e) {
+				wdump("move_from_prefs_to_storage() / ["+b+"] failed with " + e);
+			}
+		}
+		wot_storage.flush();
+	},
+
+	load_delayed: function () {
+		this.move_from_prefs_to_storage();
+	}
 
 };
+
+wot_modules.push({ name: "wot_keeper", obj: wot_keeper });
 
 var wot_api_comments = {
     server: "www.mywot.com",
@@ -1349,7 +1386,7 @@ var wot_api_comments = {
             pref_pending_name = _this.PENDING_COMMENT_SID + target;
 
         // try to restore pending submission first
-        var state = wot_prefs.getJSON(pref_pending_name, {
+        var state = wot_storage.get(pref_pending_name, {
 	        target: target,
 	        comment_data: {},
 	        tries: 0
@@ -1365,11 +1402,11 @@ var wot_api_comments = {
 
         if (++state.tries > _this.MAX_TRIES) {
             wdump("FAIL: api.comments.submit: failed " + target + " (max tries)");
-            wot_prefs.clear(pref_pending_name);
+	        wot_storage.clear(pref_pending_name);
             return;
         }
 
-        wot_prefs.setJSON(pref_pending_name, state);    // remember the submission
+	    wot_storage.set(pref_pending_name, state);    // remember the submission
 
         state.comment_data['target'] = target;
 
@@ -1386,7 +1423,7 @@ var wot_api_comments = {
                     wot_api_comments.retry("submit", [ target ]);
                 } else {
                     wdump("api.comment.submit: failed " + target + " (403)");
-                    wot_prefs.clear(wot_api_comments.PENDING_COMMENT_SID + target);
+	                wot_storage.clear(wot_api_comments.PENDING_COMMENT_SID + target);
                 }
             },
             wot_api_comments.on_submit_comment_response
@@ -1407,18 +1444,18 @@ var wot_api_comments = {
             pref_pending_name = _this.PENDING_REMOVAL_SID + target;
 
         // try to restore pending submission first
-        var state = wot_prefs.getJSON(pref_pending_name, {
+        var state = wot_storage.get(pref_pending_name, {
             target: target,
             tries: 0
         });
 
         if (++state.tries > _this.MAX_TRIES) {
             wdump("api.comments.submit: failed " + target + " (max tries)");
-            wot_prefs.clear(pref_pending_name);
+	        wot_storage.clear(pref_pending_name);
             return;
         }
 
-        wot_prefs.setJSON(pref_pending_name, state);    // remember the submission
+	    wot_storage.set(pref_pending_name, state);    // remember the submission
 
         _this.call("remove",
             {
@@ -1434,7 +1471,7 @@ var wot_api_comments = {
                     wot_api_comments.retry("remove", [ target ]);
                 } else {
                     wdump("api.comment.remove: failed " + target + " (403)");
-                    wot_prefs.clear(wot_api_comments.PENDING_REMOVAL_SID + target);
+	                wot_storage.clear(wot_api_comments.PENDING_REMOVAL_SID + target);
                 }
             },
             wot_api_comments.on_remove_comment_response
@@ -1458,17 +1495,25 @@ var wot_api_comments = {
         branches[this.PENDING_COMMENT_SID] = wot_api_comments.submit;
         branches[this.PENDING_REMOVAL_SID] = wot_api_comments.remove;
 
-        for (var b in branches) {
-            try {
-                var comments_pending_branch = wot_prefs.ps.getBranch(WOT_PREF + b);
-                var comments_pending = comments_pending_branch.getChildList("", {});
-                for (var i = 0; i < comments_pending.length; i++) {
-                    branches[b].apply(wot_api_comments, [comments_pending[i]]); // call the proper function and provide it a target hostname
-                }
-            } catch (e) {
-                wdump("wot_api_comments.processpending() / ["+b+"] failed with " + e);
-            }
-        }
+	    var bag = wot_hashtable.get_enumerator();
+
+	    // go through stored in memory values and keep ones that belong to Storage
+	    while (bag.hasMoreElements()) {
+		    var name = wot_storage.get_name_from_element(bag.getNext());
+		    if (name && name != "is_loaded" && name != "flushed") {
+			    for (var b in branches) {
+				    try {
+					    if (name.indexOf(b) == 0) {
+						    var target = name.slice(b.length);
+						    branches[b].apply(wot_api_comments, [target]);
+					    }
+
+				    } catch (e) {
+					    wdump("wot_api_comments.processpending() / ["+b+"] failed with " + e);
+				    }
+			    }
+		    }
+	    }
     },
 
     pull_nonce: function (nonce) {
@@ -1542,7 +1587,7 @@ var wot_api_comments = {
             case WOT_COMMENTS.error_codes.SUCCESS:
                 wot_keeper.remove_comment(target);  // delete the locally saved comment only on successful submit
                 wot_cache.update_comment(target, { status: WOT_QUERY_OK, error_code: error_code });
-                wot_prefs.clear(_this.PENDING_COMMENT_SID + target); // don't try to send again
+                wot_storage.clear(_this.PENDING_COMMENT_SID + target); // don't try to send again
                 break;
 
             // for these errors we should try again, because there is non-zero possibility of quantum glitches around
@@ -1555,7 +1600,7 @@ var wot_api_comments = {
 
             default:
                 wot_cache.update_comment(target, { status: WOT_QUERY_ERROR, error_code: error_code });
-                wot_prefs.clear(_this.PENDING_COMMENT_SID + target);
+	            wot_storage.clear(_this.PENDING_COMMENT_SID + target);
         }
 
         wot_cache.set_captcha(!!data.captcha);
@@ -1575,7 +1620,7 @@ var wot_api_comments = {
             case WOT_COMMENTS.error_codes.SUCCESS:
                 wot_cache.remove_comment(target);
                 wot_keeper.remove_comment(target);
-                wot_prefs.clear(_this.PENDING_REMOVAL_SID + target);
+	            wot_storage.clear(_this.PENDING_REMOVAL_SID + target);
                 break;
 
             // some errors require retry due to singularity of the Universe
@@ -1588,7 +1633,7 @@ var wot_api_comments = {
 
             default:
                 wot_cache.update_comment(target, { status: WOT_QUERY_ERROR, error_code: error_code });
-                wot_prefs.clear(_this.PENDING_REMOVAL_SID + target);
+	            wot_storage.clear(_this.PENDING_REMOVAL_SID + target);
         }
 
         wot_rw.update_ratingwindow_comment(); // to update status "the website is commented by the user"

@@ -41,8 +41,7 @@ var wot_shared =
 			var data = {};
 
 			for (i = 0; i < shared.length; ++i) {
-				var attr = shared[i].attributes.getNamedItem(
-								WOT_SERVICE_XML_UPDATE_SHARED_LEVEL);
+				var attr = shared[i].attributes.getNamedItem(WOT_SERVICE_XML_UPDATE_SHARED_LEVEL);
 
 				if (!attr || !attr.value) {
 					return;
@@ -54,8 +53,7 @@ var wot_shared =
 					return;
 				}
 
-				var attr = shared[i].attributes.getNamedItem(
-								WOT_SERVICE_XML_UPDATE_SHARED_DOMAINS);
+				attr = shared[i].attributes.getNamedItem(WOT_SERVICE_XML_UPDATE_SHARED_DOMAINS);
 
 				if (!attr || !attr.value) {
 					return;
@@ -68,9 +66,12 @@ var wot_shared =
 				data[level] = data[level].concat(attr.value.split(","));
 			}
 
+			var stor_shared = {};
 			for (i in data) {
-				wot_prefs.setChar("shared." + i, data[i].join(","));
+				stor_shared["shared." + i] = data[i].join(",");
 			}
+			wot_storage.set("shared", stor_shared, true);
+			wot_prefs.deleteBranch("shared.");   // we don't need this in preferences any more
 
 			this.sync();
 		} catch (e) {
@@ -81,17 +82,19 @@ var wot_shared =
 	sync: function()
 	{
 		try {
-			var branch = wot_prefs.ps.getBranch(WOT_PREF + "shared.");
-			var children = branch.getChildList("", {});
+			var stor_shared = wot_storage.get("shared", {});
 
-			for (var i = 0; i < children.length; ++i) {
-				var level = Number(children[i]);
+			for (var i in stor_shared) {
+				if (!stor_shared.hasOwnProperty(i)) continue;
+
+				var parts = i.split(".", 2);
+				var level = Number(parts[1]);
 
 				if (level < 1) {
 					continue;
 				}
 
-				var data = wot_prefs.getChar("shared." + children[i]);
+				var data = stor_shared[i];
 
 				if (!data || !data.length) {
 					continue;
@@ -151,7 +154,7 @@ var wot_shared =
 			path = path.replace(/^\s+/, "")
 					.replace(/\s+$/, "")
 					.replace(/[\?#].*$/, "");
- 
+
 			if (path.length < 2 || path[0] != "/") {
 				return host;
 			}
@@ -261,7 +264,7 @@ var wot_shared =
 		} catch (e) {
 			dump("wot_shared.base32encode: failed with " + e + "\n");
 		}
-		
+
 		return null;
 	},
 

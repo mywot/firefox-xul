@@ -36,32 +36,32 @@ var wot_categories = {
         if (this.inited) return;
 
         this.init_categories();
-        this.pbi = wot_prefs.pref.QueryInterface(Components.interfaces.nsIPrefBranch2);
-        this.pbi.addObserver(WOT_PREF + this.PREF_CATEGORY, this, false);
+//        this.pbi = wot_prefs.pref.QueryInterface(Components.interfaces.nsIPrefBranch2);
+//        this.pbi.addObserver(WOT_PREF + this.PREF_CATEGORY, this, false);
         this.inited = true;
     },
 
     unload: function () {
         try {
-            if (this.pbi) {
-                this.pbi.removeObserver(WOT_PREF + this.PREF_CATEGORY, this);
-                this.pbi = null;
-            }
+//            if (this.pbi) {
+//                this.pbi.removeObserver(WOT_PREF + this.PREF_CATEGORY, this);
+//                this.pbi = null;
+//            }
         } catch (e) {
             wdump("wot_categories.unload: failed with " + e);
         }
     },
 
-    observe: function (subject, topic, state) {
-        // see load_delayed(). This function is used as a listener to
-        try {
-            if (!this.loading && topic == "nsPref:changed") {
-                this.init_categories();
-            }
-        } catch (e) {
-            wdump("wot_search.observe: failed with " + e);
-        }
-    },
+//    observe: function (subject, topic, state) {
+//        // see load_delayed(). This function is used as a listener to
+//        try {
+//            if (!this.loading && topic == "nsPref:changed") {
+//                this.init_categories();
+//            }
+//        } catch (e) {
+//            wdump("wot_search.observe: failed with " + e);
+//        }
+//    },
 
     parse: function (categories_node) {
 //        wdump("INFO: parse() categories");
@@ -70,7 +70,7 @@ var wot_categories = {
         var i, j, gs_obj, cat_obj, res_grouping = [];
 
         var groupings = categories_node.getElementsByTagName("grouping");
-        wot_prefs.deleteBranch(this.PREF_GROUPINGS + ".");
+        wot_prefs.deleteBranch(this.PREF_GROUPINGS + ".");          // remove old pref
         if (groupings) {
             for (j = 0; j < groupings.length; j++) {
                 gs_obj = wot_util.copy_attrs(groupings[j]);
@@ -93,14 +93,17 @@ var wot_categories = {
 
                 res_grouping.push(gs_obj);
             }
-            wot_prefs.setChar(this.PREF_GROUPINGS + ".all", JSON.stringify(res_grouping), true);
+//            wot_prefs.setChar(this.PREF_GROUPINGS + ".all", JSON.stringify(res_grouping), true);
+            wot_storage.set(this.PREF_GROUPINGS + ".all", res_grouping, false);
         }
 
         // remove all categories from prefs
-        wot_prefs.deleteBranch(this.PREF_CATEGORY + ".");
+        wot_prefs.deleteBranch(this.PREF_CATEGORY + ".");          // remove old pref
 
         // Iterate through <category> tags
-        var categories = categories_node.getElementsByTagName("category");
+        var categories = categories_node.getElementsByTagName("category"),
+	        cats = {};
+
         for (i = 0; i < categories.length; i++) {
             cat_obj = wot_util.copy_attrs(categories[i]);
             if (isNaN(cat_obj.name) || cat_obj.text == null || cat_obj.text.length == 0) {
@@ -111,9 +114,10 @@ var wot_categories = {
             cat_obj.id = parseInt(cat_obj.name);
             cat_obj.cs = (cat_obj.application == "4");               // set ChildSafety flag
             cat_obj.type = this.cgroups[cat_obj.group].type; // set type of the category based on parent group
-
-            wot_prefs.setChar(this.PREF_CATEGORY + "." + cat_obj.name, JSON.stringify(cat_obj), true); // using utf8
+	        cats[cat_obj.id] = cat_obj;
         }
+
+	    wot_storage.set(this.PREF_CATEGORY, cats, false);
 
 	    // Iterage through <conflict> tag that describes how categories may conflict with each other.
 	    var conflicts_node = categories_node.getElementsByTagName("conflict"),
@@ -133,11 +137,14 @@ var wot_categories = {
 		    conflicts.push(conflict_obj);
 	    }
 
-	    wot_prefs.setJSON(this.PREF_CONFLICTS, conflicts);      // save parsed results to preferences storage
+	    wot_prefs.deleteBranch(this.PREF_CONFLICTS);          // remove old pref
+	    wot_storage.set(this.PREF_CONFLICTS, conflicts, false);      // save parsed results to preferences storage
 
         this.init_categories();
 
         this.loading = false;
+
+	    wot_storage.flush(true);    // save storage's data
     },
 
     init_categories: function () {
@@ -145,33 +152,15 @@ var wot_categories = {
         /* Reads categories info from local preferences */
 
         try {
-            var branch = wot_prefs.ps.getBranch(WOT_PREF + this.PREF_CATEGORY + ".");
-            var children = branch.getChildList("", {});
 
-            this.categories = {};   // clear categories in memory
-
-            for (var i = 0; i < children.length; i++) {
-                try {
-                    var cat_id = children[i];
-                    var cat_json = wot_prefs.getChar(this.PREF_CATEGORY + "." + cat_id, "{}", true); // using utf8
-                    var cat = JSON.parse(cat_json);
-                    if (!wot_util.isEmpty(cat)) this.categories[cat_id] = cat;
-                } catch (e) {
-                    wdump("ERROR: exception in wot_categories.init_categories()" + e);
-                    wdump("ERROR: cat id:" + cat_id);
-                    wdump("ERROR: problematic string: " + cat_json);
-                    continue;
-                }
-            }
-
-            var groupings_json = wot_prefs.getChar(this.PREF_GROUPINGS + ".all", "{}", true); //using utf8
-            this.grouping = JSON.parse(groupings_json);
+            this.categories = wot_storage.get(this.PREF_CATEGORY, {});   // clear categories in memory
+            this.grouping = wot_storage.get(this.PREF_GROUPINGS + ".all", {});
+	        var conflicts = wot_storage.get(this.PREF_CONFLICTS, []);
 
 	        // Init proper structure for categories conflicts rules
 	        this.cat_combinations = {};
 	        this.cat_combinations_prio = ["6a"];    // first default value
 
-	        var conflicts = wot_prefs.getJSON(this.PREF_CONFLICTS, []);
 	        for (i = 0; i < conflicts.length; i++) {
 		        var conflict = conflicts[i],
 			        rule = String(conflict.rule).toLowerCase();
