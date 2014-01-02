@@ -235,7 +235,7 @@ var wot_core =
 				wot_core.clean_search_rules();
 			}
 
-			for (var i in wot_modules) {
+			for (var i = wot_modules.length - 1; i >= 0; i--) {
 				if (typeof(wot_modules[i].obj.unload) == "function") {
 					wot_modules[i].obj.unload();
 				}
