@@ -395,7 +395,7 @@ var wot_api_query =
                 }
 			}
 		} catch (e) {
-			wdump("wot_api_query.parse_users: failed with " + e);
+			wot_tools.wdump("wot_api_query.parse_users: failed with " + e);
 		}
 	},
 
@@ -417,7 +417,7 @@ var wot_api_query =
 			}
 
 		} catch (e) {
-			wdump("wot_api_query.parse_status: failed with " + e);
+			wot_tools.wdump("wot_api_query.parse_status: failed with " + e);
 		}
 	}
 };
@@ -730,7 +730,7 @@ var wot_api_submit =
 			if (!request) return;
 
             var url = wot_core.wot_service_url() + wot_crypto.authenticate_query(qs);
-//            wdump("API Submit: " + url);
+//            wot_tools.wdump("API Submit: " + url);
 
 			request.open("GET", url);
 
@@ -954,13 +954,13 @@ var wot_pending =
 			var pref_name = Date.now();
 
 			if (wot_prefs.setChar("pending." + pref_name, JSON.stringify(obj))) {
-//                wdump("Stored in prefs: " + JSON.stringify(obj));
+//                wot_tools.wdump("Stored in prefs: " + JSON.stringify(obj));
 				return true;
 			}
 
 			wot_prefs.flush();
 		} catch (e) {
-			wdump("wot_pending.store: failed with " + e);
+			wot_tools.wdump("wot_pending.store: failed with " + e);
 		}
 
 		return false;
@@ -997,7 +997,7 @@ var wot_pending =
             var data = JSON.parse(json_data);
 
 			if (!data || !data.target) {
-				wdump("wot_pending.parse: invalid entry: " + pref + ": " + json_data);
+				wot_tools.wdump("wot_pending.parse: invalid entry: " + pref + ": " + json_data);
 				this.clear(pref);
 				return null;
 			}
@@ -1039,11 +1039,11 @@ var wot_pending =
 //                }
 //            }
 
-//			wdump("wot_pending.parse: " + pref + ": " + rv.target);
+//			wot_tools.wdump("wot_pending.parse: " + pref + ": " + rv.target);
 			return rv;
 
 		} catch (e) {
-			wdump("wot_pending.parse: failed with " + e);
+			wot_tools.wdump("wot_pending.parse: failed with " + e);
 		}
 
 		return null;
@@ -1097,7 +1097,7 @@ var wot_pending =
 
 				if (!parsed) continue;
 
-//                wdump("API Submits Parsed: " + JSON.stringify(parsed));
+//                wot_tools.wdump("API Submits Parsed: " + JSON.stringify(parsed));
 
                 wot_api_submit.send(pref, parsed.target, parsed.testimonies, parsed.votes);
 
@@ -1169,7 +1169,7 @@ var wot_keeper = {
 	        var keeper_data = wot_storage.get(this.STORAGE_NAME, {});
             return keeper_data[wot_keeper._fullname(target, name)] || null;
         } catch (e) {
-            wdump("wot_keeper.get_by_name() Failed with " + e);
+            wot_tools.wdump("wot_keeper.get_by_name() Failed with " + e);
         }
         return null;
     },
@@ -1212,7 +1212,7 @@ var wot_keeper = {
 				wot_prefs.deleteBranch(b);
 
 			} catch (e) {
-				wdump("move_from_prefs_to_storage() / ["+b+"] failed with " + e);
+				wot_tools.wdump("move_from_prefs_to_storage() / ["+b+"] failed with " + e);
 			}
 		}
 		wot_storage.flush();
@@ -1318,7 +1318,7 @@ var wot_api_comments = {
             request.onload = function (event) {
                 if (!event || !event.target || event.target.status != 200 ||
                     !event.target.responseText) {
-                    wdump("api.comments.call.error: url = " + url + ", status = " + event.target.status);
+                    wot_tools.wdump("api.comments.call.error: url = " + url + ", status = " + event.target.status);
 
                     if (typeof(on_error) == "function") {
                         on_error(request, event.target.status, {});
@@ -1326,7 +1326,7 @@ var wot_api_comments = {
                     return;
                 }
 
-//                wdump("api.comments.call.success: url = " + url + ", status = " + event.target.status);
+//                wot_tools.wdump("api.comments.call.success: url = " + url + ", status = " + event.target.status);
 
                 var data = JSON.parse(event.target.responseText);
 
@@ -1349,7 +1349,7 @@ var wot_api_comments = {
             return true;
 
         } catch (e) {
-            wdump("wot_api_comments.call(): failed with " + e);
+            wot_tools.wdump("wot_api_comments.call(): failed with " + e);
         }
 
         return false;
@@ -1358,7 +1358,7 @@ var wot_api_comments = {
 
     get: function(target) {
         var _this = wot_api_comments;
-//        wdump("wot_api_comments.get(target) " + target);
+//        wot_tools.wdump("wot_api_comments.get(target) " + target);
 
         if (target) {
             _this.call("get",
@@ -1401,7 +1401,7 @@ var wot_api_comments = {
         }
 
         if (++state.tries > _this.MAX_TRIES) {
-            wdump("FAIL: api.comments.submit: failed " + target + " (max tries)");
+            wot_tools.wdump("FAIL: api.comments.submit: failed " + target + " (max tries)");
 	        wot_storage.clear(pref_pending_name);
             return;
         }
@@ -1422,7 +1422,7 @@ var wot_api_comments = {
                 if (request.status != 403) {
                     wot_api_comments.retry("submit", [ target ]);
                 } else {
-                    wdump("api.comment.submit: failed " + target + " (403)");
+                    wot_tools.wdump("api.comment.submit: failed " + target + " (403)");
 	                wot_storage.clear(wot_api_comments.PENDING_COMMENT_SID + target);
                 }
             },
@@ -1450,7 +1450,7 @@ var wot_api_comments = {
         });
 
         if (++state.tries > _this.MAX_TRIES) {
-            wdump("api.comments.submit: failed " + target + " (max tries)");
+            wot_tools.wdump("api.comments.submit: failed " + target + " (max tries)");
 	        wot_storage.clear(pref_pending_name);
             return;
         }
@@ -1470,7 +1470,7 @@ var wot_api_comments = {
                 if (request.status != 403) {
                     wot_api_comments.retry("remove", [ target ]);
                 } else {
-                    wdump("api.comment.remove: failed " + target + " (403)");
+                    wot_tools.wdump("api.comment.remove: failed " + target + " (403)");
 	                wot_storage.clear(wot_api_comments.PENDING_REMOVAL_SID + target);
                 }
             },
@@ -1509,7 +1509,7 @@ var wot_api_comments = {
 					    }
 
 				    } catch (e) {
-					    wdump("wot_api_comments.processpending() / ["+b+"] failed with " + e);
+					    wot_tools.wdump("wot_api_comments.processpending() / ["+b+"] failed with " + e);
 				    }
 			    }
 		    }
@@ -1517,7 +1517,7 @@ var wot_api_comments = {
     },
 
     pull_nonce: function (nonce) {
-//        wdump("wot_api_comments._pull_once(nonce) " + nonce);
+//        wot_tools.wdump("wot_api_comments._pull_once(nonce) " + nonce);
 
         var _this = wot_api_comments,
             target = null;
@@ -1531,7 +1531,7 @@ var wot_api_comments = {
     },
 
     is_error: function (error) {
-//        wdump("wot_api_comments.is_error(error)" + error);
+//        wot_tools.wdump("wot_api_comments.is_error(error)" + error);
 
         var error_code = 0,
             error_debug = "it is raining outside :(";
@@ -1544,14 +1544,14 @@ var wot_api_comments = {
         }
 
         if (error_code && error_code != WOT_COMMENTS.error_codes.COMMENT_NOT_FOUND) {
-            wdump("Error is returned:" + error_code + " / " + error_debug + " / " + error);
+            wot_tools.wdump("Error is returned:" + error_code + " / " + error_debug + " / " + error);
         }
 
         return error_code;  // if not zero, than it is error
     },
 
     on_get_comment_response: function (data) {
-//        wdump("wot_api_comments.on_get_comment_response(data)" + JSON.stringify(data));
+//        wot_tools.wdump("wot_api_comments.on_get_comment_response(data)" + JSON.stringify(data));
         // check whether error occured or data arrived
         var _this = wot_api_comments,
             nonce = data ? data.nonce : null, // to recover target from response
@@ -1577,7 +1577,7 @@ var wot_api_comments = {
     on_submit_comment_response: function (data) {
         /* Handler for "Submit" responses. On success it updates the local cache  */
 
-//        wdump("wot_api_comments.on_submit_comment_response(data) " + data);
+//        wot_tools.wdump("wot_api_comments.on_submit_comment_response(data) " + data);
         var _this = wot_api_comments,
             nonce = data.nonce, // to recover target from response
             target = _this.pull_nonce(nonce),
@@ -1609,7 +1609,7 @@ var wot_api_comments = {
     },
 
     on_remove_comment_response: function (data) {
-//        wdump("wot_api_comments.on_remove_comment_response(data) " + data);
+//        wot_tools.wdump("wot_api_comments.on_remove_comment_response(data) " + data);
 
         var _this = wot_api_comments,
             nonce = data.nonce, // to recover target from response

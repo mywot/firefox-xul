@@ -53,7 +53,7 @@ var wot_storage =
 			}
 
 		} catch (e) {
-			wdump("wot_storage.load: failed with " + e);
+			wot_tools.wdump("wot_storage.load: failed with " + e);
 		}
 
 		if(typeof(callback) == "function") callback(); // call the callback anyway, even if storage is failed to load in order to make the add-on work
@@ -102,7 +102,7 @@ var wot_storage =
             var t = this.get_from_memory(name);
             return t !== undefined ? t : default_value;
 		} catch (e) {
-			wdump("wot_storage.get(" + name + "): failed with " + e);
+			wot_tools.wdump("wot_storage.get(" + name + "): failed with " + e);
 			return default_value;
 		}
 	},
@@ -115,7 +115,7 @@ var wot_storage =
 			}
 			return true;
 		} catch (e) {
-			wdump("wot_storage.set(" + name + "): failed with " + e);
+			wot_tools.wdump("wot_storage.set(" + name + "): failed with " + e);
 			return false;
 		}
 	},

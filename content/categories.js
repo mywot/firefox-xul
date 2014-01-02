@@ -48,7 +48,7 @@ var wot_categories = {
 //                this.pbi = null;
 //            }
         } catch (e) {
-            wdump("wot_categories.unload: failed with " + e);
+            wot_tools.wdump("wot_categories.unload: failed with " + e);
         }
     },
 
@@ -59,12 +59,12 @@ var wot_categories = {
 //                this.init_categories();
 //            }
 //        } catch (e) {
-//            wdump("wot_search.observe: failed with " + e);
+//            wot_tools.wdump("wot_search.observe: failed with " + e);
 //        }
 //    },
 
     parse: function (categories_node) {
-//        wdump("INFO: parse() categories");
+//        wot_tools.wdump("INFO: parse() categories");
         // process xml dom here and store to prefs
         this.loading = true;
         var i, j, gs_obj, cat_obj, res_grouping = [];
@@ -107,7 +107,7 @@ var wot_categories = {
         for (i = 0; i < categories.length; i++) {
             cat_obj = wot_util.copy_attrs(categories[i]);
             if (isNaN(cat_obj.name) || cat_obj.text == null || cat_obj.text.length == 0) {
-                wdump("WARN: wot_categories.parse(): empty malformed category is found. Skipped.");
+                wot_tools.wdump("WARN: wot_categories.parse(): empty malformed category is found. Skipped.");
                 continue;
             }
 
@@ -148,7 +148,7 @@ var wot_categories = {
     },
 
     init_categories: function () {
-//        wdump("INFO: init_categories()");
+//        wot_tools.wdump("INFO: init_categories()");
         /* Reads categories info from local preferences */
 
         try {
@@ -186,7 +186,7 @@ var wot_categories = {
             this.inited = true;
 
         } catch (e) {
-            wdump("wot_search.init_categories(): failed with " + e);
+            wot_tools.wdump("wot_search.init_categories(): failed with " + e);
         }
     },
 
@@ -218,7 +218,7 @@ var wot_categories = {
         var cats_json = wot_cache.get(target, "cats"),
             cats = (cats_json && cats_json.length > 0) ? JSON.parse(cats_json) : {};
 
-//        wdump("target_categories:: " + JSON.stringify(cats));
+//        wot_tools.wdump("target_categories:: " + JSON.stringify(cats));
         return cats;
     },
 
@@ -229,7 +229,7 @@ var wot_categories = {
         var bl_json = wot_cache.get(target, "blacklists"),
             bls = (bl_json && bl_json.length > 0) ? JSON.parse(bl_json) : [];
 
-//        wdump("target_blacklists:: " + JSON.stringify(bls));
+//        wot_tools.wdump("target_blacklists:: " + JSON.stringify(bls));
         return bls;
 
     },
@@ -267,7 +267,7 @@ var wot_categories = {
             if (cat.c >= this.CATEGORY_THRESHOLD) res[i] = cat;
         }
 
-//        wdump("select_identified:: " + JSON.stringify(res));
+//        wot_tools.wdump("select_identified:: " + JSON.stringify(res));
 
         return res;
     },
@@ -303,7 +303,7 @@ var wot_categories = {
                 });
                 sort_array.reverse();
             } catch (e) {
-                wdump("ERROR: wot_categories.rearrange_categories(): Failed to rearrange categories / 1", e);
+                wot_tools.wdump("ERROR: wot_categories.rearrange_categories(): Failed to rearrange categories / 1", e);
             }
 
             var alltogether = sort_array.slice(0);
@@ -317,7 +317,7 @@ var wot_categories = {
                 }
                 cs_array.reverse();
             } catch (e) {
-                wdump("ERROR: wot_categories.rearrange_categories(): Failed to rearrange categories / 2", e);
+                wot_tools.wdump("ERROR: wot_categories.rearrange_categories(): Failed to rearrange categories / 2", e);
             }
         }
 
@@ -327,7 +327,7 @@ var wot_categories = {
             childsafety: cs_array
         };
 
-//        wdump("rearrange_categories:: " + JSON.stringify(res));
+//        wot_tools.wdump("rearrange_categories:: " + JSON.stringify(res));
 
         return res;
     }

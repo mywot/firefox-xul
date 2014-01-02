@@ -253,7 +253,7 @@ var wot_popup =
 			return true;
 
 		} catch (e) {
-			wdump("wot_popup.loadlayer: failed with " + e);
+			wot_tools.wdump("wot_popup.loadlayer: failed with " + e);
 		}
 		return false;
 	},
@@ -405,7 +405,7 @@ var wot_popup =
             var style = event_view.getComputedStyle(layer),
                 popupheight = Math.max(isNaN(style.height) ? 0 : style.height , wot_popup.height),
                 popupwidth = style.width || wot_popup.width;
-			
+
 			var height = parseInt(event_view.innerHeight - wot_popup.barsize);
 			var width  = 0 + event_view.innerWidth  - wot_popup.barsize;
 
@@ -454,7 +454,7 @@ var wot_popup =
 			} else if ((posx + wot_popup.width) > (width + hscroll)) {
 				posx = width - wot_popup.width + hscroll;
 			}
-			
+
 			var appearance = ++wot_popup.appearance;
 
 			if (layer.style.visibility != "hidden") {
@@ -471,7 +471,7 @@ var wot_popup =
 					}, wot_prefs.popup_show_delay);
 			}
 		} catch (e) {
-			wdump("wot_popup.onmouseover: failed with " + e);
+			wot_tools.wdump("wot_popup.onmouseover: failed with " + e);
 		}
 	}
 };

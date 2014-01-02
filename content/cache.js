@@ -29,7 +29,7 @@ var wot_hashtable =
 			this.bag = Components.classes["@mozilla.org/hash-property-bag;1"].
 						getService(Components.interfaces.nsIWritablePropertyBag);
 		} catch (e) {
-			wdump("wot_hashtable.init: failed with: " + e);
+			wot_tools.wdump("wot_hashtable.init: failed with: " + e);
 		}
 	},
 
@@ -169,7 +169,7 @@ var wot_cache =
 			return;
 		}
 
-//		wdump(name + ", " + property + ", " + value);
+//		wot_tools.wdump(name + ", " + property + ", " + value);
         wot_hashtable.set(pn, value);
 	},
 
@@ -273,7 +273,7 @@ var wot_cache =
 				this.set(name, "lowered_" + a, 0);
 			}
 		} catch (e) {
-			wdump("wot_cache.create: failed with " + e);
+			wot_tools.wdump("wot_cache.create: failed with " + e);
 		}
 	},
 
@@ -304,7 +304,7 @@ var wot_cache =
 				this.remove(name, "lowered_" + a);
 			}
 		} catch (e) {
-			wdump("wot_cache.destroy: failed with " + e);
+			wot_tools.wdump("wot_cache.destroy: failed with " + e);
 		}
 	},
 
@@ -353,7 +353,7 @@ var wot_cache =
 			var name = this.resolve_nonce(nonce);
 
 			if (!name) {
-				wdump("wot_cache.add_target: unknown nonce: " + nonce);
+				wot_tools.wdump("wot_cache.add_target: unknown nonce: " + nonce);
 				return;
 			}
 
@@ -379,7 +379,7 @@ var wot_cache =
 
 			if (islink) {
 				if (this.get(name, "status") == WOT_QUERY_OK) {
-					wdump("wot_cache.add_target: not overwriting on link for " + name);
+					wot_tools.wdump("wot_cache.add_target: not overwriting on link for " + name);
 					return;
 				}
 				this.set(name, "status", WOT_QUERY_LINK);
@@ -412,7 +412,7 @@ var wot_cache =
 
                     default:
                         // unknown node found inside TARGET tag
-                        wdump("Unknown tag " + child.localName + " inside the TARGET");
+                        wot_tools.wdump("Unknown tag " + child.localName + " inside the TARGET");
 				}
                 child = child.nextSibling;
 			}
@@ -424,7 +424,7 @@ var wot_cache =
             this.add_question(name, target.firstChild);
 
         } catch (e) {
-			wdump("ERROR: wot_cache.add_target: failed with " + e);
+			wot_tools.wdump("ERROR: wot_cache.add_target: failed with " + e);
 		}
 	},
 
@@ -458,7 +458,7 @@ var wot_cache =
                 }
             }
         } catch (e) {
-            wdump("ERROR: wot_cache.add_application: failed with " + e);
+            wot_tools.wdump("ERROR: wot_cache.add_application: failed with " + e);
         }
 
     },
@@ -503,7 +503,7 @@ var wot_cache =
             return cat;
 
         } catch (e) {
-            wdump("ERROR: wot_cache.add_category: failed with " + e);
+            wot_tools.wdump("ERROR: wot_cache.add_category: failed with " + e);
             return {};
         }
     },
@@ -518,7 +518,7 @@ var wot_cache =
             return this.process_attributes(attrs_list, hostname, node);
 
         } catch (e) {
-            wdump("ERROR: wot_cache.add_category: failed with " + e);
+            wot_tools.wdump("ERROR: wot_cache.add_category: failed with " + e);
             return {};
         }
     },
@@ -573,7 +573,7 @@ var wot_cache =
                 }
             }
         } catch(e) {
-            wdump("Failed to extract Question data from XML " + e);
+            wot_tools.wdump("Failed to extract Question data from XML " + e);
         }
 	},
 

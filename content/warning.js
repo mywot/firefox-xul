@@ -167,7 +167,7 @@ var wot_warning =
 
 			this.warned = {};
 		} catch (e) {
-			wdump("wot_warning.load: failed with " + e);
+			wot_tools.wdump("wot_warning.load: failed with " + e);
 		}
 	},
 
@@ -508,7 +508,7 @@ var wot_warning =
 				!body || !body.length) {
 				return true;
 			}
-			
+
 			var style = content.createElement("style");
 
 			if (!style) {
@@ -636,7 +636,7 @@ var wot_warning =
 			if (!warning || warning.style.display == "none") {
 				return;
 			}
-			
+
 			var wrapper = content.getElementById("wotwrapper");
 
 			if (!wrapper) {

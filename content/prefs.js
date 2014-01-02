@@ -215,7 +215,7 @@ var wot_prefs =
             var json = this.getChar(name, null, false);
             return json ? JSON.parse(wot_util.utf8_to_unicode(json)) : default_value;
         } catch (e) {
-            wdump("wot_prefs.getJSON(" + name + "): failed with " + e);
+            wot_tools.wdump("wot_prefs.getJSON(" + name + "): failed with " + e);
             return default_value;
         }
     },
@@ -225,7 +225,7 @@ var wot_prefs =
             var json = JSON.stringify(obj);
             return this.setChar(name, wot_util.unicode_to_utf8(json), false);
         } catch (e) {
-            wdump("wot_prefs.getJSON(" + name + "): failed with " + e);
+            wot_tools.wdump("wot_prefs.getJSON(" + name + "): failed with " + e);
             return false;
         }
     },

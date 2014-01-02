@@ -52,7 +52,7 @@ var wot_rw = {
                 wot_prefs.setChar("last_message", wot_api_query.message_id);
             }
         } catch (e) {
-            wdump("wot_rw.unseenmessage: failed with " + e);
+            wot_tools.wdump("wot_rw.unseenmessage: failed with " + e);
         }
     },
 
@@ -76,7 +76,7 @@ var wot_rw = {
             /* Stores any pending testimonies */
             wot_core.update();
         } catch (e) {
-            wdump("wot_rw.hide_popup: failed with " + e);
+            wot_tools.wdump("wot_rw.hide_popup: failed with " + e);
         }
     },
 
@@ -124,7 +124,7 @@ var wot_rw = {
             rw.wot_bg.wot.core.moz_set_usermessage(JSON.stringify(msg_data));
 
         } catch (e) {
-            wdump("ERROR: wot_ratingwindow.update_messages(): Failed / " + e);
+            wot_tools.wdump("ERROR: wot_ratingwindow.update_messages(): Failed / " + e);
         }
     },
 
@@ -197,7 +197,7 @@ var wot_rw = {
 
     update: function () {
         // Updates content of Rating Window. RW must be already initialized (locales, categories info, etc).
-//        wdump("RW.update()");
+//        wot_tools.wdump("RW.update()");
 
         if (!this.is_visible) return;
 
@@ -206,7 +206,7 @@ var wot_rw = {
             rw_wot = this.get_rw_wot(),
             target = wot_core.hostname;
 
-//        wdump("\tTarget: " + target);
+//        wot_tools.wdump("\tTarget: " + target);
 
         if (!rw || !rw_doc || !rw_wot) return;
 
@@ -233,7 +233,7 @@ var wot_rw = {
             }
         }
 
-//        wdump("\tdata: " + JSON.stringify(data));
+//        wot_tools.wdump("\tdata: " + JSON.stringify(data));
 
         rw_wot.ratingwindow.update(target, JSON.stringify(data));
     },
@@ -263,10 +263,10 @@ var wot_rw = {
             };
 
         } catch (e) {
-            wdump("ERROR: wot_rw.get_preferences() raised an exception: " + e);
+            wot_tools.wdump("ERROR: wot_rw.get_preferences() raised an exception: " + e);
         }
 
-//        wdump("prefs: " + JSON.stringify(prefs));
+//        wot_tools.wdump("prefs: " + JSON.stringify(prefs));
 
         return prefs;
     },
@@ -276,15 +276,15 @@ var wot_rw = {
             rw.wot_bg.wot.prefs.load_prefs(JSON.stringify(prefs));
 
         } catch (e) {
-            wdump("ERROR: wot_rw.push_preferences() raised an exception: " + e);
+            wot_tools.wdump("ERROR: wot_rw.push_preferences() raised an exception: " + e);
         }
     },
 
     on_submit: function (data) {
-//        wdump("RW: on_submit() " + JSON.stringify(data));
+//        wot_tools.wdump("RW: on_submit() " + JSON.stringify(data));
 
         if (!data || !data.params) {
-            wdump("on_submit() received empty data to submit.");
+            wot_tools.wdump("on_submit() received empty data to submit.");
             return;
         }
 
@@ -325,7 +325,7 @@ var wot_rw = {
             var details = event.detail;
             if (!details) return false;
 
-//            wdump("on_ratingwindow_event() " + JSON.stringify(details));
+//            wot_tools.wdump("on_ratingwindow_event() " + JSON.stringify(details));
 
             var message_id = details.message_id,
                 data = details.data;
@@ -389,14 +389,14 @@ var wot_rw = {
                     break;
 
 	            case "log":
-		            wdump("LOG: " + JSON.stringify(data));
+		            wot_tools.wdump("LOG: " + JSON.stringify(data));
 		            break;
             }
 
             return true;
 
         } catch (e) {
-            wdump("ERROR: wot_rw.on_ratingwindow_event() raised an exception: " + e);
+            wot_tools.wdump("ERROR: wot_rw.on_ratingwindow_event() raised an exception: " + e);
         }
     },
 
@@ -412,7 +412,7 @@ var wot_rw = {
         if (chan) {
             chan.addEventListener(event_id, this.on_ratingwindow_event);
         } else {
-            wdump("Can't find 'wot-ratingwindow' element in RatingWindow DOM. Very bad!");
+            wot_tools.wdump("Can't find 'wot-ratingwindow' element in RatingWindow DOM. Very bad!");
         }
 
         return true;
@@ -427,7 +427,7 @@ var wot_rw = {
 
             var prefs = this.get_preferences();
             this.push_preferences(rw, prefs);
-//            wdump(JSON.stringify(prefs));
+//            wot_tools.wdump(JSON.stringify(prefs));
 
             // setup categories data in the RW
             rw_wot.categories = wot_categories.categories;
@@ -444,7 +444,7 @@ var wot_rw = {
             this.is_inited = true;
 
         } catch (e) {
-            wdump("Failed with wot_rw.initialize()" + e);
+            wot_tools.wdump("Failed with wot_rw.initialize()" + e);
         }
     }
 

@@ -61,7 +61,7 @@ var wot_status = {
 			if (wot_cache.isok(wot_core.hostname)) {
 				reputation = wot_cache.get(wot_core.hostname, "reputation_0");
 			}
-			
+
 			if (reputation > WOT_MAX_REPUTATION) {
 				reputation = WOT_MAX_REPUTATION;
 			}
@@ -106,7 +106,7 @@ var wot_status = {
 
             wot_rw.update();
 		} catch (e) {
-			wdump("wot_status.update: failed with " + e);
+			wot_tools.wdump("wot_status.update: failed with " + e);
 		}
 	}
 };
@@ -137,7 +137,7 @@ var wot_ui = {
 				}
 			}
 		} catch (e) {
-			wdump("wot_ui.show_accessible: failed with " + e);
+			wot_tools.wdump("wot_ui.show_accessible: failed with " + e);
 		}
 	},
 
@@ -169,12 +169,12 @@ var wot_ui = {
 			if (target) {
 				target = target.nextSibling;
 			}
-		
+
 			nbr.insertItem(id, target);
 			nbr.setAttribute("currentset", nbr.currentSet);
 			document.persist("nav-bar", "currentset");
 		} catch (e) {
-			wdump("wot_ui.show_toolbar_button: failed with " + e);
+			wot_tools.wdump("wot_ui.show_toolbar_button: failed with " + e);
 		}
 	},
 

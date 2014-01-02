@@ -130,7 +130,7 @@ var wot_settings =
                     if ((type == "checkbox" || type == "radio") &&
                             preftype == "bool") {
                         if (!wot_prefs.setBool(id, inputs[i].checked)) {
-                            wdump("wot_settings.onsave: setBool failed for " + id);
+                            wot_tools.wdump("wot_settings.onsave: setBool failed for " + id);
                         }
                     } else {
                         var value = inputs[i].getAttribute("value");
@@ -139,43 +139,43 @@ var wot_settings =
                             if (preftype == "string") {
                                 value = "";
                             } else {
-                                wdump("wot_settings.onsave: no value for " + id);
+                                wot_tools.wdump("wot_settings.onsave: no value for " + id);
                                 continue;
                             }
                         }
 
                         if (preftype == "bool") {
                             if (!wot_prefs.setBool(id, (value == "true" || value == "1"))) {
-                                wdump("wot_settings.onsave: setBool failed for " + id);
+                                wot_tools.wdump("wot_settings.onsave: setBool failed for " + id);
                             }
                         } else if (preftype == "int") {
                             if (!wot_prefs.setInt(id, Number(value))) {
-                                wdump("wot_settings.onsave: setInt failed for " + id + " and value " + value);
+                                wot_tools.wdump("wot_settings.onsave: setInt failed for " + id + " and value " + value);
                             }
                         } else if (preftype == "string") {
                             if (!wot_prefs.setChar(id, value)) {
-                                wdump("wot_settings.onsave: setChar failed for " + id);
+                                wot_tools.wdump("wot_settings.onsave: setChar failed for " + id);
                             }
                         }
                     }
                 } catch (e) {
-                    wdump("wot_settings.onsave(): failed for " + id + " with " + e);
+                    wot_tools.wdump("wot_settings.onsave(): failed for " + id + " with " + e);
                 }
 			}
 			wot_prefs.flush();
 			wot_settings.addscript(content, "wotsettings_saved();");
 			return;
 		} catch (e) {
-			wdump("wot_settings.onsave: failed with " + e);
+			wot_tools.wdump("wot_settings.onsave: failed with " + e);
 		}
 
 		try {
 			wot_settings.addscript(content, "wotsettings_failed();");
 		} catch (e) {
-			wdump("wot_settings.onsave: failed with " + e);
+			wot_tools.wdump("wot_settings.onsave: failed with " + e);
 		}
 	},
-	
+
 	addscript: function(content, js)
 	{
 		try {
@@ -219,7 +219,7 @@ var wot_settings =
 				} else if (preftype == "string") {
 					value = wot_prefs.getChar(id, null);
 				} else {
-					wdump("wot_settings.loadinputs: invalid preftype " + preftype);
+					wot_tools.wdump("wot_settings.loadinputs: invalid preftype " + preftype);
 					continue;
 				}
 
@@ -266,7 +266,7 @@ var wot_settings =
 					if (item.display != rules[j]) {
 						continue;
 					}
-				
+
 					var id = WOT_SEARCH + "." + item.rule + ".enabled";
 
                     search_rules.push({
@@ -278,15 +278,15 @@ var wot_settings =
 				}
 			}
 
-//            wdump(JSON.stringify(search_rules));
+//            wot_tools.wdump(JSON.stringify(search_rules));
             wot_settings.addscript(content, "build_search_rules('"+JSON.stringify(search_rules)+"')");
 			return true;
 		} catch (e) {
-			wdump("wot_settings.loadsearch: failed with " + e);
+			wot_tools.wdump("wot_settings.loadsearch: failed with " + e);
 		}
 		return false;
 	}
-		
+
 };
 
 wot_modules.push({ name: "wot_settings", obj: wot_settings });

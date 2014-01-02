@@ -129,7 +129,7 @@ var wot_commands =
 			wot_prefs.setBool("enabled", wot_prefs.enabled);
 			wot_core.update();
 		} catch (e) {
-			wdump("wot_commands.enabled: failed with " + e);
+			wot_tools.wdump("wot_commands.enabled: failed with " + e);
 		}
 	},
 
@@ -141,7 +141,7 @@ var wot_commands =
 				wot_core.update();
 			}
 		} catch (e) {
-			wdump("wot_commands.refresh: failed with " + e);
+			wot_tools.wdump("wot_commands.refresh: failed with " + e);
 		}
 	},
 

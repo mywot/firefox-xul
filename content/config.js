@@ -401,10 +401,3 @@ const WOT_COMMENTS = {
         COMMENT_SAVE_FAILED: 18
     }
 };
-
-var wot_modules = [];
-
-// This function should be moved to other place
-function wdump (str) {
-    dump(str + "\n");
-}

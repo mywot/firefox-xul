@@ -109,7 +109,7 @@ var wot_util =
                 obj[attr.name] = attr.value;
             }
         } else {
-            wdump("wot_utils.copy_attrs() - empty node is provided");
+            wot_tools.wdump("wot_utils.copy_attrs() - empty node is provided");
         }
         return obj;
     },
@@ -184,7 +184,7 @@ var wot_util =
 
             return html;
         } catch (e) {
-            wdump("warning.processhtml: failed with " + e);
+            wot_tools.wdump("warning.processhtml: failed with " + e);
         }
 
         return "";
@@ -570,7 +570,7 @@ var wot_browser =
             }
 
         } catch (e) {
-            wdump("ERROR: wot_util.wot_browser.open_wotsite() raised an exception. " + e);
+            wot_tools.wdump("ERROR: wot_util.wot_browser.open_wotsite() raised an exception. " + e);
         }
 
     },
@@ -980,7 +980,7 @@ var wot_crypto =
 
 			return (l == h);
 		} catch (e) {
-			wdump("wot_crypto.islevel: failed with " + e);
+			wot_tools.wdump("wot_crypto.islevel: failed with " + e);
 		}
 		return false;
 	},
@@ -998,7 +998,7 @@ var wot_crypto =
                 }
             }
         } catch (e) {
-            wdump("crypto.encrypt: failed with " + e);
+            wot_tools.wdump("crypto.encrypt: failed with " + e);
         }
 
         return null;
@@ -1024,7 +1024,7 @@ var wot_crypto =
                 }
             }
         } catch (e) {
-            wdump("wot_crypto.decrypt(): failed with " + e);
+            wot_tools.wdump("wot_crypto.decrypt(): failed with " + e);
         }
 
         return null;

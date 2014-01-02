@@ -422,7 +422,7 @@ var wot_search =
 				this.rules[name][attr] = this.getrule(pref, true);
 			}
 		} catch (e) {
-			wdump("wot_search.loadrule: failed with " + e);
+			wot_tools.wdump("wot_search.loadrule: failed with " + e);
 		}
 	},
 
@@ -443,7 +443,7 @@ var wot_search =
 				this.loadrule(i);
 			}
 		} catch (e) {
-			wdump("wot_search.sync: failed with " + e);
+			wot_tools.wdump("wot_search.sync: failed with " + e);
 		}
 	},
 
@@ -453,7 +453,7 @@ var wot_search =
 	{
         try {   // Workaround to resolve "TypeError: can't access dead object" at start of the browser
             if (!event.originalTarget) {
-	            wdump("event.originalTarget is undefined");
+	            wot_tools.wdump("event.originalTarget is undefined");
 	            return;
             }
         } catch (e) {
@@ -463,7 +463,7 @@ var wot_search =
 			event.originalTarget.wot_domloaded = Date.now();
 			wot_search.watch(event.originalTarget);
 		} catch (e) {
-			wdump("wot_search.domcontentloaded: failed with " + e);
+			wot_tools.wdump("wot_search.domcontentloaded: failed with " + e);
 		}
 	},
 
@@ -471,7 +471,7 @@ var wot_search =
 	{
         try {   // Workaround to resolve "TypeError: can't access dead object" at start of the browser
             if (!event.originalTarget) {
-	            wdump("event.originalTarget is undefined");
+	            wot_tools.wdump("event.originalTarget is undefined");
 	            return;
             }
         } catch (e) {
@@ -513,7 +513,7 @@ var wot_search =
 				attributes: true, childList: true, subtree: true
 			});
 		} catch (e) {
-			wdump("wot_search.watch: failed with " + e);
+			wot_tools.wdump("wot_search.watch: failed with " + e);
 		}
 	},
 
