@@ -72,6 +72,10 @@
                     width="576px" height="422px"/>
         </panel>
 
+        <panel id="wot-warning" noautohide="true" position="topcenter topleft">
+            <iframe id="wot-warning-frame" type="content" width="388px" />
+        </panel>
+
         <!-- Indicator tooltip -->
         <tooltip id="wot-tooltip"
                  onpopupshowing="return wot_commands.tooltip_update(document.tooltipNode);">

@@ -1,6 +1,6 @@
 /*
 	util.js
-	Copyright © 2005 - 2013  WOT Services Oy <info@mywot.com>
+	Copyright © 2005 - 2014  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -464,7 +464,7 @@ var wot_browser =
 		return null;
 	},
 
-	show_warning: function(hostname, message, known)
+	show_notification: function(hostname, message, known)
 	{
 		try {
 			var icon = "chrome://wot/skin/fusion/";
@@ -517,7 +517,7 @@ var wot_browser =
 					null, null, "wot-popup", "top", true, null);
 			}
 		} catch (e) {
-			dump("wot_browser.show_warning: failed with " + e + "\n");
+			dump("wot_browser.show_notification: failed with " + e + "\n");
 		}
 	},
 

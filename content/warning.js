@@ -1,6 +1,6 @@
 /*
 	warning.js
-	Copyright © 2006 - 2012  WOT Services Oy <info@mywot.com>
+	Copyright © 2006 - 2014  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -23,9 +23,11 @@ const WOT_WARNING_CSS = "@import \"chrome://wot/skin/include/warning.css\";";
 var wot_warning =
 {
 	minheight: 600,
+	width: 390,
 	exit_mode: "back",
 	is_blocked: false,
     warned: {},
+	current_tab: null,  // hostname + tabIndex to understand, whether the warning already updated for the tab
 
     make_categories_block: function (categories, options) {
 
@@ -314,8 +316,8 @@ var wot_warning =
 
 			var hostname = wot_url.gethostname(content.location.href);
 
-			if (wot_warning.isdangerous(hostname, false) == WOT_WARNING_DOM) {
-				wot_warning.add(hostname, content, WOT_WARNING_DOM);
+			if (wot_warning.isdangerous(hostname, false) == WOT_WARNING_DOM && !wot_warning.warned[hostname]) {
+				wot_warning.add_overlay(hostname, content, WOT_WARNING_DOM, false);
 			}
 		} catch (e) {
 			dump("wot_warning.domcontentloaded: failed with " + e + "\n");
@@ -342,6 +344,10 @@ var wot_warning =
 		return -1;
 	},
 
+	getwarning: function () {
+		return document.getElementById("wot-warning");
+	},
+
 	set_exitmode: function(content)
 	{
 		var window = content.defaultView;
@@ -354,28 +360,205 @@ var wot_warning =
 		return wot_warning.exit_mode;
 	},
 
-	add: function(hostname, content, type, forced_reason)
-	{
-		/* Obviously, this isn't exactly foolproof. A site might have
-			elements with a higher z-index, or it might try to remove
-			our layer. That's why we show the notification bar too.
+	getposition: function (container, warning) {
 
-			A better, but more complicated solution would be to create
-			a canvas over the browser and draw a copy of the contents
-			there. We'll go there if it comes to that. */
+		if (!container || !warning) return null;
+
+		var nbox = gBrowser.getNotificationBox(),
+			offsetY = 28;
+
+		if (nbox && !nbox.notificationsHidden && nbox.currentNotification) {
+			offsetY = nbox.currentNotification.clientHeight > 0 ? nbox.currentNotification.clientHeight + 3 : offsetY;
+		}
+
+		var warning_width = this.width,
+			width = container.clientWidth;
+			height = container.clientHeight;
+
+		return {
+			anchor: container,
+			warning: warning,
+			x: - warning_width / 2,
+			y: offsetY,
+			height: height
+		}
+	},
+
+	get_tabtarget: function () {
+		var tab = getBrowser().selectedTab;
+		return wot_core.hostname + "@@" + tab.tabIndex;
+	},
+
+	add: function(hostname, content, type, blocking_mode) {
+		if (window.windowState === 2) { // Main window is minimized - hide the warning popup
+			this.hide(content);
+		} else {
+
+			if (wot_warning.current_tab != wot_warning.get_tabtarget()) {
+				if (this.update_content(hostname, content, type, blocking_mode)) {
+					this.show();
+
+				} else {
+					// if updating content was unsuccessful, don't show the warning popup
+					this.hide(content);
+				}
+			}
+		}
+	},
+
+	add_overlay: function (hostname, content, type, forced_reason) {
+		// Attach the Shader to the current website
+		var content_body = content.getElementsByTagName("body");
+
+		content_body = content_body.length > 0 ? content_body[0] : null;
+
+		if (content_body &&
+			content.contentType &&
+			content.contentType.toLowerCase().indexOf("html") >= 0) {
+
+			var overlay = content.createElement("div");
+			overlay.setAttribute("id", "wot-overlay"); // FIXME: the ID should be random
+
+			// set style
+			var opacity = 0;
+			if (wot_prefs.warning_opacity &&
+				wot_prefs.warning_opacity.length > 0 &&
+				Number(wot_prefs.warning_opacity) >= 0 &&
+				Number(wot_prefs.warning_opacity) <= 1) {
+				opacity = wot_prefs.warning_opacity;
+			}
+
+			var style = [
+				"position: fixed",
+				"left: 0",
+				"top: 0",
+				"height: 100%",
+				"width: 100%",
+				"margin: 0",
+				"display: block",
+				"cursor: default",
+				"-moz-user-select: none",
+				"user-select: none",
+				"z-index: 2147483647",
+				"background-color: #000000",
+				"opacity: " + opacity
+			];
+
+			var style_str = style.join(" !important;");
+			overlay.setAttribute("style", style_str);
+
+			content_body.appendChild(overlay);
+
+			/* Flash has authority issues with z-index, so try to hide it
+			 while warning is being shown (skip on "blocked!" page) */
+			if (forced_reason === false) this.hideobjects(content, true);
+		}
+	},
+
+	open_popup: function (warning, anchor, x, y) {
+		// fix height + popup open
+		warning.height = 10;
+		// position the popup and make it visible if it is not yet
+		warning.openPopup(anchor, "topcenter topleft", x, y, false, false, null);  // show it
+
+	},
+
+	show: function () {
+
+		var x, y,
+			warning = this.getwarning(),
+			anchor = wot_core.browser; // area where a website is shown
+
+		if (!warning || !anchor) return false;
+
+		// get center position offset
+		var pos = this.getposition(anchor, warning);
+		if (!pos) return false;
+		x = pos.x;
+		y = pos.y;
+
+		if (warning.state != "open") {  // to avoid flickering
+			warning.style.visibility = "hidden";    // workaround to hide resizing
+			this.open_popup(warning, anchor, x, y);
+
+			// workaround to fix the height after the browser was terminated & restored
+			window.setTimeout(function () {
+				wot_warning.update_size();
+				warning.style.visibility = "visible";
+			}, 120);
+
+		} else {
+			this.open_popup(warning, anchor, x, y);
+			wot_warning.update_size();
+			warning.style.visibility = "visible";
+		}
+
+		// remember current "warning in the tab" to avoid unnecessary updates
+		wot_warning.current_tab = wot_warning.get_tabtarget();
+
+		return true;
+	},
+
+	blur: function (hide) {
+		// used when the browser is minimized or lost focus therefor warning popup should not be visible
+		if (window.windowState === 2 || hide) {
+			wot_warning.hide(null, false);
+		} else {
+			wot_status.update();
+		}
+	},
+
+	hide: function(content, hide_notification)
+	{
+		try {
+			wot_warning.current_tab = null; // clear the tab-warning state
+			// hide warning floating panel
+			var warning = this.getwarning();
+			warning.hidePopup();
+
+			// hide warning notification
+			if (hide_notification !== false) wot_browser.hide_warning();
+
+			// hide shader from the webpage
+			if (content) {
+				var elems = [ content.getElementById("wot-overlay") ];
+
+				for (var i = 0; i < elems.length; ++i) {
+					if (elems[i] && elems[i].parentNode) {
+						elems[i].parentNode.removeChild(elems[i]);
+					}
+				}
+			}
+		} catch (e) {
+			dump("wot_warning.hide: failed with " + e + "\n");
+		}
+	},
+
+	update_size: function () {
+		var warning = this.getwarning(),
+			warning_frame = document.getElementById("wot-warning-frame");
+
+		if (!warning || !warning_frame || !warning_frame.contentDocument) return false;
+
+		var doc = warning_frame.contentDocument,
+			height = doc.documentElement ? doc.documentElement.scrollHeight : 0;
+
+		warning.height = height;
+		warning_frame.height = height;
+	},
+
+	update_content: function (hostname, content, type, blocking_mode)
+	{
 
 		try {
-			if (!hostname || !content ||
-					content.getElementById("wotwarning")) {
+			if (!hostname || !content) {
 				return false;
 			}
 
 			// If is set, no need to decide what kind of warning to show.
-			forced_reason = forced_reason || false;   // used when func is called from blocked.js.
+			blocking_mode = blocking_mode || false;
 
-			if(!forced_reason) wot_warning.set_exitmode(content); // call it only in usual mode
-
-
+			if(!blocking_mode) wot_warning.set_exitmode(content); // call it only in usual mode
 
             var reason = WOT_WARNING_NONE,
                 normalized_target = wot_cache.get(hostname, "normalized", hostname),
@@ -404,7 +587,7 @@ var wot_warning =
                 [ "RATINGDESC0", wot_util.getstring("components_0") ],
                 [ "RATINGDESC4", wot_util.getstring("components_4") ],
                 [ "GOTOSITE", wot_util.getstring("warnings_goto") ],
-                [ "WARNING", this.is_blocked ? wot_util.getstring("warnings_blocked") : wot_util.getstring("warnings_warning") ],
+                [ "WARNING", blocking_mode ? wot_util.getstring("warnings_blocked") : wot_util.getstring("warnings_warning") ],
                 [ "RATETEXT", rate_site ],
                 [ "WT_CONTENT", this.processhtml(wt_text, [ "WT_LEARNMORE", wot_util.getstring("wt_learnmore_link") ])],
                 [ "REASONTITLE", wot_util.getstring("warnings_reasontitle") ],
@@ -422,14 +605,14 @@ var wot_warning =
 
                 var i = WOT_COMPONENTS[j];
 				// don't call getwarningtype() if forced_reason is provided
-				var t = forced_reason ? WOT_WARNING_NONE : this.getwarningtype(hostname, i, true);
+				var t = blocking_mode ? WOT_WARNING_NONE : this.getwarningtype(hostname, i, true);
 
 				var r = wot_cache.get(hostname, "reputation_" + i),
 				    x = wot_cache.get(hostname, "excluded_" + i),
                     c = wot_cache.get(hostname, "confidence_" + i);
 
-				if (forced_reason) {
-					reason = forced_reason;
+				if (blocking_mode) {
+					reason = blocking_mode;
 				} else {
 					reason = (reason < t) ? t : reason;
 				}
@@ -488,91 +671,92 @@ var wot_warning =
 
 			/* Show the notification bar always */
 			if (reason != WOT_REASON_UNKNOWN) {
-				window.setTimeout(wot_browser.show_warning,
+				window.setTimeout(wot_browser.show_notification,
 					WOT_DELAY_WARNING, hostname, notification, true);
 			}
 
-			if (type != WOT_WARNING_DOM || this.warned[hostname]) {
-				return true;
+			// exit here if all we need is to show notification, or user was already warned before and decide to proceed
+			if ((type != WOT_WARNING_DOM && type != WOT_WARNING_BLOCK) || this.warned[hostname]) {
+				return false;
 			}
 
-			if (!content.contentType ||
-					content.contentType.toLowerCase().indexOf("html") < 0) {
-				return true;
-			}
+			// now build the DOM of the warning
 
-			var head = content.getElementsByTagName("head");
-			var body = content.getElementsByTagName("body");
+			var warning_frame = document.getElementById("wot-warning-frame");
+			if (!warning_frame) return false;
+			warning_frame.height = 0;   // reset the height (will be set later)
+
+			var warning_content = warning_frame.contentDocument;
+
+			var head = warning_content.getElementsByTagName("head");
+			var body = warning_content.getElementsByTagName("body");
 
 			if (!head || !head.length ||
 				!body || !body.length) {
-				return true;
-			}
-
-			var style = content.createElement("style");
-
-			if (!style) {
 				return false;
 			}
 
-			style.setAttribute("type", "text/css");
-			style.innerHTML = WOT_WARNING_CSS;
+			if (!warning_content.getElementById("warning-style")) {
+				// add style only if it is not there yet
+				var style = warning_content.createElement("style");
 
-			head[0].appendChild(style);
+				if (!style) {
+					return false;
+				}
 
-			var warning = content.createElement("div");
-			var wrapper = content.createElement("div");
+				style.setAttribute("type", "text/css");
+				style.setAttribute("id", "warning-style");
+				style.innerHTML = WOT_WARNING_CSS;
 
-			if (!warning || !wrapper) {
-				return false;
+				head[0].appendChild(style);
 			}
 
-			warning.setAttribute("id", "wotwarning");
-
-			if (wot_prefs.warning_opacity &&
-					wot_prefs.warning_opacity.length > 0 &&
-					Number(wot_prefs.warning_opacity) >= 0 &&
-					Number(wot_prefs.warning_opacity) <= 1) {
-				warning.setAttribute("style", "opacity: " +
-					wot_prefs.warning_opacity + " ! important;");
+			var wrapper = warning_content.getElementById("wotwrapper");
+			if (!wrapper) {
+				wrapper = warning_content.createElement("div");
+				if (!wrapper) {
+					return false;
+				}
+				wrapper.setAttribute("id", "wotwrapper");
+				body[0].appendChild(wrapper);
 			}
-
-			wrapper.setAttribute("id", "wotwrapper");
 
             wrapper.innerHTML = this.processhtml(warning_template, replaces);
 
-			body[0].appendChild(warning);
-			body[0].appendChild(wrapper);
+			// setup listeners
+			var lmap = [
+				["wotrate-link", "click", wot_warning.on_ratelink_click ],
+				["wot-btn-hide", "click", wot_warning.on_btnhide_click ],
+				["wot-btn-leave", "click", wot_warning.on_btnleave_click ],
+				["wotinfobutton", "click", wot_warning.on_info_click ]
+			];
 
-			/* Flash has authority issues with z-index, so try to hide it
-				while warning is being shown (skip on "blocked!" page) */
-			if (forced_reason === false) this.hideobjects(content, true);
+			for (var l=0; l < lmap.length; l++) {
+				var elemid = lmap[l][0],
+					listener = lmap[l][2],
+					event = lmap[l][1];
+
+				var elem = warning_content.getElementById(elemid);
+				if (elem) {
+					elem.addEventListener(event, listener, false);
+				}
+			}
+
+			if (blocking_mode) {
+				// Update the blocking mode page
+				content.title = "WOT: " + wot_util.getstring("warnings_blocked");
+
+				var btn_hide = warning_content.getElementById("wot-btn-hide");
+				if (btn_hide) btn_hide.style.display = "none"; // hide "Open the site" in blocking mode
+			}
+
 			return true;
+
 		} catch (e) {
 			dump("wot_warning.add: failed with " + e + "\n");
 		}
 
 		return false;
-	},
-
-	hide: function(content)
-	{
-		try {
-			wot_browser.hide_warning();
-
-			if (content) {
-				var elems = [ content.getElementById("wotwarning"),
-							  content.getElementById("wotwrapper") ];
-
-				for (var i = 0; i < elems.length; ++i) {
-					if (elems[i] && elems[i].parentNode) {
-						elems[i].parentNode.removeChild(elems[i]);
-					}
-				}
-			}
-		} catch (e) {
-			dump("wot_warning.hide: failed with " + e + "\n");
-		}
 	},
 
 	hideobjects: function(content, hide)
@@ -614,110 +798,58 @@ var wot_warning =
 		}
 	},
 
-	click: function(event)
-	{
+	on_ratelink_click: function (event) {
+		wot_browser.openscorecard(wot_core.hostname, WOT_SCORECARD_RATE, WOT_URL_WARNRATE);
+	},
 
-		try {
+	on_btnhide_click: function (event) {
+		var content = getBrowser().selectedBrowser.contentDocument;
+		if (content) {
+			wot_warning.warned[wot_core.hostname] = true;
+			wot_warning.hide(content);
+		}
+	},
 
-            var event_view = event.view;
+	on_btnleave_click: function (event) {
+		var content = getBrowser().selectedBrowser.contentDocument;
 
-			if (!event_view) {
-				return;
-			}
+		if (!content) return;
 
-			var content = event_view.document;
+		var wot_blocked = content.getElementById("wotblocked"); // Important to have element with this ID
+		var is_blocked = !!wot_blocked;
+		if(is_blocked) {
+			this.exit_mode = wot_blocked.getAttribute("exit_mode"); // take exit_mode from DOM, since this is module
+		}
 
-			if (!content) {
-				return;
-			}
-
-			var warning = content.getElementById("wotwarning");
-
-			if (!warning || warning.style.display == "none") {
-				return;
-			}
-
-			var wrapper = content.getElementById("wotwrapper");
-
-			if (!wrapper) {
-				return;
-			}
-
-			var wot_blocked = content.getElementById("wotblocked"); // Important to have element with this ID
-			var is_blocked = !!wot_blocked;
-			if(is_blocked) {
-				this.exit_mode = wot_blocked.getAttribute("exit_mode"); // take exit_mode from DOM, since this is module
-			}
-
-			var node = event.originalTarget;
-			var handle_ids = {
-				"wotrate-link":  true,
-				"wot-btn-hide":  true,
-				"wot-btn-leave": true,
-				"wotinfobutton": true
+		var win = content.defaultView;
+		if(wot_warning.exit_mode == "leave") {
+			// close tab
+			win.close();
+		} else {
+			var e_beforeunload = win.onbeforeunload;
+			var back_timer = null;
+			win.onbeforeunload = function() {
+				if(back_timer) {
+					win.clearTimeout(back_timer);
+				}
+				if(e_beforeunload) e_beforeunload(win);
 			};
 
-			var node_id = null;
+			var steps_back = is_blocked ? -2 : -1;
+			var prev_location = win.location.href;
+			win.history.go(steps_back);
 
-			while (node) {
-				node_id = node.id;
-				if (node_id && handle_ids[node_id]) break;
-				node = node.parentNode;
-			}
-
-			if (!node || !node_id) {
-				return;
-			}
-
-			switch (node_id) {
-				case "wot-btn-hide":
-					wot_warning.warned[wot_core.hostname] = true;
-					warning.style.display = "none";
-					wrapper.style.display = "none";
-					wot_warning.hideobjects(content, false);
-					break;
-
-				case "wotinfobutton":
-					wot_browser.openscorecard(wot_core.hostname, null, WOT_URL_WARNVIEWSC);
-					break;
-
-				case "wotrate-link":
-					wot_browser.openscorecard(wot_core.hostname, WOT_SCORECARD_RATE, WOT_URL_WARNRATE);
-					break;
-
-				case "wot-btn-leave":
-					var window = content.defaultView;
-					if(wot_warning.exit_mode == "leave") {
-						// close tab
-						window.close();
-					} else {
-						var e_beforeunload = window.onbeforeunload;
-						var back_timer = null;
-						window.onbeforeunload = function() {
-							if(back_timer) {
-								window.clearTimeout(back_timer);
-							}
-							if(e_beforeunload) e_beforeunload(window);
-						};
-
-						var steps_back = is_blocked ? -2 : -1;
-						var prev_location = window.location.href;
-						window.history.go(steps_back);
-
-						back_timer = window.setTimeout(function() {
-							// this is a trick: we don't know if there is a back-step possible if history.length>1,
-							// so we simply wait for a short time, and if we are still on a page, then "back" is impossible and
-							// we should go to blank page
-							if(window.location.href == prev_location) window.close();
-						}, 500);
-					}
-
-					break;
-			}
-
-		} catch (e) {
-			dump("wot_warning.click: failed with " + e + "\n");
+			back_timer = win.setTimeout(function() {
+				// this is a trick: we don't know if there is a back-step possible if history.length>1,
+				// so we simply wait for a short time, and if we are still on a page, then "back" is impossible and
+				// we should go to blank page
+				if(win.location.href == prev_location) win.close();
+			}, 500);
 		}
+	},
+
+	on_info_click: function (event) {
+		wot_browser.openscorecard(wot_core.hostname, null, WOT_URL_WARNVIEWSC);
 	}
 };
 

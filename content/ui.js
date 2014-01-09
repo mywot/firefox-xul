@@ -1,6 +1,6 @@
 /*
 	ui.js
-	Copyright © 2005 - 2012  WOT Services Oy <info@mywot.com>
+	Copyright © 2005 - 2014  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -98,10 +98,10 @@ var wot_status = {
 			var type = wot_warning.isdangerous(wot_core.hostname, true);
 			var content = getBrowser().selectedBrowser.contentDocument;
 
-			if (type == WOT_WARNING_NOTIFICATION || type == WOT_WARNING_DOM) {
-				wot_warning.add(wot_core.hostname, content, type);
+			if (type == WOT_WARNING_NOTIFICATION || type == WOT_WARNING_DOM || type == WOT_WARNING_BLOCK) {
+				wot_warning.add(wot_core.hostname, content, type, (type == WOT_WARNING_BLOCK));
 			} else {
-				if(type != WOT_WARNING_BLOCK) wot_warning.hide(content);
+				wot_warning.hide(content);
 			}
 
             wot_rw.update();

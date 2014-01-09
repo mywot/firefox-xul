@@ -142,12 +142,6 @@ const WOT_SERVICE_XML_QUERY_MSG_VERSION_LE		= "le";
 const WOT_SERVICE_XML_QUERY_MSG_VERSION_GE		= "ge";
 const WOT_SERVICE_XML_QUERY_MSG_THAN			= "than";
 const WOT_SERVICE_XML_QUERY_USER				= "user";
-//const WOT_SERVICE_XML_QUERY_USER_ICON			= "icon";
-//const WOT_SERVICE_XML_QUERY_USER_BAR			= "bar";
-//const WOT_SERVICE_XML_QUERY_USER_LENGTH			= "length";
-//const WOT_SERVICE_XML_QUERY_USER_URL			= "url";
-//const WOT_SERVICE_XML_QUERY_USER_TEXT			= "text";
-//const WOT_SERVICE_XML_QUERY_USER_NOTICE			= "notice";
 const WOT_SERVICE_XML_QUERY_STATUS				= "status";
 const WOT_SERVICE_XML_REGISTER					= "register";
 const WOT_SERVICE_XML_REGISTER_ID				= "id";
@@ -177,7 +171,7 @@ const WOT_SCORECARD_COMMENT = "/comment";
 const WOT_SCORECARD_RATE = "/rate";
 
 /* Operation intervals (in ms) */
-const WOT_DELAY_WARNING					= 1000;				/* 1 s */
+const WOT_DELAY_WARNING					= 0;				/* 1 s */
 const WOT_INTERVAL_BLOCK_ERROR			= 15 * 1000;		/* 15 s */
 const WOT_INTERVAL_CACHE_REFRESH 	  	= 30 * 60 * 1000;	/* 30 min */
 const WOT_INTERVAL_CACHE_REFRESH_BLOCK 	= 18000 * 1000;		/* 5 h */
@@ -212,8 +206,7 @@ const WOT_DEFAULT_WARNING_LEVEL = 39;
 const WOT_DEFAULT_MIN_CONFIDENCE_LEVEL = 8;
 
 const WOT_BLOCK_LOADING = "chrome://wot/locale/loading.html";
-const WOT_BLOCK_BLOCKED = "chrome://wot/locale/blocked.html";
-
+const WOT_BLOCK_BLOCKED = "chrome://wot/content/blocked.html";
 
 /*
  * Preferences

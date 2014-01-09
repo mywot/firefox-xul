@@ -411,3 +411,8 @@
     background: #ffffff !important;
     opacity: 1;
 }
+
+#wot-warning {
+    -moz-transition: height 0.4s;
+    overflow: hidden;
+}

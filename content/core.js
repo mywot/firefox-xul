@@ -130,6 +130,18 @@ var wot_core =
 					wot_core.unload();
 				}, false);
 
+			window.addEventListener("sizemodechange", function (e) {
+				wot_warning.blur();
+			}, false);
+
+			window.addEventListener("deactivate", function (e) {
+				wot_warning.blur(true);
+			}, false);
+
+			window.addEventListener("activate", function (e) {
+				wot_warning.blur();
+			}, false);
+
 			this.browser = document.getElementById("appcontent");
 
 			if (this.browser) {
@@ -412,18 +424,18 @@ var wot_core =
 	{
 		try {
 			if (!wot_util.isenabled() || !pl || !pl.browser || !url) {
-				return;
+				return false;
 			}
 
 			if (!wot_warning.isblocking()) {
-				return;
+				return false;
 			}
 
 			var hostname = wot_url.gethostname(url);
 
 			if (!hostname || wot_url.isprivate(hostname) ||
 					wot_url.isexcluded(hostname)) {
-				return;
+				return false;
 			}
 
 			if (wot_cache.isok(hostname)) {
@@ -438,6 +450,8 @@ var wot_core =
 			} else {
 				this.showloading(pl, request, url, hostname);
 			}
+
+			return true;
 		} catch (e) {
 			dump("wot_core.block: failed with " + e + "\n");
 		}
@@ -660,6 +674,8 @@ var wot_core =
 				}
 				wot_status.set("nohost",
 					wot_util.getstring("messages_notavailable"));
+
+				wot_status.update();
 				return;
 			}
 
