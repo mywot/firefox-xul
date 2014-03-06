@@ -47,6 +47,7 @@
     <script type="application/x-javascript" src="chrome://wot/content/api.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/firstrun.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/partner.js"/>
+    <script type="application/x-javascript" src="chrome://wot/content/wg.js"/>
     <script type="application/x-javascript" src="chrome://wot/content/core.js"/>
 
     <stringbundleset id="stringbundleset">

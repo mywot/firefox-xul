@@ -665,6 +665,8 @@ var wot_core =
 
 			wot_api_update.send(forced_update);
 
+			wot_wg.update_tags();   // update user tags and popular tags
+
 			if (!wot_core.hostname || wot_url.isprivate(wot_core.hostname) ||
 					wot_url.isexcluded(wot_core.hostname)) {
 				/* Invalid or excluded hostname */
@@ -726,6 +728,7 @@ var wot_core =
 					return;
 				}
 			}
+
 		} catch (e) {
 			dump("wot_core.update: failed with " + e + "\n");
 		}

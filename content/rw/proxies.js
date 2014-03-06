@@ -1,6 +1,6 @@
 /*
  proxies.js
- Copyright © 2009 - 2013  WOT Services Oy <info@mywot.com>
+ Copyright © 2009 - 2014  WOT Services Oy <info@mywot.com>
 
  This file is part of WOT.
 
@@ -72,7 +72,14 @@ $.extend(wot_bg.wot, wot, {
             },
 
             unseenmessage: function () {
-                wot_bg.wot.core.moz_send("unseenmessage", null);
+
+	            var _this = wot_bg.wot.core;
+
+	            return (_this.usermessage &&
+		            _this.usermessage.text &&
+		            _this.usermessage.id &&
+		            _this.usermessage.id != wot_bg.wot.prefs.get("last_message") &&
+		            _this.usermessage.id != "downtime");
             },
 
             open_mywot: function(page, context) {
@@ -95,14 +102,28 @@ $.extend(wot_bg.wot, wot, {
             moz_send: function (message_id, data) {
                 // Sends event with data to background code (outside of RatingWindow)
                 var obj = document.getElementById(wot_bg.wot.core._moz_element_id);
-                var e = new CustomEvent(wot_bg.wot.core._moz_event_id, {
-                    "detail": {
-                        "message_id": message_id,
-                        "data": data
-                    }
-                });
-                obj.dispatchEvent(e);
-            }
+	            if (obj) {
+		            var e = new CustomEvent(wot_bg.wot.core._moz_event_id, {
+			            "detail": {
+				            "message_id": message_id,
+				            "data": data
+			            }
+		            });
+		            obj.dispatchEvent(e);
+	            }
+            },
+
+	        tags: {
+
+		        // these variables are updated from content/ratingwindow.js: update_ratingwindow_tags()
+		        mytags: [ ],
+		        mytags_updated: null,       // time when the list was updated last time
+		        MYTAGS_UPD_INTERVAL: 30 * 60 * 1000,
+
+		        popular_tags: [ ],
+		        popular_tags_updated: null,
+		        POPULARTAGS_UPD_INTERVAL: 30 * 60 * 1000,
+	        }
         },
 
         keeper: {
@@ -150,7 +171,21 @@ $.extend(wot_bg.wot, wot, {
                     wot_bg.wot.core.moz_send("remove_comment", { target: target });
                 }
 
-            }
+            },
+
+	        tags: {
+		        my: {
+			        get_tags: function () {
+				        wot_bg.wot.core.moz_send("api_get_tags", { core_keyword: "mytags", method: "getmytags" });
+			        }
+		        },
+
+		        popular: {
+			        get_tags: function () {
+				        wot_bg.wot.core.moz_send("api_get_tags", { core_keyword: "popular_tags", method: "getmastertags" });
+			        }
+		        }
+	        }
 
         },
 

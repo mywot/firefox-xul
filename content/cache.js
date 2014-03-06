@@ -316,17 +316,30 @@ var wot_cache =
         return !!wot_hashtable.get("captcha_required");
     },
 
+	set_param: function (name, param, data) {
+		this.set(name, param, JSON.stringify(data));
+	},
+
+	get_param: function (name, param) {
+		var json_data = this.get(name, param),
+			data = {};
+		if (json_data) {
+			data = JSON.parse(json_data);
+		}
+
+		return data;
+	},
+
+	remove_param: function (name, param) {
+		this.remove(name, param);
+	},
+
     get_comment: function (name) {
-        var json_data = this.get(name, "comment"),
-            data = {};
-        if (json_data) {
-            data = JSON.parse(json_data);
-        }
-        return data;
+	    return this.get_param(name, "comment");
     },
 
     set_comment: function (name, comment_data) {
-        this.set(name, "comment", JSON.stringify(comment_data));
+	    this.set_param(name, "comment", comment_data);
     },
 
     update_comment: function (name, data) {
@@ -338,7 +351,7 @@ var wot_cache =
     },
 
     remove_comment: function (name) {
-        this.remove(name, "comment");
+        this.remove_param(name, "comment");
     },
 
 	add_target: function(nonce, target, islink)

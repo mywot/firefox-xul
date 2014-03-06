@@ -362,7 +362,7 @@ const WOT_URL_MENUMY =       "menu-my";
 const WOT_URL_BTN =          "button";
 const WOT_URL_CTX =          "contextmenu";
 
-const WOT_COMMENTS = {
+const WOT_SITEAPI_ERRORS = {
     error_codes: {
         "0": "SUCCESS",
         "1": "NO_ACTION_DEFINED",

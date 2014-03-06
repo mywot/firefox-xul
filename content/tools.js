@@ -22,7 +22,15 @@
 var wot_modules = [];
 
 var wot_tools = {
+
 	wdump: function (str) {
 		dump(str + "\n");
+	},
+
+	log: function() {
+		Array.prototype.slice.call(arguments).forEach(function (item, index, arr) {
+			dump(JSON.stringify(item, null, '    ') + "\n");
+		})
 	}
+
 };

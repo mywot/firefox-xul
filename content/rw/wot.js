@@ -19,7 +19,7 @@
 */
 
 var wot = {
-	version: 20140113,
+	version: 20140217,
 	platform: "firefox",
     locale: "en",           // cached value of the locale
     lang: "en-US",          // cached value of the lang
@@ -34,6 +34,7 @@ var wot = {
 		is_mailru: false,
 		is_yandex: false,
 		is_rambler: false,
+
 		is_accessible: false
 	},
 
@@ -126,6 +127,8 @@ var wot = {
 		tour:       "http://www.mywot.com/support/tour/",
 		tour_rw:    "http://www.mywot.com/support/tour/ratingwindow",
 		tour_scorecard: "http://www.mywot.com/support/tour/scorecard",
+		wg:         "https://dev.mywot.com/en/groups/g",
+		wg_about:   "https://dev.mywot.com/en/groups",
 
 		contexts: {
 			rwlogo:     "rw-logo",
@@ -148,7 +151,9 @@ var wot = {
 			wt_warn_lm: "wt-warn-lm",
 			wt_warn_logo: "wt-warn-logo",
 			wt_donuts_lm: "wt-donuts-lm",
-			wt_donuts_logo: "wt-donuts-logo"
+			wt_donuts_logo: "wt-donuts-logo",
+			wg_tag: "wg-tag",
+			wg_about_learnmore: "wg-learnmore"
 		}
 	},
 
@@ -230,6 +235,8 @@ var wot = {
     },
 
 	expire_warned_after: 20000,  // number of milliseconds after which warned flag will be expired
+
+	TINY_THANKYOU_DURING: 60 * 60 * 1000, // within this time after prev rating user won't see separate ThankYou screen after new submission. Milliseconds.
 
 	// trusted extensions IDs
 	allowed_senders: {
@@ -934,7 +941,36 @@ var wot = {
         }
 
         return false;
-    }
+    },
+
+	tags: {
+		tags_re: /(\s|^)#([a-zä-ö0-9\u0400-\u04FF]{2,})/img,    // Also change the regexp at content/wg.js
+		tags_validate_re: /^\d{2}$/im,
+
+		get_tags: function (text) {
+
+			if (!text) return [];
+
+			var res,
+				tags = [],
+				_tags = {};
+
+			while ((res = wot.tags.tags_re.exec(text)) !== null) {
+				var tag = res[2] || "";
+
+				if (wot.tags.tags_validate_re.test(tag)) continue;  // skip invalid tag
+
+				if (tag && !_tags[tag]) {
+					tags.push({
+						value: tag       // tag's text
+					});
+					_tags[tag] = true;  // remember the tag to avoid duplications
+				}
+			}
+			wot.tags.tags_re.lastIndex = 0; // reset the last index to avoid using it for the different text
+			return tags;
+		}
+	}
 };
 
 
@@ -1061,9 +1097,37 @@ wot.utils = {
 	},
 
     isEmptyObject: function (obj) {
-		for (var name in obj) {
-			return false;
+	    for (var name in obj) {
+	        return false;
+	    }
+	    return true;
+	},
+
+	query_param: function(obj, prefix) {
+		var str = [];
+		for(var p in obj) {
+			var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
+			str.push(typeof v == "object" ?
+				wot.utils.query_param(v, k) :
+				encodeURIComponent(k) + "=" + encodeURIComponent(v));
 		}
-		return true;
+		return str.join("&");
+	},
+
+	getParams: function (query) {
+		var params = {};
+		if (location.search) {
+			var parts = query.split('&');
+
+			parts.forEach(function (part) {
+				var pair = part.split('=');
+				pair[0] = decodeURIComponent(pair[0]);
+				pair[1] = decodeURIComponent(pair[1]);
+				params[pair[0]] = (pair[1] !== 'undefined') ?
+					pair[1] : true;
+			});
+		}
+		return params;
 	}
+
 };

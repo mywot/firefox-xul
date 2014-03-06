@@ -44,7 +44,7 @@ var wot_rw = {
         return rw ? rw.wot : null;
     },
 
-    unseenmessage: function () {
+	message_seen: function (message_id) {
         try {
             if (wot_api_query.message_id.length > 0 &&
                 wot_api_query.message_id !=
@@ -52,7 +52,7 @@ var wot_rw = {
                 wot_prefs.setChar("last_message", wot_api_query.message_id);
             }
         } catch (e) {
-            wot_tools.wdump("wot_rw.unseenmessage: failed with " + e);
+            wot_tools.wdump("wot_rw.message_seen: failed with " + e);
         }
     },
 
@@ -68,8 +68,6 @@ var wot_rw = {
     {
         this.is_visible = false;
         try {
-            wot_rw.unseenmessage();
-
             var rw_wot = wot_rw.get_rw_wot();
             rw_wot.ratingwindow.finishstate(true);  // finish state with unload = true to indicate the unintentional closing of RW
 
@@ -131,11 +129,16 @@ var wot_rw = {
     get_cached: function () {
 
         var target = wot_core.hostname,
-            data = {};
+            data = {},
+	        wg = {};
 
 
-        if (target && wot_cache.isok(target)) {
+        if (target && wot_cache.isok(target) && !wot_url.isprivate(target)) {
             var normalized_target = wot_cache.get(target, "normalized") || target;
+
+	        // Get WG data from the cache and merge it into
+	        wg = wot_cache.get_param(target, "wg") || {};
+		    wg.wg = wot_wg.is_enabled(); // override cached state by the actual
 
             // prepare data for the RW
             data = {
@@ -146,7 +149,8 @@ var wot_rw = {
                     value: {
                         normalized: wot_shared.decodehostname(normalized_target)
                     },
-                    comment: wot_cache.get_comment(target)
+                    comment: wot_cache.get_comment(target),
+	                wg: wg
                 }
             };
 
@@ -172,7 +176,7 @@ var wot_rw = {
 
         } else {
             data = {
-                target: target,
+                target: null,
                 updated: null,
                 cached: {
                     status: WOT_QUERY_ERROR,
@@ -206,11 +210,9 @@ var wot_rw = {
             rw_wot = this.get_rw_wot(),
             target = wot_core.hostname;
 
-//        wot_tools.wdump("\tTarget: " + target);
-
         if (!rw || !rw_doc || !rw_wot) return;
 
-        var data = wot_rw.get_cached();
+        var data = wot_rw.get_cached();   // no rep data for nonexistant targets
 
         wot_rw.push_preferences(rw, wot_rw.get_preferences());  // update preferences every time before showing RW
 
@@ -233,8 +235,6 @@ var wot_rw = {
             }
         }
 
-//        wot_tools.wdump("\tdata: " + JSON.stringify(data));
-
         rw_wot.ratingwindow.update(target, JSON.stringify(data));
     },
 
@@ -242,16 +242,31 @@ var wot_rw = {
 
         var target = wot_core.hostname,
             cached = wot_rw.get_cached(),
-            rw = wot_rw.get_rw_window(),
             rw_wot = wot_rw.get_rw_wot(),
             local_comment = wot_keeper.get_comment(target); // get locally stored comment if exists
+
+	    this.update_ratingwindow_tags();
 
         rw_wot.ratingwindow.update_comment(cached.cached, local_comment, wot_cache.get_captcha());
     },
 
+	update_ratingwindow_tags: function () {
+		var rw = wot_rw.get_rw_window(),
+			_core = rw.wot_bg.wot.core;
+
+		// Now fetch tags data and fill the variables in rating window space
+		if (_core) {
+			_core.tags.mytags_updated = wot_wg.get_mytags_updated();
+			_core.tags.popular_tags_updated = wot_wg.get_popular_tags_updated();
+			_core.tags.mytags = wot_wg.get_mytags();
+			_core.tags.popular_tags = wot_wg.get_popular_tags();
+		}
+	},
+
     get_preferences: function () {
         var prefs = {};
-        try {
+
+	    try {
             prefs = {
                 accessible:         wot_prefs.accessible,
                 show_fulllist:      wot_prefs.show_fulllist,
@@ -259,14 +274,13 @@ var wot_rw = {
                 activity_score:     wot_prefs.activity_score,
                 wt_rw_ok:           wot_prefs.wt_rw_ok,
                 wt_rw_shown:        wot_prefs.wt_rw_shown,
-                wt_rw_shown_dt:     wot_prefs.wt_rw_shown_dt
+                wt_rw_shown_dt:     wot_prefs.wt_rw_shown_dt,
+	            last_message:       wot_prefs.last_message
             };
 
         } catch (e) {
             wot_tools.wdump("ERROR: wot_rw.get_preferences() raised an exception: " + e);
         }
-
-//        wot_tools.wdump("prefs: " + JSON.stringify(prefs));
 
         return prefs;
     },
@@ -325,7 +339,7 @@ var wot_rw = {
             var details = event.detail;
             if (!details) return false;
 
-//            wot_tools.wdump("on_ratingwindow_event() " + JSON.stringify(details));
+//            wot_tools.log("on_ratingwindow_event()", details);
 
             var message_id = details.message_id,
                 data = details.data;
@@ -345,8 +359,8 @@ var wot_rw = {
                     wot_rw.update_ratingwindow_comment();
                     break;
 
-                case "unseenmessage":
-                    wot_rw.unseenmessage();
+                case "message_seen":
+                    wot_rw.message_seen(data.message_id);
                     break;
 
                 case "navigate":
@@ -388,8 +402,13 @@ var wot_rw = {
                     wot_keeper.save_comment(data.target, data.user_comment, data.user_comment_id, data.votes, data.keeper_status);
                     break;
 
+	            case "api_get_tags":
+//		            data.core_keyword , data.method
+		            wot_api_tags.get_tags(data.core_keyword, data.method);
+			        break;
+
 	            case "log":
-		            wot_tools.wdump("LOG: " + JSON.stringify(data));
+		            wot_tools.log("LOG: ", data);
 		            break;
             }
 
@@ -427,7 +446,6 @@ var wot_rw = {
 
             var prefs = this.get_preferences();
             this.push_preferences(rw, prefs);
-//            wot_tools.wdump(JSON.stringify(prefs));
 
             // setup categories data in the RW
             rw_wot.categories = wot_categories.categories;
@@ -438,6 +456,8 @@ var wot_rw = {
 
             // init other values
             rw_wot.firstrunupdate = WOT_FIRSTRUN_CURRENT;
+
+	        this.update_ratingwindow_tags();
 
             rw_wot.ratingwindow.onload();   // this runs only once in FF
 
