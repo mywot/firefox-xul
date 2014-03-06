@@ -743,22 +743,18 @@ textarea {
     /*width: 200px;*/
 }
 
-#wot-scorecard-content {
-    display: inline-block;
-    max-width: 250px;
-    max-height: 1.3em; /* Diff in FF */
-    overflow: hidden;
-}
-
 .wot-scorecard-text {
 	font-size: 12px;
     font-weight: bold;
 }
 
 #wot-scorecard-visit {
-    margin-bottom: 0px;
-    margin-top: 9px;
+    display: inline;
+    max-width: 250px;
+    max-height: 1.3em; /* Diff in FF */
+    overflow: hidden;
 }
+
 #wot-scorecard-comment-container {
     display: block;
     margin: 0;
@@ -1322,6 +1318,7 @@ textarea {
 }
 
 #wg-viewer-frame {
+    display: none;
     border: none;
     width: 400px;
     height: 305px;

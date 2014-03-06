@@ -1077,7 +1077,7 @@ $.extend(wot, { ratingwindow: {
             _rw.hide();
         });
 
-        $("#wot-scorecard-content").bind("click", function() {
+        $("#wot-scorecard-visit").bind("click", function() {
             if (wot.ratingwindow.current.target) {
                 wot.ratingwindow.navigate(wot.urls.scorecard +
                     encodeURIComponent(wot.ratingwindow.current.target),
