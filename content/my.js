@@ -20,6 +20,10 @@
 
 var wot_my_session =
 {
+	last_reset: null,
+	reset_wait: 2000,   // 2 seconds to wait before reset again
+
+
 	domcontentloaded: function(e)
 	{
 		try {
@@ -39,10 +43,16 @@ var wot_my_session =
 
 			if (clear) {
 				clear.addEventListener("click", function() {
-					var target = clear.getAttribute("target");
-					if (target && wot_cache.iscached(target)) {
-						wot_cache.set(target, "status", WOT_QUERY_RETRY);
-                        wot_rw.resetstate();    // tell the Rating Window to reset old user testimonies
+
+					// the event can be triggered several times due to a bug on the website, so we have to skip other events after we got the first
+					if (!wot_my_session.last_reset || wot_my_session.last_reset + wot_my_session.reset_wait < Date.now()) {
+						var target = clear.getAttribute("target");
+						if (target && wot_cache.iscached(target)) {
+							wot_cache.set(target, "status", WOT_QUERY_RETRY);
+							wot_rw.resetstate();            // tell the Rating Window to reset old user testimonies
+							wot_wg.set_mytags([], true);    // reset mytags so the new list will be fetched on next RW opening
+							wot_my_session.last_reset = Date.now();
+						}
 					}
 				});
 			}
@@ -97,7 +107,7 @@ var wot_my_session =
 
 			var mgr = Components.classes["@mozilla.org/cookiemanager;1"].
 						getService(Components.interfaces.nsICookieManager);
-	
+
 			cookies = "";
 			var enumerator = mgr.enumerator;
 

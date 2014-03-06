@@ -32,6 +32,9 @@ var wot_wg = {
 	tags_re: /(\s|^)#([a-zä-ö0-9\u0400-\u04FF]{2,})/img,    // Also change the regexp at content/rw/wot.js
 	tags_validate_re: /^\d{2}$/im,
 
+	LOCK_POSTFIX: "_LOCK",
+	LOCK_TIMEOUT: 2000,
+
 	is_enabled: function () {
 		return (wot_hashtable.get("wg_enabled") == true);
 	},
@@ -58,11 +61,13 @@ var wot_wg = {
 		return JSON.parse(json);
 	},
 
-	set_mytags: function (tags) {
+	set_mytags: function (tags, reset) {
 		// this function is called in dynamic way, e.g. by concatenating string "set_" + variable.
 		tags = tags || [];
+		reset = reset || false;
 		wot_hashtable.set("mytags_list", JSON.stringify(tags));
-		wot_hashtable.set("mytags_updated", Date.now());
+		var dt = reset ? null : Date.now();
+		wot_hashtable.set("mytags_updated", dt);
 	},
 
 	set_popular_tags: function (tags) {
@@ -90,6 +95,9 @@ var wot_wg = {
 
 		for (var i = 0; i < tmap.length; i++) {
 			var obj = tmap[i];
+
+			if (!this.lock_api(obj.method)) continue;   // skip the iteration of lock is already acquired
+
 			var last_updated = obj.time_func.apply();
 			if (!last_updated || obj.time + last_updated < Date.now()) {
 				wot_api_tags.get_tags(obj.keyword, obj.method);
@@ -137,6 +145,25 @@ var wot_wg = {
 		}
 		this.tags_re.lastIndex = 0; // reset the last index to avoid using it for the different text
 		return tags;
+	},
+
+	lock_api: function (method) {
+		// this helps to avoid multiple API calls resulted from many update() calls
+
+		var lock_name = method + this.LOCK_POSTFIX,
+			update_lock = wot_hashtable.get(lock_name) || null;
+
+		if (update_lock && update_lock + this.LOCK_TIMEOUT > Date.now()) {
+			return false;   // the lock can't be acquired
+		}
+
+		wot_hashtable.set(lock_name, Date.now());
+
+		return true;    // lock is acquired
+	},
+
+	release_lock: function (method) {
+		wot_hashtable.remove(method + this.LOCK_POSTFIX); // clear the lock
 	}
 };
 

@@ -1714,6 +1714,7 @@ var wot_api_tags = {
 					wot_tools.log("api.get_tags() failed", err);
 				},
 				function (data) {
+					wot_wg.release_lock(method);
 					wot_api_tags._on_get_tags(data, core_keyword);
 				});
 
