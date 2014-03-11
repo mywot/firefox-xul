@@ -85,7 +85,7 @@ var wot_surveys = {
 			var content = event.originalTarget,
 				location = (content && content.location) ? content.location : {};
 
-			var is_framed = (content.defaultView != content.defaultView.top);
+			var is_framed = (content.defaultView && content.defaultView != content.defaultView.top);
 
 			// Process framed documents differently than normal ones
 			if (is_framed) {

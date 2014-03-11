@@ -1227,8 +1227,7 @@ wot_modules.push({ name: "wot_keeper", obj: wot_keeper });
 
 var wot_website_api = {
 
-//	server: "www.mywot.com",
-    server: "dev.mywot.com",
+	server: "www.mywot.com",
 	version: "1",   // Comments API version
 	nonces: {},     // to know connection between nonce and target
 

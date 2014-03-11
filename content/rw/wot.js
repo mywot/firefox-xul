@@ -19,7 +19,7 @@
 */
 
 var wot = {
-	version: 20140217,
+	version: 20140311,
 	platform: "firefox",
     locale: "en",           // cached value of the locale
     lang: "en-US",          // cached value of the lang
@@ -32,6 +32,7 @@ var wot = {
 	// environment (browser, etc)
 	env: {
 		is_mailru: false,
+		is_mailru_amigo: false,
 		is_yandex: false,
 		is_rambler: false,
 
@@ -115,20 +116,20 @@ var wot = {
 	},
 
 	urls: {
-		base:		"http://www.mywot.com/",
-		scorecard:	"http://www.mywot.com/scorecard/",
-		settings:	"http://www.mywot.com/settings",
-        profile:	"http://www.mywot.com/user",
+		base:		"https://www.mywot.com/",
+		scorecard:	"https://www.mywot.com/scorecard/",
+		settings:	"https://www.mywot.com/settings",
+        profile:	"https://www.mywot.com/user",
         signup:     "https://www.mywot.com/signup",
-		welcome:	"http://www.mywot.com/settings/welcome",
-		setcookies:	"http://www.mywot.com/setcookies.php",
-		update:		"http://www.mywot.com/update",
-		tour_warning:"http://www.mywot.com/support/tour/warningscreen",
-		tour:       "http://www.mywot.com/support/tour/",
-		tour_rw:    "http://www.mywot.com/support/tour/ratingwindow",
-		tour_scorecard: "http://www.mywot.com/support/tour/scorecard",
-		wg:         "https://dev.mywot.com/en/groups/g",
-		wg_about:   "https://dev.mywot.com/en/groups",
+		welcome:	"https://www.mywot.com/settings/welcome",
+		setcookies:	"http://www.mywot.com/setcookies.php",  // this can be only http because the add-on doesn't have permission to access https
+		update:		"https://www.mywot.com/update",
+		tour_warning:"https://www.mywot.com/support/tour/warningscreen",
+		tour:       "https://www.mywot.com/support/tour/",
+		tour_rw:    "https://www.mywot.com/support/tour/ratingwindow",
+		tour_scorecard: "https://www.mywot.com/support/tour/scorecard",
+		wg:         "https://beta.mywot.com/en/groups/g",
+		wg_about:   "https://beta.mywot.com/en/groups",
 
 		contexts: {
 			rwlogo:     "rw-logo",
@@ -142,18 +143,23 @@ var wot = {
 			rwcaptcha:  "rw-captcha",
 			warnviewsc: "warn-viewsc",
 			warnrate:   "warn-rate",
-			popupviewsc: "popup",
-			popuprate:  "popup-rate",
-			popupdonuts: "popup-donuts",
+			popupviewsc:    "popup",
+			popuprate:      "popup-rate",
+			popupdonuts:    "popup-donuts",
 			fbl_logo:   "fbl-logo",
 			wt_intro:   "wt-intro",
 			wt_rw_lm:   "wt-rw-lm",
 			wt_warn_lm: "wt-warn-lm",
-			wt_warn_logo: "wt-warn-logo",
-			wt_donuts_lm: "wt-donuts-lm",
-			wt_donuts_logo: "wt-donuts-logo",
-			wg_tag: "wg-tag",
+			wt_warn_logo:       "wt-warn-logo",
+			wt_donuts_lm:       "wt-donuts-lm",
+			wt_donuts_logo:     "wt-donuts-logo",
+			wg_tag:             "wg-tag",
 			wg_about_learnmore: "wg-learnmore"
+		},
+
+		geturl: function (url) {
+			var is_wg = wot.ratingwindow ? wot.ratingwindow.is_wg_allowed : (wot.core ? wot.core.tags.is_wg_allowed : false);
+			return is_wg ? url.replace('www.mywot.com', 'beta.mywot.com') : url;
 		}
 	},
 
@@ -632,6 +638,7 @@ var wot = {
 		// try to understand in which environment we are run
 		var user_agent = window.navigator.userAgent || "";
 		wot.env.is_mailru = user_agent.indexOf("MRCHROME") >= 0;
+		wot.env.is_mailru_amigo = user_agent.indexOf("MRCHROME SOC") >= 0;
 
 		// old yandex browser is named "Yandex Internet" (chromium 18), new browser is named "YaBrowser" (chromium 22+)
 		wot.env.is_yandex = user_agent.indexOf("YaBrowser") >= 0 || user_agent.indexOf(" YI") >= 0;
@@ -643,10 +650,11 @@ var wot = {
 			wot.partner = "yandex";
 		}
 
-		if(!readonly) wot.prefs.set("partner", wot.partner);
-
-		// Is the mode "accessible" set on?
-		wot.env.is_accessible = wot.prefs.get("accessible");
+		if (wot.prefs) {
+			if(!readonly) wot.prefs.set("partner", wot.partner);
+			// Is the mode "accessible" set on?
+			wot.env.is_accessible = wot.prefs.get("accessible");
+		}
 	},
 
     cache_locale: function () {
