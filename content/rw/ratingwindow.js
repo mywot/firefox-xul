@@ -1055,21 +1055,21 @@ $.extend(wot, { ratingwindow: {
 //        });
 
         $("#wot-header-link-settings").bind("click", function() {
-            wot.ratingwindow.navigate(wurls.settings, wurls.contexts.rwsettings);
+            wot.ratingwindow.navigate(wurls.geturl(wurls.settings), wurls.contexts.rwsettings);
         });
 
         $("#wot-header-link-profile").bind("click", function() {
             bg.wot.ga.fire_event(wot.ga.categories.RW, wot.ga.actions.RW_PROFILELNK,
                 _rw.is_registered ? "registered" : "unregistered");
-            wot.ratingwindow.navigate(wurls.profile, wurls.contexts.rwprofile);
+            wot.ratingwindow.navigate(wurls.geturl(wurls.profile), wurls.contexts.rwprofile);
         });
 
         $("#wot-header-link-guide").bind("click", function() {
-            wot.ratingwindow.navigate(wurls.tour, wurls.contexts.rwguide);
+            wot.ratingwindow.navigate(wurls.geturl(wurls.tour), wurls.contexts.rwguide);
         });
 
         $("#wot-header-link-forum").bind("click", function() {
-            wot.ratingwindow.navigate(wurls.base + "forum", wurls.contexts.rwforum);
+            wot.ratingwindow.navigate(wurls.geturl(wurls.base) + "forum", wurls.contexts.rwforum);
         });
 
         $("#wot-header-close").bind("click", function() {
@@ -1079,7 +1079,7 @@ $.extend(wot, { ratingwindow: {
 
         $("#wot-scorecard-visit").bind("click", function() {
             if (wot.ratingwindow.current.target) {
-                wot.ratingwindow.navigate(wot.urls.scorecard +
+                wot.ratingwindow.navigate(wot.urls.geturl(wot.urls.scorecard) +
                     encodeURIComponent(wot.ratingwindow.current.target),
                     wurls.contexts.rwviewsc);
             }
@@ -1158,7 +1158,8 @@ $.extend(wot, { ratingwindow: {
 		        character: "#",
 		        items: 4,
 		        show: wot.ratingwindow.wg.show_tagautocomplete
-	        });
+	        })
+			.get(0).addEventListener("paste", _rw.comments.on_paste, false);   // overload the paste event
 
         // Rate mode event handlers
         $("#btn-comment").unbind("click").bind("click", _rw.on_comment_button);
@@ -1170,12 +1171,12 @@ $.extend(wot, { ratingwindow: {
 
 
         $("#comment-register-link").bind("click", function() {
-            wot.ratingwindow.navigate(wurls.signup, wurls.contexts.rwcommreg);
+            wot.ratingwindow.navigate(wurls.geturl(wurls.signup), wurls.contexts.rwcommreg);
         });
 
         $("#comment-captcha-link").bind("click", function() {
             if (wot.ratingwindow.current.target) {
-                wot.ratingwindow.navigate(wot.urls.scorecard +
+                wot.ratingwindow.navigate(wot.urls.geturl(wot.urls.scorecard) +
                     encodeURIComponent(wot.ratingwindow.current.target + "/rate"),
                     wurls.contexts.rwcaptcha, "rate");
             }
@@ -1257,7 +1258,6 @@ $.extend(wot, { ratingwindow: {
 
     on_comment_button: function (e) {
         var _rw = wot.ratingwindow;
-//	    _rw.get_bg().console.log("on_comment_button");
 
         if ($(this).hasClass("disable")) return;    // do nothing of the button is disabled
 
@@ -1549,7 +1549,9 @@ $.extend(wot, { ratingwindow: {
 	        hide_duration: 0,
 
 	        before_show: function (prev_mode) {
-		        $("#main-area")[0].style.height = null;
+		        if (prev_mode) {
+			        $("#main-area")[0].style.height = null;
+		        }
 	        },
 
 	        before_hide: function (new_mode) {
@@ -1600,7 +1602,9 @@ $.extend(wot, { ratingwindow: {
 	        hide_duration: 0,
 
 	        before_show: function (prev_mode) {
-		        $("#main-area")[0].style.height = null;
+		        if (prev_mode) {
+			        $("#main-area")[0].style.height = null;
+		        }
 	        },
 
 	        before_hide: function (new_mode) {
@@ -1869,14 +1873,14 @@ $.extend(wot, { ratingwindow: {
 
             if (cmode && typeof(cmode.before_hide) == "function") cmode.before_hide(mode_name);
 
-	        var hide_effect = cmode.hide_effect ? cmode.hide_effect.name : "",
-	            show_effect = mode.show_effect ? mode.show_effect.name : "",
-		        hide_params = cmode.hide_effect ? cmode.hide_effect : {},
-		        show_params = mode.show_effect ? mode.show_effect : {};
+	        var hide_effect = cmode.hide_effect ? cmode.hide_effect.name : "fade",
+	            show_effect = mode.show_effect ? mode.show_effect.name : "fade",
+		        hide_params = cmode.hide_effect ? cmode.hide_effect : { direction: "out" },
+		        show_params = mode.show_effect ? mode.show_effect : { direction: "in"};
 
 			var hide_options = {
 				effect: hide_effect,
-				duration: cmode && cmode.hide_duration ? cmode.hide_duration : 0,
+				duration: cmode && cmode.hide_duration && current_mode !='' ? cmode.hide_duration : 0,
 				complete: function () {
 					if (current_mode && typeof(cmode.after_hide) == "function") cmode.after_hide(mode_name);
 
@@ -1893,7 +1897,7 @@ $.extend(wot, { ratingwindow: {
 
 	        var show_options = {
 		        effect: show_effect,
-		        duration: mode && mode.show_duration ? mode.show_duration : 0,
+		        duration: mode && mode.show_duration && current_mode != '' ? mode.show_duration : 0,
 		        complete: function () {
 			        if (typeof(mode.after_show) == "function") mode.after_show(current_mode);
 		        }
@@ -2488,7 +2492,7 @@ $.extend(wot, { ratingwindow: {
         is_banned: false,
         captcha_required: false,
         MIN_LIMIT: 30,
-        MIN_LIMIT_WG: 3,
+        MIN_LIMIT_WG: 10,
 	    MIN_TAGS: 1,        // minimal amount of tags in the comment
 	    MAX_TAGS: 10,       // maximum amount of tags in the comment
         MAX_LIMIT: 20000,
@@ -2635,22 +2639,26 @@ $.extend(wot, { ratingwindow: {
         has_valid_comment: function () {
             var _this = wot.ratingwindow.comments,
 	            _wg = wot.ratingwindow.wg,
-	            is_wgcommenting = wot.ratingwindow.modes.is_current("wgcomment") || wot.ratingwindow.is_wg_allowed,
+	            is_wgcommenting = wot.ratingwindow.is_wg_allowed,
 	            comment = _this.get_comment_value(),
-	            minlen = _this.get_minlen(is_wgcommenting),
-	            maxlen = _this.get_maxlen(is_wgcommenting);
+	            minlen = _this.get_minlen(false),
+	            minlen_withtags = _this.get_minlen(true),
+	            maxlen = _this.get_maxlen(false),
+	            maxlen_withtags = _this.get_maxlen(true);
 
 	        if (is_wgcommenting) {
 		        var tags = _wg.get_tags(comment);
 
-		        return (comment.length >= minlen &&
-			        comment.length < maxlen &&
-			        tags.length >= _this.MIN_TAGS &&
-			        tags.length <= _this.MAX_TAGS);
-
-	        } else {
-		        return (comment.length >= minlen && comment.length < maxlen);
+		        if (tags.length) {
+			        return (comment.length >= minlen_withtags &&
+				        comment.length < maxlen_withtags &&
+				        tags.length >= _this.MIN_TAGS &&
+				        tags.length <= _this.MAX_TAGS);
+		        }
 	        }
+
+	        // testing only length of text
+	        return (comment.length >= minlen && comment.length < maxlen);
         },
 
         focus: function () {
@@ -2702,7 +2710,10 @@ $.extend(wot, { ratingwindow: {
 		    _this.caret_bottom = cr[0].bottom;// - parent.offsetTop + b.top;
 	    },
 
-	    tags: {
+	    on_paste: function (e) {
+		    // Use custom paste handler to get plain text content from clipboard and paste it to the current position
+		    document.execCommand('insertText', false, e.clipboardData.getData('text/plain'));
+		    e.preventDefault();
 	    }
     },
 
@@ -2821,48 +2832,48 @@ $.extend(wot, { ratingwindow: {
 		},
 
 		get_info: function (tag_value) {
-			var infos = {
-				"drupal": {
-					info: "http://en.m.wikipedia.org/wiki/Drupal"
-				},
-				"programming": {
-					info: "http://en.m.wikipedia.org/wiki/Computer_programming"
-				},
-				"finland": {
-					info: "http://en.m.wikipedia.org/wiki/Finland"
-				},
-				"php": {
-					info: "http://en.m.wikipedia.org/wiki/Php"
-				},
-				"javascript": {
-					info: "http://en.m.wikipedia.org/wiki/Javascript"
-				},
-				"jquery": {
-					info: "http://en.m.wikipedia.org/wiki/Jquery"
-				},
-				"opensource": {
-					info: "http://en.m.wikipedia.org/wiki/Opensource"
-				},
-				"html": {
-					info: "http://en.m.wikipedia.org/wiki/Html"
-				},
-				"ransomeware": {
-					info: "http://en.m.wikipedia.org/wiki/Ransomware_(malware)"
-				},
-				"lapsi": {
-					info: "http://en.m.wikipedia.org/wiki/Lapsi"
-				},
-				"cycling": {
-					info: "http://en.m.wikipedia.org/wiki/Cycling"
-				}
-
-			};
-
-			var ltag = tag_value ? tag_value.trim().toLowerCase() : null;
-
-			if (ltag) {
-				return infos[ltag];
-			}
+//			var infos = {
+//				"drupal": {
+//					info: "http://en.m.wikipedia.org/wiki/Drupal"
+//				},
+//				"programming": {
+//					info: "http://en.m.wikipedia.org/wiki/Computer_programming"
+//				},
+//				"finland": {
+//					info: "http://en.m.wikipedia.org/wiki/Finland"
+//				},
+//				"php": {
+//					info: "http://en.m.wikipedia.org/wiki/Php"
+//				},
+//				"javascript": {
+//					info: "http://en.m.wikipedia.org/wiki/Javascript"
+//				},
+//				"jquery": {
+//					info: "http://en.m.wikipedia.org/wiki/Jquery"
+//				},
+//				"opensource": {
+//					info: "http://en.m.wikipedia.org/wiki/Opensource"
+//				},
+//				"html": {
+//					info: "http://en.m.wikipedia.org/wiki/Html"
+//				},
+//				"ransomeware": {
+//					info: "http://en.m.wikipedia.org/wiki/Ransomware_(malware)"
+//				},
+//				"lapsi": {
+//					info: "http://en.m.wikipedia.org/wiki/Lapsi"
+//				},
+//				"cycling": {
+//					info: "http://en.m.wikipedia.org/wiki/Cycling"
+//				}
+//
+//			};
+//
+//			var ltag = tag_value ? tag_value.trim().toLowerCase() : null;
+//
+//			if (ltag) {
+//				return infos[ltag];
+//			}
 
 			return null;
 		},
