@@ -115,10 +115,11 @@ var wot_wg = {
 		if (mytags instanceof Array && mytags.length) {
 
 			var _this = this,
-				mytags_flat = _this.get_mytags().map(function (item) { return item.value });
+				current_mytags = _this.get_mytags(),
+				mytags_flat = current_mytags.map(function (item) { return item.value.toLocaleLowerCase() });
 
 			var uniq = mytags.filter(function (tag) {
-				var tag_value = tag.value.trim();
+				var tag_value = tag.value.trim().toLocaleLowerCase();
 				return mytags_flat.indexOf(tag_value) < 0;
 			});
 
@@ -127,7 +128,7 @@ var wot_wg = {
 				return tag;
 			});
 
-			this.set_mytags(_this.mytags.concat(uniq_tags));
+			this.set_mytags(current_mytags.concat(uniq_tags));
 		}
 	},
 
