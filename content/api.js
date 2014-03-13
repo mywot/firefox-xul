@@ -658,6 +658,8 @@ var wot_api_reload =
 				}
 			}
 
+			wot_wg.update_tags(true);   // forced to update mytags and mastertags
+
 			wot_core.update();
 			wot_hashtable.remove(WOT_RELOAD_RUNNING);
 		} catch (e) {
@@ -1711,6 +1713,7 @@ var wot_api_tags = {
 				{},
 				function (err) {
 					wot_tools.log("api.get_tags() failed", err);
+					wot_wg.release_lock(method);
 				},
 				function (data) {
 					wot_wg.release_lock(method);
@@ -1733,10 +1736,15 @@ var wot_api_tags = {
 			WOT_SITEAPI_ERRORS.error_codes.NO_ACTION_DEFINED
 		];
 
+		var func = wot_wg['set_' + core_keyword];
+
 		if (fail_errors.indexOf(error_code) < 0 && data.wgtags) {  // check for tags data (WOT Groups)
-			var func = wot_wg['set_'+core_keyword];
 			if (typeof(func) == 'function') {
 				func(wot_api_tags.clean(data.wgtags));
+			}
+		} else if (!data.wgtags) {
+			if (typeof(func) == 'function') {
+				func([]);
 			}
 		}
 

@@ -404,7 +404,8 @@ var wot_rw = {
 
 	            case "api_get_tags":
 //		            data.core_keyword , data.method
-		            wot_api_tags.get_tags(data.core_keyword, data.method);
+//		            wot_api_tags.get_tags(data.core_keyword, data.method);
+		            wot_wg.update_tags();
 			        break;
 
 	            case "log":

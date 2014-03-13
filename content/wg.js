@@ -76,22 +76,28 @@ var wot_wg = {
 		wot_hashtable.set("popular_tags_updated", Date.now());
 	},
 
-	update_tags: function () {
+	update_tags: function (force) {
 		// Checks whether particular tag list is expired or haven't been updated yet, and fetches the list
 
-		var tmap = [
-			{
+		if (!this.is_enabled()) return; // no need to update anything if the WG is not even enabled
+
+		var tmap = [];
+
+		if (wot_crypto.islevel("registered")) {
+			tmap.push({
 				keyword: "mytags",
 				method: "getmytags",
 				time_func: wot_wg.get_mytags_updated,
 				time: wot_wg.MYTAGS_UPD_INTERVAL
-			}, {
-				keyword: "popular_tags",
-				method: "getmastertags",
-				time_func: wot_wg.get_popular_tags_updated,
-				time: wot_wg.POPULARTAGS_UPD_INTERVAL
-			}
-		];
+			});
+		}
+
+		tmap.push({
+			keyword: "popular_tags",
+			method: "getmastertags",
+			time_func: wot_wg.get_popular_tags_updated,
+			time: wot_wg.POPULARTAGS_UPD_INTERVAL
+		});
 
 		for (var i = 0; i < tmap.length; i++) {
 			var obj = tmap[i];
@@ -99,7 +105,7 @@ var wot_wg = {
 			if (!this.lock_api(obj.method)) continue;   // skip the iteration of lock is already acquired
 
 			var last_updated = obj.time_func.apply();
-			if (!last_updated || obj.time + last_updated < Date.now()) {
+			if (force || !last_updated || obj.time + last_updated < Date.now()) {
 				wot_api_tags.get_tags(obj.keyword, obj.method);
 			}
 		}
