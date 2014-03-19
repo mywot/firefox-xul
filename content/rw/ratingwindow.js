@@ -70,6 +70,7 @@ $.extend(wot, { ratingwindow: {
 	    wot.ratingwindow.cat_selector.is_illogical = false;
 	    $(".category-description").removeClass("warning");
 	    $("#btn-submit").removeClass("warning highlight");
+	    $(".user-comm-activity").hide();
     },
 
     updatestate: function(target, data)
@@ -1629,7 +1630,7 @@ $.extend(wot, { ratingwindow: {
         rate: {
             visible: ["#ratings-area", "#rate-buttons", "#categories-selection-area", "#main-area"],
             invisible: ["#reputation-info", "#user-communication", "#rated-votes",
-                "#commenting-area", "#thanks-area", "#ok-button", "#wg-area", "#wg-about-area"],
+                "#commenting-area", "#thanks-area", "#ok-button", "#wg-area", "#wg-about-area", ".user-comm-activity"],
             addclass: "rate",
             removeclass: "view-mode rated unrated commenting thanks wgcommenting wgexpanded wgabout",
 
@@ -1671,7 +1672,7 @@ $.extend(wot, { ratingwindow: {
 
         comment: { // Commenting during rating process
             visible: ["#ratings-area", "#rate-buttons", "#commenting-area", "#rated-votes", "#main-area"],
-            invisible: ["#reputation-info", "#user-communication", "#categories-selection-area",
+            invisible: ["#reputation-info", "#user-communication", "#categories-selection-area", ".user-comm-activity",
                 "#thanks-area", "#ok-button", "#wg-area", "#wg-about-area"],
             addclass: "commenting",
             removeclass: "view-mode rated unrated rate thanks wgcommenting wgexpanded wgabout",
