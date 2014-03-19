@@ -1184,7 +1184,7 @@ textarea {
 #wg-tags {
     margin-left: 2px;
     margin-top: -1px; /* Diff in FF */
-    height: 1.6em; /* diff in FF */
+    height: 27px;  /* Diff in FF */
     max-height: none;
     overflow: hidden;
     -moz-margin-before: 0;
@@ -1204,7 +1204,7 @@ textarea {
     padding: 2px 4px;
     margin-right: 2px;
     margin-left: 2px;
-    margin-bottom: 3px;
+    margin-bottom: 1px;
     line-height: 1.4em;
     color: #5a5450;
     text-decoration: none;
@@ -1235,7 +1235,7 @@ textarea {
     position: absolute;
     font-size: 10px;
     font-weight: lighter;
-    margin-top: 2px;
+    margin-top: 1px;
 }
 
 .wg-tag.group:hover {
