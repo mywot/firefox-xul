@@ -1198,18 +1198,6 @@ textarea {
     max-height: 190px;
 }
 
-/*#wg-my-tags {*/
-    /*display: inline-block;*/
-/*}*/
-
-/*#wg-other-tags {*/
-    /*display: inline-block;*/
-    /*-webkit-margin-before: 0;*/
-    /*-webkit-margin-after: 0;*/
-    /*-webkit-padding-start: 0;*/
-    /*list-style-type: none;*/
-/*}*/
-
 .wg-tag {
     display: inline-block;
     font-size: 14px;
