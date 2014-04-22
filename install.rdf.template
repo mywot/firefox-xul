@@ -24,7 +24,7 @@
 		<em:targetApplication>
 		  <Description>
 			<em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
-			<em:minVersion>0.01</em:minVersion>
+			<em:minVersion>1.0a</em:minVersion>
 			<em:maxVersion>2.28</em:maxVersion>
 		  </Description>
 		</em:targetApplication>
@@ -33,7 +33,7 @@
 		<em:targetApplication>
 		  <Description>
 			<em:id>{86c18b42-e466-45a9-ae7a-9b95ba6f5640}</em:id>
-			<em:minVersion>0.01</em:minVersion>
+			<em:minVersion>1.0</em:minVersion>
 			<em:maxVersion>99.0</em:maxVersion>
 		  </Description>
 		</em:targetApplication>
@@ -42,7 +42,7 @@
 		<em:targetApplication>
 		  <Description>
 			<em:id>{a463f10c-3994-11da-9945-000d60ca027b}</em:id>
-			<em:minVersion>0.01</em:minVersion>
+			<em:minVersion>1.0</em:minVersion>
 			<em:maxVersion>99.0</em:maxVersion>
 		  </Description>
 		</em:targetApplication>
@@ -51,7 +51,7 @@
 		<em:targetApplication>
 		  <Description>
 			<em:id>{3db10fab-e461-4c80-8b97-957ad5f8ea47</em:id>
-			<em:minVersion>0.01</em:minVersion>
+			<em:minVersion>1.0</em:minVersion>
 			<em:maxVersion>99.0</em:maxVersion>
 		  </Description>
 		</em:targetApplication>
