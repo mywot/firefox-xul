@@ -190,8 +190,8 @@ var wot_core =
 				}
 
 				var browser = getBrowser();
-				this.listener = new wot_listener(browser);
-				browser.addProgressListener(this.listener);
+				wot_core.listener = new wot_listener(browser);
+				browser.addProgressListener(wot_core.listener);
 
 				if (browser.tabContainer) {
 					browser.tabContainer.addEventListener("TabOpen",

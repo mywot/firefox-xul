@@ -18,7 +18,6 @@
 	along with WOT. If not, see <http://www.gnu.org/licenses/>.
 */
 
-"use strict";
 
 var wot_search =
 {
@@ -532,7 +531,7 @@ var wot_search =
 						continue;
 					}
 
-					var m = RegExp(rule.pre[i].re).exec(url);
+					var m = new RegExp(rule.pre[i].re).exec(url);
 
 					if (m && m[rule.pre[i].match]) {
 						url = decodeURIComponent(m[rule.pre[i].match]);
@@ -543,7 +542,7 @@ var wot_search =
 			}
 
 			/* See if ignored */
-			if (rule.ign && RegExp(rule.ign).test(url)) {
+			if (rule.ign && new RegExp(rule.ign).test(url)) {
 				return null;
 			}
 
@@ -620,7 +619,7 @@ var wot_search =
 						}
 
 						set_visibility();
-					}
+					};
 
 					// use parent to avoid hiding donut when cursor moves to it but goes out of the link
 					link_parent.addEventListener("mouseover", do_ninja, false);
@@ -645,7 +644,7 @@ var wot_search =
 				- n = negative match
 				*/
 			var flags = spec.flags || "";
-			var rv = RegExp(spec.re, flags.replace("n", "")).test(data);
+			var rv = new RegExp(spec.re, flags.replace("n", "")).test(data);
 
 			return (flags.indexOf("n") < 0) ? rv : !rv;
 		} catch (e) {
@@ -657,10 +656,12 @@ var wot_search =
 
 	matchelement: function(match, elem)
 	{
+		var i;
+
 		try {
 			/* Match by attributes */
 			if (match.attribute && match.attribute.length) {
-				for (var i = 0; i < match.attribute.length; ++i) {
+				for (i = 0; i < match.attribute.length; ++i) {
 					if (!match.attribute[i].name || !match.attribute[i].re) {
 						continue;
 					}
@@ -679,7 +680,7 @@ var wot_search =
 					return false;
 				}
 
-				for (var i = 0; i < match.value.length; ++i) {
+				for (i = 0; i < match.value.length; ++i) {
 					if (!match.value[i].re) {
 						continue;
 					}
