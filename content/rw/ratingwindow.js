@@ -542,8 +542,8 @@ $.extend(wot, { ratingwindow: {
 	        when rangy gets null on window.getSelection() if the iframe is not visible to user.
 	        So we simply re-init rangy on every update of the ratingwindow, thus making sure, rangy is inited properly.
 	      * */
-	    rangy.initialized = false;  // FF specific
-	    rangy.init();               // FF specific
+//	    rangy.initialized = false;  // FF specific
+//	    rangy.init();               // FF specific
 
 	    // update WOT Groups UI
 	    _this.wg.update_wg_visibility();
@@ -1154,12 +1154,12 @@ $.extend(wot, { ratingwindow: {
 
 	            }, 20);    // to react on any keyboard event after the text was changed
 	        })
-	        .tagautocomplete({
-		        source: wot.ratingwindow.wg.suggest_tags,
-		        character: "#",
-		        items: 4,
-		        show: wot.ratingwindow.wg.show_tagautocomplete
-	        })
+//	        .tagautocomplete({
+//		        source: wot.ratingwindow.wg.suggest_tags,
+//		        character: "#",
+//		        items: 4,
+//		        show: wot.ratingwindow.wg.show_tagautocomplete
+//	        })
 	        .get(0).addEventListener("paste", _rw.comments.on_paste, false);   // overload the paste event
 
         // Rate mode event handlers
