@@ -1166,10 +1166,10 @@ $.extend(wot, { ratingwindow: {
 
         // Rate mode event handlers
         $("#btn-comment").unbind("click").bind("click", _rw.on_comment_button);
-        $("#btn-submit").bind("click", _rw.on_submit);
-        $("#btn-thanks-ok").bind("click", _rw.on_thanks_ok);
+        $("#btn-submit").unbind("click").bind("click", _rw.on_submit);
+        $("#btn-thanks-ok").unbind("click").bind("click", _rw.on_thanks_ok);
         $("#btn-cancel").bind("click", _rw.on_cancel);
-        $("#btn-delete").bind("click", _rw.on_delete_button);
+        $("#btn-delete").unbind("click").bind("click", _rw.on_delete_button);
         $("#change-ratings, #voted-categories-content").bind("click", _rw.on_change_ratings);
 
 
@@ -1548,7 +1548,7 @@ $.extend(wot, { ratingwindow: {
 		        direction: "in"
 	        },
 
-	        show_duration: 100,
+	        show_duration: 0,
 	        hide_duration: 0,
 
 	        before_show: function (prev_mode) {
@@ -1601,7 +1601,7 @@ $.extend(wot, { ratingwindow: {
 		        direction: "in"
 	        },
 
-	        show_duration: 100,
+	        show_duration: 0,
 	        hide_duration: 0,
 
 	        before_show: function (prev_mode) {
@@ -1641,7 +1641,7 @@ $.extend(wot, { ratingwindow: {
 		        direction: "in"
 	        },
 
-	        show_duration: 100,
+	        show_duration: 0,
 	        hide_duration: 0,
 
 	        activate: function (force) {
@@ -1684,7 +1684,7 @@ $.extend(wot, { ratingwindow: {
 		        direction: "in"
 	        },
 
-	        show_duration: 100,
+	        show_duration: 0,
 	        hide_duration: 0,
 
 	        activate: function (force) {
