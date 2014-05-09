@@ -18,6 +18,8 @@
 	along with WOT. If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 var wot_search =
 {
 	attrstr: [
@@ -598,11 +600,11 @@ var wot_search =
 						visibility = null;
 
 					// clojure
-					function set_visibility() {
+					var set_visibility = function set_visibility() {
 						elem.setAttribute("class", visibility);
-					}
+					};
 
-					function do_ninja(event) {
+					var do_ninja = function do_ninja(event) {
 						// It needs to be called as clojure to access "elem"
 
 						if (ninja_timer) clearTimeout(ninja_timer);

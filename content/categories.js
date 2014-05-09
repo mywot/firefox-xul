@@ -18,6 +18,8 @@
  along with WOT. If not, see <http://www.gnu.org/licenses/>.
  */
 
+"use strict";
+
 var wot_categories = {
 
     PREF_CATEGORY: "category",
@@ -161,7 +163,7 @@ var wot_categories = {
 	        this.cat_combinations = {};
 	        this.cat_combinations_prio = ["6a"];    // first default value
 
-	        for (i = 0; i < conflicts.length; i++) {
+	        for (var i = 0; i < conflicts.length; i++) {
 		        var conflict = conflicts[i],
 			        rule = String(conflict.rule).toLowerCase();
 

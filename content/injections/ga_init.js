@@ -18,6 +18,7 @@
  along with WOT. If not, see <http://www.gnu.org/licenses/>.
  */
 
+"use strict";
 
 // for analytics
 (function() {

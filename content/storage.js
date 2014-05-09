@@ -20,6 +20,8 @@
 
 // Stores the data from server in the local JSON file in the profile directory. Kind of persistent cache.
 
+"use strict";
+
 var wot_storage =
 {
 	_FILENAME: "storage.json",

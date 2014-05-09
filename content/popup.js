@@ -18,6 +18,8 @@
 	along with WOT. If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const WOT_POPUP_HTML =
     '<div id="wot-logo">{POPUPHEADERTEXT}</div>' +
         '<div id="wot-ratings{ID}" class="wot-ratings">' +

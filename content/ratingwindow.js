@@ -18,6 +18,8 @@
  along with WOT. If not, see <http://www.gnu.org/licenses/>.
  */
 
+"use strict";
+
 var wot_rw = {
 
     RW_URL: "chrome://wot/content/rw/ratingwindow.html",

@@ -18,6 +18,8 @@
 	along with WOT. If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const WOT_PLATFORM = "firefox";
 const WOT_VERSION  = "20140422";
 

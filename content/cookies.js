@@ -18,6 +18,8 @@
 	along with WOT. If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const WOT_COOKIE_TIMEOUT = 10000;
 const WOT_COOKIE_TOPIC = "http-on-modify-request";
 

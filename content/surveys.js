@@ -18,6 +18,8 @@
  along with WOT. If not, see <http://www.gnu.org/licenses/>.
  */
 
+"use strict";
+
 const WOT_PREFIX_ASKED = "wot_asked";
 const WOT_FBL_ASKED_RE = new RegExp(WOT_PREFIX_ASKED + "\:(.+)\:(.+)\:status");
 const WOT_FBL_ASKED_LOADED = "wot_asked_loaded";

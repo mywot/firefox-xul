@@ -18,6 +18,8 @@
 	along with WOT. If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const WOT_PREFIX_SHARED = "wot_shared";
 
 var wot_shared =
@@ -311,7 +313,7 @@ var wot_shared =
 		}
 
 		return null;
-	},
+	}
 };
 
 wot_modules.push({ name: "wot_shared", obj: wot_shared });

@@ -18,6 +18,8 @@
  along with WOT. If not, see <http://www.gnu.org/licenses/>.
  */
 
+"use strict";
+
 // The purpose of this file is to handle objects and methods that exist in Chrome browser but doesn't in Firefox
 
 var wot_bg = {
@@ -122,7 +124,7 @@ $.extend(wot_bg.wot, wot, {
 
 		        popular_tags: [ ],
 		        popular_tags_updated: null,
-		        POPULARTAGS_UPD_INTERVAL: 30 * 60 * 1000,
+		        POPULARTAGS_UPD_INTERVAL: 30 * 60 * 1000
 	        }
         },
 

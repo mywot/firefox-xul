@@ -18,6 +18,8 @@
  along with WOT. If not, see <http://www.gnu.org/licenses/>.
  */
 
+"use strict";
+
 $.extend(wot, { ratingwindow: {
     MAX_VOTED_VISIBLE: 4,   // how many voted categories we can show in one line
 	sliderwidth: 154,
@@ -934,7 +936,7 @@ $.extend(wot, { ratingwindow: {
         // At least one category must be voted as YES since user gives a rating
         var _rw = wot.ratingwindow,
             votes = votes_obj || _rw.cat_selector.get_user_votes(true); // get votes as object {cat_id : vote }
-        for(i in votes) {
+        for(var i in votes) {
             if (votes[i] == 1) {
                 return true;
             }

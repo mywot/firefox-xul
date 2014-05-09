@@ -18,6 +18,8 @@
 	along with WOT. If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const WOT_WARNING_CSS = "@import \"chrome://wot/skin/include/warning.css\";";
 
 var wot_warning =
@@ -372,7 +374,6 @@ var wot_warning =
 		}
 
 		var warning_width = this.width,
-			width = container.clientWidth;
 			height = container.clientHeight;
 
 		return {

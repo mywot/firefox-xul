@@ -23,6 +23,8 @@
 *  wot_proxy helps with it by providing the same interface of wot object but using config.js values.
 * */
 
+"use strict";
+
 var wot = {
 	version: "20140113",    // TODO: init this value from the add-on core code
 	platform: "firefox",

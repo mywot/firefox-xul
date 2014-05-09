@@ -18,6 +18,8 @@
 	along with WOT. If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 var wot = {
 	version: 20140317,
 	platform: "firefox",
@@ -728,7 +730,8 @@ var wot = {
     // copies and validates categories from saved preferences (actually prefs['update:state'])
     init_categories: function (_prefs) {
         try {
-            var update_state = (typeof _prefs.get == "function") ? _prefs.get("update:state") : _prefs["update:state"];
+            var cat,
+	            update_state = (typeof _prefs.get == "function") ? _prefs.get("update:state") : _prefs["update:state"];
 
             if (update_state && !wot.utils.isEmptyObject(update_state) &&
                 update_state.categories && update_state.categories.length > 0) {

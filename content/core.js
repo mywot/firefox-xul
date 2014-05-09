@@ -18,6 +18,8 @@
 	along with WOT. If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 function wot_listener(browser)
 {
 	this.browser = browser;
@@ -121,8 +123,8 @@ var wot_core =
 		try {
 
 			this.detect_environment();
-			window.addEventListener("load", function(e) {
-					window.removeEventListener("load", arguments.callee, true);
+			window.addEventListener("load", function on_load (e) {
+					window.removeEventListener("load", on_load, true);
 					wot_core.load();
 				}, false);
 
