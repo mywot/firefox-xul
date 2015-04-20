@@ -1,6 +1,6 @@
 /*
 	wot.js
-	Copyright © 2009 - 2014  WOT Services Oy <info@mywot.com>
+	Copyright © 2009 - 2015  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -21,7 +21,7 @@
 "use strict";
 
 var wot = {
-	version: 20140317,
+	version: 20150420,
 	platform: "firefox",
     locale: "en",           // cached value of the locale
     lang: "en-US",          // cached value of the lang

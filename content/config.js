@@ -1,6 +1,6 @@
 /*
 	config.js
-	Copyright © 2005 - 2013  WOT Services Oy <info@mywot.com>
+	Copyright © 2005 - 2015  WOT Services Oy <info@mywot.com>
 
 	This file is part of WOT.
 
@@ -21,7 +21,7 @@
 "use strict";
 
 const WOT_PLATFORM = "firefox";
-const WOT_VERSION  = "20140422";
+const WOT_VERSION  = "20150420";
 
 /*
  * Constants

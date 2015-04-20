@@ -74,7 +74,7 @@ wot_listener.prototype =
 			if (tabUrl && wot_stats.isWebURL(tabUrl)) {
 				var ref = browser.contentDocument.referrer;
 				if (request && request.referrer && typeof(request.referrer) != undefined) {
-					ref = request.referrer.asciiSpec;	
+					ref = request.referrer.asciiSpec;
 				}
 
 				wot_stats.loc(tabUrl, ref);
@@ -101,7 +101,7 @@ wot_listener.prototype =
 	},
 
 	onStatusChange: function(browser, webProgress, request, status, message)
-	{ 
+	{
 	},
 
 	onSecurityChange: function(browser, progress, request, state)
@@ -178,7 +178,7 @@ var wot_core =
 			}
 		} catch (e) {
 			dump("wot_core.init: failed with " + e + "\n");
-			console.log("wot_core.init() - error."  +e);
+//			console.log("wot_core.init() - error."  +e);
 		}
 	},
 
@@ -220,8 +220,6 @@ var wot_core =
 				browser.addTabsProgressListener(wot_core.listener);
 
 				if (browser.tabContainer) {
-					browser.tabContainer.addEventListener("TabOpen",
-						wot_core.tabopen, false);
 					browser.tabContainer.addEventListener("TabSelect",
 						wot_core.tabselect, false);
 				}
@@ -256,8 +254,6 @@ var wot_core =
 			}
 
 			if (browser.tabContainer) {
-				browser.tabContainer.removeEventListener("TabOpen",
-					wot_core.tabopen, false);
 				browser.tabContainer.removeEventListener("TabSelect",
 					wot_core.tabselect, false);
 			}
@@ -334,33 +330,10 @@ var wot_core =
 	{
 		try {
 			var browser = getBrowser().selectedTab;
-			/* report selected tab*/
 			var tabUrl = event.target.linkedBrowser.currentURI.spec;
 			wot_stats.focus(tabUrl);
-
-			if (browser && browser.listener) {
-				browser.removeTabsProgressListener(browser.listener);
-				browser.listener = null;
-			}
 		} catch (e) {
 			dump("wot_core.tabselect: failed with " + e + "\n");
-		}
-	},
-
-	tabopen: function(event)
-	{
-		try {
-			var browser = event.target.linkedBrowser;
-
-			if (!browser || browser.listener) {
-				return;
-			}
-
-			/* Catch state changes for background tabs */
-			browser.listener = new wot_listener(browser);
-			browser.addTabsProgressListener(browser.listener);
-		} catch (e) {
-			dump("wot_core.tabopen: failed with " + e + "\n");
 		}
 	},
 
