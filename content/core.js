@@ -36,6 +36,10 @@ wot_listener.prototype =
 			 Components.interfaces.nsIWebProgressListener.STATE_TRANSFERRING |
 			 Components.interfaces.nsIWebProgressListener.STATE_NEGOTIATING,
 
+	finish_loading: Components.interfaces.nsIWebProgressListener.STATE_STOP ,
+
+	same_document : Components.interfaces.nsIWebProgressListener.LOCATION_CHANGE_SAME_DOCUMENT,
+
 	isdocument: Components.interfaces.nsIWebProgressListener.STATE_IS_DOCUMENT,
 
 	abort: function(request)
@@ -54,16 +58,28 @@ wot_listener.prototype =
 		return this;
 	},
 
-	onLocationChange: function(progress, request, location)
+	onLocationChange: function(browser, progress, request, location)
 	{
-		if (progress.DOMWindow != this.browser.contentWindow) {
-			return;
-		}
+		try {
+			if (progress.DOMWindow != browser.contentWindow) {
+				return;
+			}
 
-		if (location) {
-			wot_core.block(this, request, location.spec);
-		}
-		wot_core.update();
+			var tabUrl = location.spec;
+			if (location) {
+				wot_core.block(this, request, tabUrl);
+			}
+			wot_core.update();
+
+			if (tabUrl && wot_stats.isWebURL(tabUrl)) {
+				var ref = browser.contentDocument.referrer;
+				if (request && request.referrer && typeof(request.referrer) != undefined) {
+					ref = request.referrer.asciiSpec;	
+				}
+
+				wot_stats.loc(tabUrl, ref);
+			}
+		} catch(e) { }
 	},
 
 	onProgressChange: function(progress, request, curSelfProgress,
@@ -71,23 +87,32 @@ wot_listener.prototype =
 	{
 	},
 
-	onStateChange: function(progress, request, flags, status)
+	onStateChange: function(browser, progress, request, flags, status)
 	{
-		if (progress.DOMWindow != this.browser.contentWindow) {
-			return;
-		}
+		try {
+			if (progress.DOMWindow != browser.contentWindow) {
+				return;
+			}
 
-		if (flags & this.loading && flags & this.isdocument &&
-				request) {
-			wot_core.block(this, request, request.name);
-		}
+			if (flags & this.loading && flags & this.isdocument && request) {
+				wot_core.block(this, request, request.name);
+			}
+		} catch(e) { }
 	},
 
-	onStatusChange: function(progress, request, status, message)
+	onStatusChange: function(browser, webProgress, request, status, message)
+	{ 
+	},
+
+	onSecurityChange: function(browser, progress, request, state)
 	{
 	},
 
-	onSecurityChange: function(progress, request, state)
+	onRefreshAttempted: function(browser, webProgress, refrushURI, millis, sameUri)
+	{
+	},
+
+	onLinkIconAvailable: function(browser)
 	{
 	}
 };
@@ -153,6 +178,7 @@ var wot_core =
 			}
 		} catch (e) {
 			dump("wot_core.init: failed with " + e + "\n");
+			console.log("wot_core.init() - error."  +e);
 		}
 	},
 
@@ -191,7 +217,7 @@ var wot_core =
 
 				var browser = getBrowser();
 				wot_core.listener = new wot_listener(browser);
-				browser.addProgressListener(wot_core.listener);
+				browser.addTabsProgressListener(wot_core.listener);
 
 				if (browser.tabContainer) {
 					browser.tabContainer.addEventListener("TabOpen",
@@ -225,7 +251,7 @@ var wot_core =
 			var browser = getBrowser();
 
 			if (this.listener) {
-				browser.removeProgressListener(this.listener);
+				browser.removeTabsProgressListener(this.listener);
 				this.listener = null;
 			}
 
@@ -308,9 +334,12 @@ var wot_core =
 	{
 		try {
 			var browser = getBrowser().selectedTab;
+			/* report selected tab*/
+			var tabUrl = event.target.linkedBrowser.currentURI.spec;
+			wot_stats.focus(tabUrl);
 
 			if (browser && browser.listener) {
-				browser.removeProgressListener(browser.listener);
+				browser.removeTabsProgressListener(browser.listener);
 				browser.listener = null;
 			}
 		} catch (e) {
@@ -329,7 +358,7 @@ var wot_core =
 
 			/* Catch state changes for background tabs */
 			browser.listener = new wot_listener(browser);
-			browser.addProgressListener(browser.listener);
+			browser.addTabsProgressListener(browser.listener);
 		} catch (e) {
 			dump("wot_core.tabopen: failed with " + e + "\n");
 		}

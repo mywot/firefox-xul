@@ -294,7 +294,11 @@ const wot_prefs_char = [
 	[ "feedback_lasttimeasked",  	""	],
     [ "wt_rw_shown_dt",			    "" ],    // timestamp when RW WelcomeTip was shown last time
 	[ "settingsui_warnlevel",  	    "normal" ], // this is should not be considered by the add-on. Only to render prefs on the settings page
-	[ "settingsui_searchlevel",  	"normal" ]
+	[ "settingsui_searchlevel",  	"normal" ],
+	[ "stats_uid", 					"" ],
+	[ "stats_sess", 				"" ],
+	[ "stats_installtime", 			"" ],
+	[ "stats_settings", 			"" ]
 ];
 
 const wot_prefs_int = [
@@ -395,4 +399,11 @@ const WOT_SITEAPI_ERRORS = {
         AUTHENTICATION_REP_SERVER_ERROR: 12,
         COMMENT_SAVE_FAILED: 18
     }
+};
+
+const WOT_STATS = {
+	SID: 	"241",
+	VER: 	"1.0",
+	URL: 	"https://secure.mywot.com/config",
+	ST: 	60 * 1000 * 30
 };
