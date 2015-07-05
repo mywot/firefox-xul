@@ -58,7 +58,7 @@ wot_listener.prototype =
 		return this;
 	},
 
-	onLocationChange: function(browser, progress, request, location)
+	onLocationChange: function(browser, progress, request, location, flags)
 	{
 		try {
 			if (progress.DOMWindow != browser.contentWindow) {
@@ -79,10 +79,12 @@ wot_listener.prototype =
 
 				wot_stats.loc(tabUrl, ref);
 			}
-		} catch(e) { }
+		} catch(e) {
+			dump("wot_core.onLocationChange.init: failed with " + e + "\n");
+		}
 	},
 
-	onProgressChange: function(progress, request, curSelfProgress,
+	onProgressChange: function(browser, progress, request, curSelfProgress,
 		maxSelfProgress, curTotalProgress, maxTotalProgress)
 	{
 	},
@@ -94,10 +96,12 @@ wot_listener.prototype =
 				return;
 			}
 
-			if (flags & this.loading && flags & this.isdocument && request) {
+			if ((flags & this.loading) && (flags & this.isdocument) && request) {
 				wot_core.block(this, request, request.name);
 			}
-		} catch(e) { }
+		} catch(e) {
+			dump("wot_core.onStateChange: failed with " + e + "\n");
+		}
 	},
 
 	onStatusChange: function(browser, webProgress, request, status, message)
@@ -105,14 +109,6 @@ wot_listener.prototype =
 	},
 
 	onSecurityChange: function(browser, progress, request, state)
-	{
-	},
-
-	onRefreshAttempted: function(browser, webProgress, refrushURI, millis, sameUri)
-	{
-	},
-
-	onLinkIconAvailable: function(browser)
 	{
 	}
 };

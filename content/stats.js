@@ -1,21 +1,21 @@
 var wot_stats =
 {
-	utils: {
-		serialize: function(obj)
-		{
-			var str = [];
-			var length = 0;
-			for(var p in obj) {
-				if (obj.hasOwnProperty(p)) {
-					length++;
-					str.push(p + "=" + obj[p]);
-				}
-			}
-			return {
-				data: str.join("&"),
-				length:length
-			};
-		},
+    utils: {
+        serialize: function(obj)
+        {
+            var str = [];
+            var length = 0;
+            for(var p in obj) {
+                if (obj.hasOwnProperty(p)) {
+                    length++;
+                    str.push(p + "=" + obj[p]);
+                }
+            }
+            return {
+                data: str.join("&"),
+                length:length
+            };
+        },
 
 		postRequest: function(url, data, length, callback)
 		{

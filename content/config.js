@@ -21,7 +21,7 @@
 "use strict";
 
 const WOT_PLATFORM = "firefox";
-const WOT_VERSION  = "20150420";
+const WOT_VERSION  = "20150605";
 
 /*
  * Constants
