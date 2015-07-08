@@ -325,6 +325,7 @@ var wot_core =
 	tabselect: function(event)
 	{
 		try {
+			wot_core.update();      // once the tab is selected, update the state
 			var browser = getBrowser().selectedTab;
 			var tabUrl = event.target.linkedBrowser.currentURI.spec;
 			wot_stats.focus(tabUrl);
